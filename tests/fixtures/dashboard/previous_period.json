@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "selected": {
+    "start": "2026-07-18",
+    "end": "2026-07-20",
+    "inclusive_days": 3
+  },
+  "previous": {
+    "start": "2026-07-15",
+    "end": "2026-07-17"
+  },
+  "previous_zero": {
+    "percent_change": null,
+    "display": "比較不能"
+  }
+}

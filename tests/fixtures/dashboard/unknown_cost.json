@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "expected": {
+    "known_total_usd": 0.946755,
+    "request_count": 3,
+    "unknown_cost_request_count": 1,
+    "complete": false
+  }
+}

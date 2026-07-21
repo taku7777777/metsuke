@@ -1,0 +1,59 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 127.0.0.1:__OTEL_PORT__
+
+processors:
+  filter/metsuke_events:
+    error_mode: ignore
+    logs:
+      log_record:
+        - 'attributes["event.name"] != "api_request" and attributes["event.name"] != "api_error"'
+  attributes/metsuke_privacy:
+    actions:
+      - key: user.email
+        action: delete
+      - key: user.account_uuid
+        action: delete
+      - key: user.account_id
+        action: delete
+      - key: user.id
+        action: delete
+      - key: organization.id
+        action: delete
+      - key: workspace.host_paths
+        action: delete
+  resource/metsuke_privacy:
+    attributes:
+      - key: user.email
+        action: delete
+      - key: user.account_uuid
+        action: delete
+      - key: user.account_id
+        action: delete
+      - key: user.id
+        action: delete
+      - key: organization.id
+        action: delete
+  batch:
+    timeout: 5s
+
+exporters:
+  file/metsuke:
+    path: __OTEL_DIR__/events.json
+    rotation:
+      max_megabytes: 32
+      max_backups: 3
+
+service:
+  telemetry:
+    logs:
+      level: warn
+    metrics:
+      level: none
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [filter/metsuke_events, attributes/metsuke_privacy, resource/metsuke_privacy, batch]
+      exporters: [file/metsuke]

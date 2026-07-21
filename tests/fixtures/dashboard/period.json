@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "view": "period",
+  "timezone": "UTC",
+  "title": "metsuke · 期間ビュー",
+  "period": "2026-07-07 — 2026-07-20",
+  "total": "$0.95 · 2 requests · 2 sessions · 2 projects",
+  "stamp": "redaction_version=2 parser_version=10 generated=<generated-at>",
+  "text": [
+    "セッション",
+    "プロンプト",
+    "プロジェクト",
+    "metsuke trace <session>=セッション全体の背景（fan-out・時間構造）を見る / metsuke explain <prompt>=1プロンプトのコスト内訳を見る",
+    "上位10件で全request総額の 100.0% / $1以上は 0件（全2中）で 0.0%",
+    "順位",
+    "コスト",
+    "累積",
+    "開始",
+    "期間",
+    "project",
+    "prompts",
+    "req",
+    "$/prompt",
+    "平均ピークctx",
+    "command",
+    "1",
+    "$0.62",
+    "65.1%",
+    "07-20 12:00",
+    "0m",
+    "project-beta",
+    "1",
+    "1",
+    "$0.62",
+    "250k",
+    "metsuke trace s2 --html",
+    "2",
+    "$0.33",
+    "100.0%",
+    "07-20 12:00",
+    "0m",
+    "</script><script>alert(1)</script>\"><img src=x onerror=alert(1)>",
+    "1",
+    "1",
+    "$0.33",
+    "200k",
+    "metsuke trace s1 --html",
+    "上位10件で $0.95（帰属済み総額の 100.0%） / 最大 $0.62（project-beta） / 中断プロンプト支出 $0.00（0件） / 帰属不能 $0.00（0.0%） · metsuke view dist",
+    "cache_readcache_creationoutputinputserver_tool",
+    "順位",
+    "コスト",
+    "累積",
+    "日時",
+    "期間",
+    "project",
+    "prompt",
+    "req",
+    "agent",
+    "費目",
+    "command",
+    "1",
+    "$0.62",
+    "65.1%",
+    "07-20 12:00",
+    "0m",
+    "project-beta",
+    "beta prompt",
+    "1",
+    "0",
+    "",
+    "metsuke explain p2 --html",
+    "2",
+    "$0.33",
+    "100.0%",
+    "07-20 12:00",
+    "0m",
+    "</script><script>alert(1)</script>\"><img src=x onerror=alert(1)>",
+    "<script>prompt_path()</script> visible prompt",
+    "1",
+    "0",
+    "",
+    "metsuke explain p<!--can --html",
+    "上位3件で期間全体の 100.0% / 全2プロジェクト中 $1未満が 2件",
+    "project",
+    "コスト",
+    "share",
+    "sessions",
+    "prompts",
+    "req",
+    "$/prompt",
+    "平均ピークctx",
+    "command",
+    "project-beta",
+    "$0.62",
+    "65.1%",
+    "1",
+    "1",
+    "1",
+    "$0.62",
+    "250k",
+    "metsuke view period --from 2026-07-07 --to 2026-07-20 --project project-beta",
+    "</script><script>alert(1)</script>\"><img src=x onerror=alert(1)>",
+    "$0.33",
+    "34.9%",
+    "1",
+    "1",
+    "1",
+    "$0.33",
+    "200k",
+    "metsuke view period --from 2026-07-07 --to 2026-07-20 --project </script><script>alert(1)</script>\"><img src=x onerror=alert(1)>",
+    "対話のみ判別は暫定: projectに sandbox-experiments を含む、または -private-tmp- で始まるものを自動実行として扱う。"
+  ],
+  "tables": [
+    {
+      "headers": [
+        "順位",
+        "コスト",
+        "累積",
+        "開始",
+        "期間",
+        "project",
+        "prompts",
+        "req",
+        "$/prompt",
+        "平均ピークctx",
+        "command"
+      ],
+      "rows": [
+        [
+          {
+            "text": "1"
+          },
+          {
+            "text": "$0.62"
+          },
+          {
+            "text": "65.1%"
+          },
+          {
+            "text": "07-20 12:00"
+          },
+          {
+            "text": "0m"
+          },
+          {
+            "text": "project-beta"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "$0.62"
+          },
+          {
+            "text": "250k"
+          },
+          {
+            "text": "metsuke trace s2 --html"
+          }
+        ],
+        [
+          {
+            "text": "2"
+          },
+          {
+            "text": "$0.33"
+          },
+          {
+            "text": "100.0%"
+          },
+          {
+            "text": "07-20 12:00"
+          },
+          {
+            "text": "0m"
+          },
+          {
+            "text": "</script><script>alert(1)</script>\"><img src=x onerror=alert(1)>"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "$0.33"
+          },
+          {
+            "text": "200k"
+          },
+          {
+            "text": "metsuke trace s1 --html"
+          }
+        ]
+      ]
+    },
+    {
+      "headers": [
+        "順位",
+        "コスト",
+        "累積",
+        "日時",
+        "期間",
+        "project",
+        "prompt",
+        "req",
+        "agent",
+        "費目",
+        "command"
+      ],
+      "rows": [
+        [
+          {
+            "text": "1"
+          },
+          {
+            "text": "$0.62"
+          },
+          {
+            "text": "65.1%"
+          },
+          {
+            "text": "07-20 12:00"
+          },
+          {
+            "text": "0m"
+          },
+          {
+            "text": "project-beta"
+          },
+          {
+            "text": "beta prompt",
+            "title": "beta prompt"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "0"
+          },
+          {
+            "text": "",
+            "title": "input"
+          },
+          {
+            "text": "metsuke explain p2 --html"
+          }
+        ],
+        [
+          {
+            "text": "2"
+          },
+          {
+            "text": "$0.33"
+          },
+          {
+            "text": "100.0%"
+          },
+          {
+            "text": "07-20 12:00"
+          },
+          {
+            "text": "0m"
+          },
+          {
+            "text": "</script><script>alert(1)</script>\"><img src=x onerror=alert(1)>"
+          },
+          {
+            "text": "<script>prompt_path()</script> visible prompt",
+            "title": "<script>prompt_path()</script> visible prompt"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "0"
+          },
+          {
+            "text": "",
+            "title": "input"
+          },
+          {
+            "text": "metsuke explain p<!--can --html"
+          }
+        ]
+      ]
+    },
+    {
+      "headers": [
+        "project",
+        "コスト",
+        "share",
+        "sessions",
+        "prompts",
+        "req",
+        "$/prompt",
+        "平均ピークctx",
+        "command"
+      ],
+      "rows": [
+        [
+          {
+            "text": "project-beta"
+          },
+          {
+            "text": "$0.62"
+          },
+          {
+            "text": "65.1%"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "$0.62"
+          },
+          {
+            "text": "250k"
+          },
+          {
+            "text": "metsuke view period --from 2026-07-07 --to 2026-07-20 --project project-beta",
+            "title": "metsuke view period --from 2026-07-07 --to 2026-07-20 --project project-beta"
+          }
+        ],
+        [
+          {
+            "text": "</script><script>alert(1)</script>\"><img src=x onerror=alert(1)>"
+          },
+          {
+            "text": "$0.33"
+          },
+          {
+            "text": "34.9%"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "1"
+          },
+          {
+            "text": "$0.33"
+          },
+          {
+            "text": "200k"
+          },
+          {
+            "text": "metsuke view period --from 2026-07-07 --to 2026-07-20 --project </script><script>alert(1)</script>\"><img src=x onerror=alert(1)>",
+            "title": "metsuke view period --from 2026-07-07 --to 2026-07-20 --project </script><script>alert(1)</script>\"><img src=x onerror=alert(1)>"
+          }
+        ]
+      ]
+    }
+  ],
+  "charts": [],
+  "titled_values": []
+}

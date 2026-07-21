@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "rule": "cost DESC, then prompt_id ASC for prompts and session_id DESC for sessions",
+  "expected": {
+    "prompt_order": [
+      "metsuke explain p-tie-a --html",
+      "metsuke explain p-tie-z --html"
+    ],
+    "session_order": [
+      "metsuke trace s-tie-z --html",
+      "metsuke trace s-tie-a --html"
+    ]
+  }
+}

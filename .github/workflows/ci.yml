@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        run: python -m pip install uv
+      - name: Install locked dependencies
+        run: uv sync --frozen --dev
+      - name: Lint Python
+        run: uv run ruff check .
+      - name: Run tests
+        run: uv run pytest -q
+      - name: Validate shell syntax
+        run: bash -n scripts/*.sh
+      - name: Validate bundled configuration
+        run: |
+          uv run python - <<'PY'
+          import json
+          import pathlib
+          import plistlib
+
+          json.loads(pathlib.Path("src/metsuke/prices.json").read_text())
+          replacements = {
+              "__METSUKE_BIN__": "/usr/local/bin/metsuke",
+              "__LOG_DIR__": "/tmp/metsuke-logs",
+              "__REPO__": "/tmp/metsuke-repo",
+              "__OTELCOL_BIN__": "/usr/local/bin/otelcol-contrib",
+              "__OTEL_CONFIG__": "/tmp/metsuke-otelcol.yaml",
+          }
+          paths = list(pathlib.Path("launchd").glob("*.plist.template"))
+          if len(paths) != 6:
+              raise SystemExit(f"expected 6 plist templates, found {len(paths)}")
+          for path in paths:
+              rendered = path.read_text()
+              for placeholder, value in replacements.items():
+                  rendered = rendered.replace(placeholder, value)
+              if "__" in rendered:
+                  raise SystemExit(f"unresolved placeholder in {path}")
+              plistlib.loads(rendered.encode())
+          PY
+      - name: Compile package
+        run: uv run python -m compileall -q src

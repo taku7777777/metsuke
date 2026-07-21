@@ -1,0 +1,46 @@
+{
+  "snapshot_schema_version": 1,
+  "ledger_schema_version": 0,
+  "ledger_schema_sha256": "synthetic",
+  "parser_version": 10,
+  "ledger_parser_version": 10,
+  "redaction_version": 2,
+  "ledger_redaction_version": 2,
+  "measured_at": "synthetic",
+  "timezone": "UTC",
+  "windows": {
+    "latest_day": {
+      "from": "2000-01-07",
+      "to_exclusive": "2000-01-08",
+      "total_usd": 1.0,
+      "request_count": 10,
+      "cost_bearing_prompt_count": 2,
+      "session_count": 2,
+      "project_count": 1,
+      "unknown_cost_request_count": 0,
+      "prompt_table_rows": 3
+    },
+    "latest_7_days": {
+      "from": "2000-01-01",
+      "to_exclusive": "2000-01-08",
+      "total_usd": 7.0,
+      "request_count": 70,
+      "cost_bearing_prompt_count": 14,
+      "session_count": 7,
+      "project_count": 2,
+      "unknown_cost_request_count": 0,
+      "prompt_table_rows": 17
+    },
+    "all_observed": {
+      "from": null,
+      "to_exclusive": null,
+      "total_usd": 10.0,
+      "request_count": 100,
+      "cost_bearing_prompt_count": 20,
+      "session_count": 10,
+      "project_count": 3,
+      "unknown_cost_request_count": 0,
+      "prompt_table_rows": 24
+    }
+  }
+}
