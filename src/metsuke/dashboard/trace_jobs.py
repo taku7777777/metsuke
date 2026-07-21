@@ -34,6 +34,9 @@ class TraceJob:
     created_at: float
     updated_at: float
     error: str | None = None
+    # Carried so a ready job page can navigate the requesting tab to the trace.
+    session_id: str = ""
+    fragment: str = ""
 
 
 Generator = Callable[[str, object], Path | None]
@@ -84,11 +87,25 @@ class TraceJobManager:
             raise TraceSessionNotFoundError("trace session was not found")
         return fingerprint
 
-    def _new_job(self, status: str, cache_result: str) -> TraceJob:
+    def _new_job(
+        self,
+        status: str,
+        cache_result: str,
+        session_id: str = "",
+        fragment: str = "",
+    ) -> TraceJob:
         import secrets
 
         now = self.clock()
-        return TraceJob(secrets.token_urlsafe(24), status, cache_result, now, now)
+        return TraceJob(
+            secrets.token_urlsafe(24),
+            status,
+            cache_result,
+            now,
+            now,
+            session_id=session_id,
+            fragment=fragment,
+        )
 
     def submit(self, session_id: str, *, fragment: str = "") -> TraceJob:
         fingerprint = self._fingerprint(session_id)
@@ -100,12 +117,12 @@ class TraceJobManager:
                 return self._jobs[existing_id]
             cached = self.cache.lookup(fingerprint)
             if cached is not None:
-                job = self._new_job("ready", "hit")
+                job = self._new_job("ready", "hit", session_id, fragment)
                 self._jobs[job.job_id] = job
                 with self.cache.protect(cached):
                     self._open(cached, fragment)
                 return job
-            job = self._new_job("queued", "miss")
+            job = self._new_job("queued", "miss", session_id, fragment)
             self._jobs[job.job_id] = job
             self._active_sessions[session_id] = job.job_id
             worker = threading.Thread(

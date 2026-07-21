@@ -97,6 +97,17 @@ dashboardはtraceを全面再実装せず、生成と表示を仲介する。
   endpointへ到達できないことを攻撃fixtureで固定する。headerだけではpopup/navigationを含む同一origin XSSを
   完全隔離できないため、`sandbox allow-scripts`によるopaque origin化または認証cookieを共有しない
   別originの成立をPhase 2の出荷gateとする。成立しなければHTTP配信せず既存`file://`を維持する。
+- **出荷gate判定（2026-07-21・成立）**: `sandbox allow-scripts`によるopaque origin化を採用し、
+  `X-Frame-Options: DENY`と併せて`/traces/<session_id>.html`のHTTP配信を出荷した。判定根拠は
+  (a) 現行`trace_template.html`が`localStorage`/cookie/`postMessage`/`pushState`/`fetch`/form等の
+  opaque originで制限されるAPIを一切使わず、`location.hash`を起動時に1度読むだけであること、
+  (b) 実ブラウザ（Chrome 150）で縮小・拡大・レーン展開・表・グループ・帯クリックの主要操作が
+  opaque origin下で動作することを利用者が確認したこと。trace専用CSPが他レスポンスの既定CSPへ
+  波及しないことは10レスポンスの実測で固定した。
+- **サーバからの`open`起動は廃止した。** 生成後にサーバプロセスが`open`を実行する方式は、
+  どのブラウザ・どのタブに表示されるかをサーバ側から制御できず、実際に既定ブラウザや
+  cmuxワークスペースへ飛ぶ事故が出た。dashboard経路はopenerを無効化し、同一タブ遷移に統一する。
+  CLI（`metsuke trace`）は従来どおり`file://`を`open`する。
 - cacheは0600のmanifestでfingerprint・size・last_accessed_atを管理し、既定30日かつ256MiBの
   LRU上限を持つ。redaction version不一致は即時削除し、件数・使用量・最古accessをdoctorへ出す。
 - statuslineの高額promptリンクはserver停止時も動く既存`file://` traceを維持する。

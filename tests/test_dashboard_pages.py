@@ -182,7 +182,7 @@ def test_page_is_no_javascript_get_form_and_real_links(page_env):
     assert '<form method="get" action="/dashboard">' in text
     assert 'type="date"' in text
     assert 'required max="2026-07-20"' in text
-    assert '<a href="/dashboard?' in text
+    assert '<a class="tab" href="/dashboard?' in text
     assert '<a href="/prompts/' in text
     assert "<script" not in text.lower()
     assert "history." not in text.lower()

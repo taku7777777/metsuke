@@ -46,6 +46,28 @@ from .usage import record_trace_opened, record_view_opened
 LOOPBACK_HOST = "127.0.0.1"
 STATE_KEYS = frozenset({"pid", "process_start_time", "port", "server_instance_id"})
 JOB_PATH = re.compile(r"/trace-jobs/([A-Za-z0-9_-]{32})\Z")
+TRACE_PREFIX = "/traces/"
+TRACE_PATH = re.compile(r"/traces/([^/]{1,160})\.html\Z")
+# Only the fragment the dashboard itself produces may reach a Refresh header.
+TRACE_FRAGMENT = re.compile(r"#prompt=[A-Za-z0-9][A-Za-z0-9_-]{7,127}\Z")
+
+# Applied to every dashboard-owned response. The trace document is deliberately the
+# only exception: its inline scripts would be blocked here, so it gets an opaque
+# origin instead of the dashboard's own.
+DEFAULT_CSP = (
+    "default-src 'none'; script-src 'self'; style-src 'self'; "
+    "connect-src 'self'; img-src data:; base-uri 'none'; "
+    "form-action 'self'; frame-ancestors 'none'"
+)
+# `sandbox` without `allow-same-origin` forces an opaque origin, so trace scripts
+# cannot read the dashboard origin or its cookie. Adding `allow-same-origin` here
+# would defeat the isolation entirely.
+TRACE_CSP = "sandbox allow-scripts"
+
+# Largest request body the dashboard will read. Bounds both form parsing and the
+# drain in ``_respond`` so a hostile Content-Length cannot make the server read
+# unbounded data.
+MAX_BODY_BYTES = 64 * 1024
 
 
 class DashboardServerError(RuntimeError):
@@ -85,6 +107,27 @@ class ServerStatus:
 
 class DashboardRequestHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
+
+    # Per-request state. ``http.server`` builds one handler instance per *connection*
+    # and reuses it for every request on it, so anything cached here must be cleared
+    # in ``handle_one_request`` -- see the comment there.
+    request_body: bytes | None = None
+    _body_framing_ok: bool = True
+
+    def handle_one_request(self) -> None:
+        """Reset per-request state before each request on a reused connection.
+
+        One handler instance serves every request on a keep-alive connection, so a
+        body cached on ``self`` would otherwise be replayed for the next request --
+        which both returned the wrong fields and left the real body unread in the
+        socket, desyncing the connection. Clearing here rather than in ``do_GET`` /
+        ``do_POST`` makes the reset structural: a future handler method cannot
+        forget it.
+        """
+
+        self.request_body = None
+        self._body_framing_ok = True
+        super().handle_one_request()
 
     def do_GET(self) -> None:
         if not self._request_origin_is_allowed():
@@ -145,21 +188,27 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 return
             job = self._dashboard_server.trace_jobs.get(job_match.group(1))
             if job is None:
-                self._respond(
-                    404,
-                    pages.state_page("not_found").encode(),
-                    content_type="text/html; charset=utf-8",
-                )
+                self._not_found()
                 return
             headers = {"X-CSRF-Token": claims.csrf_token}
             if job.status in {"queued", "running"}:
                 headers["Refresh"] = "1"
+            trace_target = ""
+            if job.status == "ready" and ID_PATTERN.fullmatch(job.session_id) is not None:
+                fragment = job.fragment if TRACE_FRAGMENT.fullmatch(job.fragment) else ""
+                trace_target = pages.trace_url(job.session_id, fragment)
+                # A zero-delay refresh replaces this job page in session history, so
+                # the browser's back button returns to the detail page, not here.
+                headers["Refresh"] = f"0; url={trace_target}"
             self._respond(
                 200,
-                pages.trace_job_page(job.status).encode(),
+                pages.trace_job_page(job.status, job_match.group(1), trace_target).encode(),
                 headers,
                 "text/html; charset=utf-8",
             )
+            return
+        if request_path.startswith(TRACE_PREFIX):
+            self._trace(request_path)
             return
         if request_path.startswith(("/prompts/", "/sessions/")):
             if not detail_target_is_valid(self.path):
@@ -205,7 +254,11 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             self._unauthorized()
             return
         if not self._dashboard_server.auth.validate_csrf(claims, self._supplied_csrf_token()):
-            self._respond(403, b"forbidden")
+            self._respond(
+                403,
+                pages.state_page("stale").encode(),
+                content_type="text/html; charset=utf-8",
+            )
             return
         fields = self._form_fields()
         session_values = fields.get("session_id", []) if fields is not None else []
@@ -260,7 +313,67 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
         if len(hosts) != 1 or hosts[0] != expected_host:
             return False
         origins = self.headers.get_all("Origin", failobj=[]) or []
-        return len(origins) <= 1 and (not origins or origins[0] == f"http://{expected_host}")
+        if len(origins) > 1:
+            return False
+        if not origins:
+            # Address-bar navigation sends no Origin at all.
+            return True
+        if origins[0] == f"http://{expected_host}":
+            return True
+        if origins[0] != "null":
+            return False
+        # A non-cors request from a document served with Referrer-Policy: no-referrer
+        # -- which every dashboard response sets -- has its Origin serialised as the
+        # literal string "null", so the dashboard's own form POSTs arrive that way.
+        # Sec-Fetch-Site is a forbidden header name that page content cannot forge,
+        # and browsers report same-origin only for genuinely same-origin requests.
+        sites = self.headers.get_all("Sec-Fetch-Site", failobj=[]) or []
+        return len(sites) == 1 and sites[0] == "same-origin"
+
+    def _trace(self, request_path: str) -> None:
+        """Serve a generated trace from the cache directory under an opaque origin."""
+
+        if self._authenticated_claims() is None:
+            self._unauthorized()
+            return
+        match = TRACE_PATH.fullmatch(request_path)
+        session_id = match.group(1) if match is not None else ""
+        # The same allowlist the trace job POST validates against. Nothing that fails
+        # it ever reaches the filesystem, so no separator, dot segment, or escape can.
+        if ID_PATTERN.fullmatch(session_id) is None:
+            self._not_found()
+            return
+        directory = self._dashboard_server.trace_jobs.cache.directory
+        try:
+            root = directory.resolve()
+            target = (root / f"{session_id}.html").resolve()
+        except OSError:
+            self._not_found()
+            return
+        # Re-assert containment after resolution so a symlinked cache entry cannot
+        # redirect the read outside the traces directory.
+        if target.parent != root or not target.is_file():
+            self._not_found()
+            return
+        try:
+            body = target.read_bytes()
+        except OSError:
+            self._not_found()
+            return
+        self._respond(
+            200,
+            body,
+            {"X-Frame-Options": "DENY"},
+            "text/html; charset=utf-8",
+            csp=TRACE_CSP,
+        )
+
+    def _not_found(self) -> None:
+        self._respond(
+            404,
+            pages.state_page("not_found").encode(),
+            content_type="text/html; charset=utf-8",
+        )
 
     def _bootstrap(self) -> None:
         prefix = "/bootstrap?nonce="
@@ -270,6 +383,9 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
         nonce = self.path[len(prefix) :]
         if not nonce or "&" in nonce or not self._dashboard_server.auth.consume_bootstrap_nonce(nonce):
             self._unauthorized()
+            return
+        if self._authenticated_claims() is not None:
+            self._respond(303, b"", {"Location": "/dashboard"})
             return
         cookie = self._dashboard_server.auth.issue_cookie()
         self._respond(
@@ -308,20 +424,63 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
         values = fields.get("csrf_token", []) if fields is not None else []
         return values[0] if len(values) == 1 else None
 
+    def _declared_body_length(self) -> int | None:
+        """Bytes this request says it carries, or ``None`` when framing is untrustworthy.
+
+        ``None`` means the body cannot be located safely -- an unparseable, negative,
+        or oversized Content-Length, contradictory repeated ones, or a chunked body
+        ``http.server`` does not decode. The caller must close the connection rather
+        than guess where the next request begins.
+        """
+
+        headers = self.headers
+        if headers is None:
+            return 0
+        if headers.get_all("Transfer-Encoding", failobj=[]):
+            return None
+        values = headers.get_all("Content-Length", failobj=[]) or []
+        if not values:
+            return 0
+        if len(values) != 1:
+            return None
+        try:
+            length = int(values[0])
+        except ValueError:
+            return None
+        if not 0 <= length <= MAX_BODY_BYTES:
+            return None
+        return length
+
+    def _consume_request_body(self) -> bytes | None:
+        """Read this request's body exactly once, or ``None`` if it cannot be read.
+
+        The result is cached for the current request only, so repeated callers
+        (``_supplied_csrf_token`` then ``_form_fields``) share one read.
+        """
+
+        if not self._body_framing_ok:
+            return None
+        if self.request_body is not None:
+            return self.request_body
+        length = self._declared_body_length()
+        if length is None:
+            self._body_framing_ok = False
+            return None
+        body = self.rfile.read(length) if length else b""
+        self.request_body = body
+        if len(body) != length:
+            # A truncated body leaves the connection at an unknown offset.
+            self._body_framing_ok = False
+            return None
+        return body
+
     def _form_fields(self) -> dict[str, list[str]] | None:
         content_type = self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
         if content_type != "application/x-www-form-urlencoded":
             return {}
-        body = getattr(self, "request_body", None)
+        body = self._consume_request_body()
         if body is None:
-            try:
-                length = int(self.headers.get("Content-Length", "0"))
-            except ValueError:
-                return None
-            if not 0 <= length <= 64 * 1024:
-                return None
-            body = self.rfile.read(length)
-            self.request_body = body
+            return None
         try:
             return parse_qs(
                 body.decode("ascii"),
@@ -345,19 +504,25 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
         body: bytes,
         headers: dict[str, str] | None = None,
         content_type: str = "text/plain; charset=utf-8",
+        csp: str = DEFAULT_CSP,
     ) -> None:
+        # Any response that returns before reading the body -- the origin 403, the
+        # 404 for another POST path, the 401 for a missing cookie -- would otherwise
+        # leave the body in the socket, and the next request on this connection
+        # would be parsed starting from those bytes. Draining here covers every
+        # response path at once instead of relying on each one to remember.
+        drained = self._consume_request_body() is not None
         # send_response_only avoids the default Server/Python and Date fingerprint headers.
         self.send_response_only(status)
+        if not drained:
+            # The body is unread and cannot be located, so the connection can no
+            # longer be framed. send_header also flips close_connection for us.
+            self.send_header("Connection", "close")
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("Referrer-Policy", "no-referrer")
-        self.send_header(
-            "Content-Security-Policy",
-            "default-src 'none'; script-src 'self'; style-src 'self'; "
-            "connect-src 'self'; img-src data:; base-uri 'none'; "
-            "form-action 'self'; frame-ancestors 'none'",
-        )
+        self.send_header("Content-Security-Policy", csp)
         for name, value in (headers or {}).items():
             self.send_header(name, value)
         self.end_headers()
@@ -422,6 +587,17 @@ class DashboardHTTPServer(ThreadingHTTPServer):
                         self.state_path.unlink(missing_ok=True)
             finally:
                 _release_lock(self.lock_fd)
+
+
+def _no_browser_opener(_path: Path, _fragment: str = "") -> bool:
+    """The dashboard hands traces to the requesting tab over HTTP.
+
+    A server cannot choose which browser, window, or tab receives an ``open``
+    subprocess, so the dashboard path never spawns one. ``trace_html.open_browser``
+    stays untouched for the ``metsuke trace`` CLI, which has no requesting tab.
+    """
+
+    return False
 
 
 def _process_start_time(pid: int) -> str | None:
@@ -620,7 +796,7 @@ def create_server(
             clock=request_clock,
         )
         trace_cache.purge()
-        job_options = {"clock": request_clock}
+        job_options = {"clock": request_clock, "opener": _no_browser_opener}
         if trace_generator is not None:
             job_options["generator"] = trace_generator
         if trace_opener is not None:

@@ -54,11 +54,12 @@ def _controls(request, today: dt.date) -> str:
     if request.page.order != "desc":
         preset_values.append(("order", request.page.order))
     preset_links = " ".join(
-        f'<a href="{_url("/dashboard", [*preset_values, ("range", value)])}">{_esc(label)}</a>'
+        f'<a class="preset" href="{_url("/dashboard", [*preset_values, ("range", value)])}"'
+        f'{" aria-current=\"true\"" if request.preset == value else ""}>{_esc(label)}</a>'
         for label, value in presets
     )
     tabs = " ".join(
-        f'<a href="{_url("/dashboard", _base_values(request, view=value))}"'
+        f'<a class="tab" href="{_url("/dashboard", _base_values(request, view=value))}"'
         f'{" aria-current=\"page\"" if request.view == value else ""}>{_esc(label)}</a>'
         for value, label in (
             ("overview", "概要"),
@@ -75,16 +76,19 @@ def _controls(request, today: dt.date) -> str:
         else ""
     )
     return (
-        f'<nav aria-label="表示">{tabs}</nav>'
-        f'<nav aria-label="期間プリセット">{preset_links}</nav>'
+        '<div class="controls">'
+        f'<nav class="tabs" aria-label="表示">{tabs}</nav>'
+        '<div class="filters">'
+        f'<nav class="presets" aria-label="期間プリセット">{preset_links}</nav>'
         '<form method="get" action="/dashboard">'
         f'<input type="hidden" name="view" value="{_esc(request.view)}">'
         f'{order}'
-        f'<label>開始 <input type="date" name="from" required max="{request.window.end}" value="{request.window.start}"></label>'
-        f'<label>終了 <input type="date" name="to" required min="{request.window.start}" max="{today}" value="{request.window.end}"></label>'
-        f'<label>project <input name="project" maxlength="1024" value="{project}"></label>'
-        f'<label>件数 <input type="number" name="limit" min="1" max="200" value="{request.page.limit}"></label>'
+        f'<label class="field">開始 <input type="date" name="from" required max="{request.window.end}" value="{request.window.start}"></label>'
+        f'<label class="field">終了 <input type="date" name="to" required min="{request.window.start}" max="{today}" value="{request.window.end}"></label>'
+        f'<label class="field">project <input name="project" maxlength="1024" value="{project}"></label>'
+        f'<label class="field">件数 <input type="number" name="limit" min="1" max="200" value="{request.page.limit}"></label>'
         '<button type="submit">表示</button></form>'
+        '</div></div>'
     )
 
 
@@ -94,13 +98,17 @@ def _table(headers: tuple[str, ...], rows: list[tuple[object, ...]]) -> str:
         "<tr>" + "".join(f"<td>{_esc(value)}</td>" for value in row) + "</tr>"
         for row in rows
     )
-    return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
+    return (
+        '<div class="table-wrap"><table><thead><tr>'
+        f"{head}</tr></thead><tbody>{body}</tbody></table></div>"
+    )
 
 
 def _overview(model: overview.OverviewModel) -> str:
     kpis = "".join(
-        f'<article><h3>{_esc(item.name)}</h3><p>{_esc(item.display)}</p>'
-        f'<p>前期比 {_esc(item.comparison.display)}</p></article>'
+        f'<article class="kpi-card"><h3>{_esc(item.name)}</h3>'
+        f'<p class="kpi-value">{_esc(item.display)}</p>'
+        f'<p class="kpi-delta">前期比 {_esc(item.comparison.display)}</p></article>'
         for item in model.kpis
     )
     parts = _table(
@@ -127,7 +135,7 @@ def _overview(model: overview.OverviewModel) -> str:
         else ""
     )
     return (
-        f'<section><h2>KPI</h2><div>{kpis}</div>{unknown}</section>'
+        f'<section><h2>KPI</h2><div class="kpi-grid">{kpis}</div>{unknown}</section>'
         f'<section><h2>費目構成</h2>{parts}</section>'
         f'<section><h2>高額prompt</h2>{prompt_table}</section>'
         f'<section><h2>高額session</h2>{session_table}</section>'
@@ -142,7 +150,10 @@ def _trusted_table(headers: tuple[str, ...], rows: list[tuple[object, ...]]) -> 
     body = "".join(
         "<tr>" + "".join(f"<td>{value}</td>" for value in row) + "</tr>" for row in rows
     )
-    return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
+    return (
+        '<div class="table-wrap"><table><thead><tr>'
+        f"{head}</tr></thead><tbody>{body}</tbody></table></div>"
+    )
 
 
 def _number(value: object, *, money: bool = False, suffix: str = "") -> str:
@@ -171,21 +182,159 @@ def _series_table(
     return _table(("期間", *names), rows)
 
 
+INTERACTIVE_SUFFIX = "（対話のみ）"
+SAME_VALUES_NOTE = "（対話のみも同値）"
+_QUANTILE_LINE = re.compile(r"\A(?P<label>.*?)\s*(?P<values>p\d+\s.*)\Z")
+_QUANTILE_PAIR = re.compile(r"\A(?P<term>p\d+)\s+(?P<value>\S+)\Z")
+# A label is only split off when the prefix cannot be part of a value itself;
+# "（原因別: …）" and money amounts must never be mistaken for a label boundary.
+_LABEL_STOP = ("（", "$", "/", "・", "、")
+_FACT_SEPARATORS = (" · ", " / ", "・")
+_OPEN, _CLOSE = "（(", "）)"
+
+
+def _quantile_pairs(line: str) -> tuple[str, tuple[tuple[str, str], ...]] | None:
+    """Split "コスト分位点 全体 p50 $1.06 / p90 $3.80" into a label and pXX pairs."""
+
+    match = _QUANTILE_LINE.fullmatch(line)
+    if match is None:
+        return None
+    pairs = []
+    for chunk in match.group("values").split(" / "):
+        pair = _QUANTILE_PAIR.fullmatch(chunk.strip())
+        if pair is None:
+            return None
+        pairs.append((pair.group("term"), pair.group("value")))
+    return match.group("label").strip(), tuple(pairs)
+
+
+def _split_facts(value: str) -> list[str]:
+    """Split on top-level separators only; "（原因別: a · b）" must stay one fact."""
+
+    parts: list[str] = []
+    depth = 0
+    start = 0
+    index = 0
+    while index < len(value):
+        character = value[index]
+        if character in _OPEN:
+            depth += 1
+        elif character in _CLOSE:
+            depth = max(0, depth - 1)
+        if depth == 0:
+            separator = next(
+                (item for item in _FACT_SEPARATORS if value.startswith(item, index)), None
+            )
+            if separator is not None:
+                parts.append(value[start:index])
+                index += len(separator)
+                start = index
+                continue
+        index += 1
+    parts.append(value[start:])
+    return [part.strip() for part in parts if part.strip()]
+
+
+def _split_label(line: str) -> tuple[str, str]:
+    head, separator, tail = line.partition(": ")
+    if separator and tail and not any(stop in head for stop in _LABEL_STOP):
+        return head, tail
+    return "", line
+
+
+def _fact(label: str, body: str, *, labelled: bool = True) -> str:
+    if not labelled:
+        # A dl child div must carry a dt, so unlabelled insights skip the dl entirely.
+        return f'<p class="fact-value">{body}</p>'
+    return (
+        f'<div class="fact"><dt class="fact-label">{_esc(label)}</dt>'
+        f'<dd class="fact-value">{body}</dd></div>'
+    )
+
+
+def _insight(text: str) -> str:
+    """Render an insight as discrete labeled facts; the source text is newline-separated."""
+
+    if any(marker in text for marker in ("未知価格", "価格カバレッジ不足")) and "不完全" not in text:
+        text += "\n集計は不完全です。"
+    facts: list[tuple[str, tuple[tuple[str, str], ...] | None, str]] = []
+    for raw in text.split("\n"):
+        line = raw.strip()
+        if not line:
+            continue
+        quantile = _quantile_pairs(line)
+        if quantile is not None:
+            facts.append((quantile[0], quantile[1], line))
+            continue
+        label, body = _split_label(line)
+        facts.append((label, None, body))
+    labelled = any(label for label, _pairs, _body in facts)
+    rendered: list[str] = []
+    # Maps an already-rendered quantile fact to its position in `rendered`.
+    seen: dict[tuple[tuple[str, str], ...], int] = {}
+    for label, pairs, body in facts:
+        if pairs is not None:
+            duplicate = seen.get(pairs) if "対話のみ" in label else None
+            if duplicate is not None and "</dt>" in rendered[duplicate]:
+                # The values are identical only because this window held no synthetic
+                # prompts; annotate the kept row instead of dropping a real distinction.
+                rendered[duplicate] = rendered[duplicate].replace(
+                    "</dt>", f'<span class="same-note">{SAME_VALUES_NOTE}</span></dt>', 1
+                )
+                continue
+            seen.setdefault(pairs, len(rendered))
+            values = "".join(
+                f'<span class="quantile"><span class="quantile-term">{_esc(term)}</span>'
+                f'<span class="quantile-value">{_esc(value)}</span></span>'
+                for term, value in pairs
+            )
+            rendered.append(
+                _fact(label, f'<span class="quantiles">{values}</span>', labelled=labelled)
+            )
+            continue
+        parts = _split_facts(body)
+        value = "".join(f'<span class="subfact">{_esc(part)}</span>' for part in parts)
+        rendered.append(_fact(label, value or _esc(body), labelled=labelled))
+    body_html = "".join(rendered)
+    if labelled:
+        body_html = f'<dl class="facts">{body_html}</dl>'
+    return f'<aside class="insight">{body_html}</aside>'
+
+
+def _collapse_interactive(rows: list[tuple[str, ...]]) -> list[tuple[str, ...]]:
+    """Merge an "X（対話のみ）" row into "X" only when every other cell is identical."""
+
+    merged: list[tuple[str, ...]] = []
+    for row in rows:
+        if merged and row and len(row) == len(merged[-1]):
+            previous = merged[-1]
+            if row[0] == previous[0] + INTERACTIVE_SUFFIX and row[1:] == previous[1:]:
+                label = f'{previous[0]}<span class="same-note">{SAME_VALUES_NOTE}</span>'
+                merged[-1] = (label, *previous[1:])
+                continue
+        merged.append(row)
+    return merged
+
+
 def _node(node: Node, page: Page | None = None) -> str:
     args = node.args
     if node.kind == "join":
         return "".join(
             _node(value, page) if isinstance(value, Node) else _esc(value) for value in args
         )
-    if node.kind in {"plain", "warning", "text_block", "insight"}:
-        tag = "aside" if node.kind in {"warning", "insight"} else "p"
+    if node.kind == "insight":
+        return _insight(str(args[0]))
+    if node.kind in {"plain", "warning", "text_block"}:
+        tag = "aside" if node.kind == "warning" else "p"
         value = str(args[0])
         if (
             any(marker in value for marker in ("未知価格", "価格カバレッジ不足"))
             and "不完全" not in value
         ):
             value += "。集計は不完全です。"
-        return f"<{tag}>{_esc(value)}</{tag}>"
+        classes = str(thaw(node.kwargs).get("cls") or "").strip()
+        attribute = f' class="{_esc(classes)}"' if classes else ""
+        return f"<{tag}{attribute}>{_esc(value)}</{tag}>"
     if node.kind == "code":
         value = str(args[0])
         match = DETAIL_COMMAND.fullmatch(value)
@@ -242,7 +391,9 @@ def _node(node: Node, page: Page | None = None) -> str:
                 cells[0] = '<span class="threshold">⚠ 注目</span> ' + cells[0]
             rendered_rows.append(tuple(cells))
         empty = '<p class="empty">このページに該当するデータはありません。</p>' if not rows else ""
-        return empty + _trusted_table(tuple(column.label for column in columns), rendered_rows)
+        return empty + _trusted_table(
+            tuple(column.label for column in columns), _collapse_interactive(rendered_rows)
+        )
     if node.kind == "stacked_bars":
         options = thaw(node.kwargs)
         return _series_table(args[0], args[1], money=bool(options.get("money_values")))
@@ -279,14 +430,30 @@ def _cell(cell: Cell, page: Page | None = None) -> str:
     return value
 
 
+def _kpi_line(total: object, page: Page | None = None) -> str:
+    """Promote the headline figures out of body-text weight without altering them."""
+
+    if isinstance(total, Node):
+        return f'<p class="kpi">{_node(total, page)}</p>'
+    text = "" if total is None else str(total)
+    parts = [part for part in text.split(" · ") if part]
+    if len(parts) < 2:
+        return f'<p class="kpi">{_esc(text)}</p>'
+    separator = '<span class="kpi-sep" aria-hidden="true">·</span>'
+    return '<p class="kpi">' + separator.join(
+        f'<span class="kpi-item">{_esc(part)}</span>' for part in parts
+    ) + "</p>"
+
+
 def _legacy(model: LegacyViewModel, page: Page | None = None) -> str:
-    total = _node(model.total, page) if isinstance(model.total, Node) else _esc(model.total)
-    return f'<section><h2>{_esc(model.title)}</h2><p>{total}</p>{_node(model.body, page)}</section>'
+    return (
+        f'<section><h2>{_esc(model.title)}</h2>{_kpi_line(model.total, page)}'
+        f'{_node(model.body, page)}</section>'
+    )
 
 
 def _period(model: LegacyViewModel) -> str:
-    total = _node(model.total) if isinstance(model.total, Node) else _esc(model.total)
-    return f'<section><h2>集中先</h2><p>{total}</p>{_node(model.body)}</section>'
+    return f'<section><h2>集中先</h2>{_kpi_line(model.total)}{_node(model.body)}</section>'
 
 
 def _pagination(request) -> str:
@@ -296,7 +463,7 @@ def _pagination(request) -> str:
         links.append(f'<a rel="prev" href="{_url("/dashboard", previous)}">前へ</a>')
     following = _base_values(request) + [("page", str(request.page.page + 1))]
     links.append(f'<a rel="next" href="{_url("/dashboard", following)}">次へ</a>')
-    return '<nav aria-label="ページング">' + " ".join(links) + "</nav>"
+    return '<nav class="pagination" aria-label="ページング">' + " ".join(links) + "</nav>"
 
 
 def _freshness_header(freshness: Freshness | None) -> str:
@@ -329,17 +496,117 @@ def stylesheet() -> str:
     """Return local-only CSS; dashboard markup remains centralized in this module."""
 
     return """
-:root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.5; }
-body { margin: 0 auto; max-width: 96rem; padding: 1rem; }
-nav, form { display: flex; flex-wrap: wrap; gap: .65rem; margin-block: .75rem; }
-a:focus-visible, button:focus-visible, input:focus-visible { outline: .2rem solid currentColor; outline-offset: .2rem; }
-table { border-collapse: collapse; display: block; max-width: 100%; overflow-x: auto; }
-th, td { border: 1px solid currentColor; padding: .3rem .5rem; text-align: right; white-space: nowrap; }
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  line-height: 1.55;
+  --bg: #ffffff;
+  --fg: #16181d;
+  --muted: #5c6472;
+  --rule: #dcdfe6;
+  --rule-strong: #b9bfcb;
+  --surface: #f5f6f9;
+  --surface-alt: #eceef3;
+  --accent: #1b4fd8;
+  --accent-fg: #ffffff;
+  --warn: #8a4b00;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171c;
+    --fg: #e6e9ef;
+    --muted: #9aa2b1;
+    --rule: #2b303a;
+    --rule-strong: #414957;
+    --surface: #1b1e25;
+    --surface-alt: #23262f;
+    --accent: #8fb4ff;
+    --accent-fg: #15171c;
+    --warn: #f0b866;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0 auto; max-width: 96rem; padding: 1.5rem 1.25rem 4rem; background: var(--bg); color: var(--fg); }
+h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 .75rem; }
+h2 { font-size: 1.15rem; font-weight: 650; margin: 0 0 .5rem; padding-bottom: .35rem; border-bottom: 2px solid var(--rule-strong); }
+h3 { font-size: .8rem; font-weight: 600; letter-spacing: .03em; color: var(--muted); margin: 0 0 .25rem; }
+section { margin-block: 2rem; }
+p { margin-block: .5rem; }
+a { color: var(--accent); }
+.dim, .lead + .dim { color: var(--muted); font-size: .875rem; }
+.backlink { font-size: .875rem; }
+
+/* --- header / controls ------------------------------------------------ */
+header { border-bottom: 1px solid var(--rule); padding-bottom: .5rem; margin-bottom: 1.25rem; }
+.window { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem; margin: 0 0 .75rem; }
+.window-preset { font-weight: 650; }
+.window-range { color: var(--muted); font-variant-numeric: tabular-nums; }
+.controls { display: flex; flex-direction: column; gap: .85rem; }
+nav, form { display: flex; flex-wrap: wrap; gap: .4rem; margin-block: 0; }
+.tabs { gap: 0; border-bottom: 1px solid var(--rule); }
+.tabs a { padding: .5rem .95rem; text-decoration: none; color: var(--muted); border: 1px solid transparent; border-bottom: none; border-radius: .35rem .35rem 0 0; margin-bottom: -1px; }
+.tabs a:hover { color: var(--fg); background: var(--surface); }
+.tabs a[aria-current] { color: var(--fg); font-weight: 700; background: var(--bg); border-color: var(--rule); border-bottom: 1px solid var(--bg); }
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
+.presets { gap: .35rem; padding: .2rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .45rem; }
+.presets a { padding: .3rem .7rem; font-size: .875rem; text-decoration: none; color: var(--muted); border-radius: .3rem; }
+.presets a:hover { color: var(--fg); background: var(--surface-alt); }
+.presets a[aria-current] { color: var(--accent-fg); background: var(--accent); font-weight: 700; text-decoration: underline; text-underline-offset: .18em; }
+form { align-items: end; gap: .5rem .75rem; padding-left: 1.25rem; border-left: 1px solid var(--rule); }
+.field { display: flex; flex-direction: column; gap: .2rem; font-size: .75rem; color: var(--muted); }
+input { font: inherit; font-size: .875rem; padding: .3rem .45rem; color: var(--fg); background: var(--bg); border: 1px solid var(--rule-strong); border-radius: .3rem; }
+button { font: inherit; font-size: .875rem; font-weight: 600; padding: .4rem 1rem; color: var(--accent-fg); background: var(--accent); border: 1px solid transparent; border-radius: .3rem; cursor: pointer; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: .2rem solid var(--accent); outline-offset: .2rem; }
+.pagination { justify-content: flex-end; gap: .75rem; margin-top: 2rem; }
+
+/* --- headline numbers -------------------------------------------------- */
+.kpi { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem; margin: 0 0 1rem; font-variant-numeric: tabular-nums; }
+.kpi-item { font-size: 1.05rem; color: var(--muted); }
+.kpi-item:first-child { font-size: 1.6rem; font-weight: 700; line-height: 1.2; color: var(--fg); }
+.kpi-sep { color: var(--rule-strong); }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .75rem; }
+.kpi-card { padding: .75rem .9rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .5rem; }
+.kpi-value { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.kpi-delta { margin: .2rem 0 0; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* --- insight facts ----------------------------------------------------- */
+.insight { padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-left: .25rem solid var(--rule-strong); border-radius: .35rem; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: .6rem 1.75rem; margin: 0; }
+.fact { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.fact-label { font-size: .75rem; font-weight: 600; letter-spacing: .02em; color: var(--muted); }
+.fact-value { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .9rem; margin: 0; font-variant-numeric: tabular-nums; }
+.subfact { white-space: nowrap; }
+.quantiles { display: flex; flex-wrap: wrap; gap: .1rem .9rem; }
+.quantile { display: inline-flex; align-items: baseline; gap: .3rem; }
+.quantile-term { font-size: .7rem; font-weight: 600; color: var(--muted); }
+.quantile-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+.same-note { margin-left: .35rem; font-size: .7rem; font-weight: 400; color: var(--muted); }
+
+/* --- tables ------------------------------------------------------------ */
+.table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--rule); border-radius: .4rem; }
+table { border-collapse: collapse; width: 100%; font-size: .875rem; }
+th, td { padding: .45rem .7rem; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+th { position: sticky; top: 0; z-index: 1; font-size: .75rem; font-weight: 600; letter-spacing: .02em; color: var(--muted); background: var(--surface-alt); border-bottom: 1px solid var(--rule-strong); }
+td { border-top: 1px solid var(--rule); }
+tbody tr:first-child td { border-top: none; }
+tbody tr:nth-child(even) { background: var(--surface); }
+tbody tr:hover { background: var(--surface-alt); }
 th:first-child, td:first-child { text-align: left; }
 .card { max-width: 100%; overflow-x: auto; }
-.threshold { font-weight: 700; }
-.empty, aside { border: 1px solid currentColor; padding: .65rem; }
-@media (max-width: 40rem) { body { padding: .5rem; } form label { flex-basis: 100%; } }
+.threshold { font-weight: 700; color: var(--warn); }
+.empty { color: var(--muted); font-size: .875rem; }
+.empty, aside { padding: .75rem .9rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .35rem; }
+.meta { display: grid; grid-template-columns: auto 1fr; gap: .3rem 1rem; margin: 0 0 1.25rem; }
+.meta dt { font-size: .75rem; font-weight: 600; color: var(--muted); }
+.meta dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 40rem) {
+  body { padding: .75rem .75rem 3rem; }
+  form { padding-left: 0; border-left: none; }
+  form label { flex-basis: 100%; }
+  .kpi-item:first-child { font-size: 1.35rem; }
+  .facts { grid-template-columns: 1fr; }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
 """.strip()
 
@@ -368,7 +635,8 @@ def dashboard_page(
         "custom": "カスタム",
     }
     header = (
-        f'<p>{_esc(preset_labels[request.preset])} · {_esc(request.window.start)} — {_esc(request.window.end)}</p>'
+        f'<p class="window"><span class="window-preset">{_esc(preset_labels[request.preset])}</span>'
+        f'<span class="window-range">{_esc(request.window.start)} — {_esc(request.window.end)}</span></p>'
         f'{_controls(request, today)}'
     )
     return _shell("metsuke dashboard", f"{content}{_pagination(request)}", freshness, header)
@@ -430,8 +698,8 @@ def prompt_page(
         rows,
     )
     content = (
-        '<p><a href="/dashboard">dashboardへ戻る</a></p>'
-        f'<dl><dt>prompt ID</dt><dd>{_esc(model.prompt_id)}</dd>'
+        '<p class="backlink"><a href="/dashboard">dashboardへ戻る</a></p>'
+        f'<dl class="meta"><dt>prompt ID</dt><dd>{_esc(model.prompt_id)}</dd>'
         f'<dt>session</dt><dd>{session_link}</dd>'
         f'<dt>API換算コスト</dt><dd>{_esc(model.amount.display)}</dd>'
         f'<dt>request</dt><dd>{_esc(len(model.requests))}</dd>'
@@ -462,8 +730,8 @@ def session_page(
     prompts = _trusted_table(("prompt", "時刻", "request", "金額", "状態"), rows)
     models = "、".join(f"{name}: {count}" for name, count in model.models)
     content = (
-        '<p><a href="/dashboard">dashboardへ戻る</a></p>'
-        f'<dl><dt>session ID</dt><dd>{_esc(model.session_id)}</dd>'
+        '<p class="backlink"><a href="/dashboard">dashboardへ戻る</a></p>'
+        f'<dl class="meta"><dt>session ID</dt><dd>{_esc(model.session_id)}</dd>'
         f'<dt>project</dt><dd>{_esc(model.project or "—")}</dd>'
         f'<dt>期間</dt><dd>{_esc(_timestamp(model.first_ts))} — {_esc(_timestamp(model.last_ts))}</dd>'
         f'<dt>API換算コスト</dt><dd>{_esc(model.amount.display)}</dd>'
@@ -475,19 +743,32 @@ def session_page(
     return _shell("session詳細", content, freshness)
 
 
-def trace_job_page(status: str) -> str:
-    """Render status only; generated file URLs must never cross HTTP→file."""
+def trace_url(session_id: str, fragment: str = "") -> str:
+    """Build the same-origin trace URL. Callers must pass an allowlist-validated ID."""
+
+    return f"/traces/{session_id}.html{fragment}"
+
+
+def trace_job_page(status: str, job_id: str, trace_target: str = "") -> str:
+    """Render job status; a ready job navigates this same tab to the trace."""
 
     values = {
         "queued": ("traceを待機しています", "生成の順番を待っています。"),
         "running": ("traceを生成しています", "完了までこのページを更新できます。"),
-        "ready": ("traceを開きました", "生成したtraceを別タブで開きました。"),
+        "ready": ("traceへ移動します", "生成したtraceをこのタブで開きます。"),
         "failed": ("traceを生成できませんでした", "再試行するか metsuke doctor を確認してください。"),
     }
     title, message = values[status]
+    # The Refresh header performs the navigation; this link is the fallback for a
+    # browser that does not honour it. No JavaScript is involved either way.
+    action = (
+        f'<p><a href="{_esc(trace_target)}">traceを開く</a></p>'
+        if status == "ready" and trace_target
+        else f'<p><a href="/trace-jobs/{_esc(job_id)}">状態を更新</a></p>'
+    )
     content = (
-        f'<p>{_esc(message)}</p><p><a href="">状態を更新</a></p>'
-        '<p><a href="/dashboard">dashboardへ戻る</a></p>'
+        f'<p>{_esc(message)}</p>{action}'
+        '<p class="backlink"><a href="/dashboard">dashboardへ戻る</a></p>'
     )
     return _shell(title, content)
 
@@ -512,6 +793,11 @@ def state_page(kind: str, *, retry_path: str = "/dashboard") -> str:
         "not_found": (
             "詳細が見つかりません",
             "IDが存在しない、不正なprefixである、またはデータが削除済みです。",
+            "",
+        ),
+        "stale": (
+            "このページは古くなっています",
+            "このページは古くなっています。再読み込みしてから、もう一度お試しください。",
             "",
         ),
         "port_conflict": (
@@ -539,9 +825,9 @@ def state_page(kind: str, *, retry_path: str = "/dashboard") -> str:
     if kind == "busy":
         action = f'<p><a href="{_esc(retry_path)}">再試行</a></p>'
     else:
-        action = '<p><a href="/dashboard">dashboardへ戻る</a></p>'
+        action = '<p class="backlink"><a href="/dashboard">dashboardへ戻る</a></p>'
     view_links = " ".join(
-        f'<a href="/dashboard?view={view}&amp;range=yesterday">{_esc(label)}</a>'
+        f'<a class="tab" href="/dashboard?view={view}&amp;range=yesterday">{_esc(label)}</a>'
         for view, label in (
             ("overview", "概要"),
             ("period", "期間"),
@@ -551,7 +837,7 @@ def state_page(kind: str, *, retry_path: str = "/dashboard") -> str:
         )
     )
     content = (
-        f'<nav aria-label="表示">{view_links}</nav>'
-        f'<p>{_esc(message)}</p><p>{_esc(help_text)}</p>{action}'
+        f'<nav class="tabs" aria-label="表示">{view_links}</nav>'
+        f'<p class="lead">{_esc(message)}</p><p class="dim">{_esc(help_text)}</p>{action}'
     )
     return _shell(title, content)
