@@ -11,9 +11,15 @@ import time
 from pathlib import Path
 
 from . import config, ledger
-from .dashboard.trace_cache import TraceCache
+from .dashboard import launcher
+from .dashboard import server as dashboard_server
+from .dashboard.trace_cache import MANIFEST_SCHEMA_VERSION, TraceCache
 
 ICONS = {"ok": "✅", "warn": "⚠️", "fail": "❌", "skip": "➖"}
+# Kept in step with scripts/install-app.sh, which generates the bundle.
+APP_BUNDLE_NAME = "Metsuke.app"
+APP_EXECUTABLE_NAME = "Metsuke"
+APP_TARGET_MARKER = "# metsuke-target: "
 CORE_LABELS = (
     "com.metsuke.archiver",
     "com.metsuke.tick",
@@ -207,11 +213,122 @@ def _disk(items: list[dict]) -> None:
         _item(items, "disk_free", "warn", "unable to check", str(exc))
 
 
-def _trace_cache(items: list[dict]) -> None:
+def _dashboard(items: list[dict]) -> None:
+    """Report the dashboard lifecycle without ever starting a server."""
+
+    state_path = config.dashboard_state_path()
     try:
-        stats = TraceCache(
-            config.traces_dir(), config.trace_cache_manifest_path()
-        ).stats()
+        status = dashboard_server.server_status(state_path)
+    except OSError as exc:
+        _item(items, "dashboard_server", "warn", "unable to check", type(exc).__name__)
+        return
+    port = status.state.port if status.state is not None else "-"
+    if status.running:
+        _item(items, "dashboard_server", "ok", f"running on port {port}")
+    elif status.stale:
+        _item(
+            items,
+            "dashboard_server",
+            "warn",
+            f"stale state (port {port})",
+            (
+                "a server is still answering on this port; metsuke dashboard stop ends it"
+                if status.serving
+                else "no healthy server owns this state; metsuke dashboard open recovers it"
+            ),
+        )
+    else:
+        _item(items, "dashboard_server", "ok", "stopped", "start with metsuke dashboard open")
+
+    secret = launcher.secret_path_for(state_path)
+    try:
+        mode = secret.stat().st_mode & 0o777
+    except FileNotFoundError:
+        _item(
+            items,
+            "dashboard_auth_secret",
+            "skip",
+            "absent",
+            "created when the dashboard first starts",
+        )
+    except OSError as exc:
+        _item(items, "dashboard_auth_secret", "warn", "unable to check", type(exc).__name__)
+    else:
+        _item(
+            items,
+            "dashboard_auth_secret",
+            "ok" if mode == config.FILE_MODE else "fail",
+            f"mode {mode:o}",
+            "" if mode == config.FILE_MODE else f"expected {config.FILE_MODE:o}",
+        )
+
+
+def _app(items: list[dict]) -> None:
+    """A moved or renamed checkout leaves the bundle pointing at nothing."""
+
+    app = Path.home() / "Applications" / APP_BUNDLE_NAME
+    executable = app / "Contents" / "MacOS" / APP_EXECUTABLE_NAME
+    if not executable.is_file():
+        _item(
+            items,
+            "metsuke_app",
+            "warn",
+            "missing",
+            f"{app} is absent; re-run scripts/install.sh",
+        )
+        return
+    try:
+        script = executable.read_text()
+    except (OSError, UnicodeError) as exc:
+        _item(items, "metsuke_app", "fail", "unreadable", type(exc).__name__)
+        return
+    target = ""
+    for line in script.splitlines():
+        if line.startswith(APP_TARGET_MARKER):
+            target = line[len(APP_TARGET_MARKER) :].strip()
+            break
+    if not target:
+        _item(items, "metsuke_app", "fail", "launcher has no target", "re-run scripts/install.sh")
+    elif not Path(target).exists():
+        _item(
+            items,
+            "metsuke_app",
+            "fail",
+            "launcher target missing",
+            f"{target} no longer exists; re-run scripts/install.sh from the checkout",
+        )
+    else:
+        _item(items, "metsuke_app", "ok", target)
+
+
+def _trace_cache(items: list[dict]) -> None:
+    manifest_path = config.trace_cache_manifest_path()
+    try:
+        raw = json.loads(manifest_path.read_text())
+        version = raw["schema_version"] if isinstance(raw, dict) else None
+        entries = raw.get("entries") if isinstance(raw, dict) else None
+        if version != MANIFEST_SCHEMA_VERSION or not isinstance(entries, dict):
+            _item(
+                items,
+                "trace_cache_manifest",
+                "warn",
+                "unusable",
+                "rebuilt from the cached HTML on next use",
+            )
+        else:
+            _item(items, "trace_cache_manifest", "ok", f"{len(entries)} tracked")
+    except FileNotFoundError:
+        _item(items, "trace_cache_manifest", "skip", "absent", "no trace has been cached yet")
+    except (OSError, ValueError, KeyError, TypeError):
+        _item(
+            items,
+            "trace_cache_manifest",
+            "warn",
+            "unusable",
+            "rebuilt from the cached HTML on next use",
+        )
+    try:
+        stats = TraceCache(config.traces_dir(), manifest_path).stats()
         oldest = (
             time.strftime("%Y-%m-%dT%H:%M:%S%z", time.localtime(stats.oldest_access))
             if stats.oldest_access is not None
@@ -240,6 +357,8 @@ def run(as_json: bool = False) -> int:
     _config(items)
     _settings(items)
     _manifest(items)
+    _dashboard(items)
+    _app(items)
     _trace_cache(items)
     _disk(items)
     if as_json:

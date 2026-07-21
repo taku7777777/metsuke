@@ -18,6 +18,9 @@ def _run(script: str, home: Path, *args: str, env_overrides=None):
         "METSUKE_CONFIG": str(config),
         "METSUKE_OTEL_PORT": "54329",
         "METSUKE_SKIP_PREREQ_CHECK": "1",
+        # Never let a test register a throwaway bundle in the real LaunchServices
+        # database; every installer run in this file is a no-op for Spotlight.
+        "METSUKE_LSREGISTER": "/usr/bin/true",
     }
     env.update(env_overrides or {})
     return subprocess.run(
@@ -59,6 +62,118 @@ def test_unified_install_and_dry_run_uninstall(tmp_path):
     assert "statusLine" not in data and "hooks" not in data
     assert "CLAUDE_CODE_ENABLE_TELEMETRY" not in data.get("env", {})
     assert config.exists(), "configuration and data are retained unless --purge-data is explicit"
+
+
+def test_app_bundle_generation_is_idempotent_and_uses_absolute_paths(tmp_path):
+    home = tmp_path / "user"
+    home.mkdir()
+    first = _run("install.sh", home, "--skip-git", "--skip-launchd")
+    assert first.returncode == 0, first.stderr
+    app = home / "Applications" / "Metsuke.app"
+    launcher = app / "Contents" / "MacOS" / "Metsuke"
+    plist = app / "Contents" / "Info.plist"
+    assert launcher.is_file() and plist.is_file()
+    assert launcher.stat().st_mode & 0o777 == 0o755
+    assert "macOS app:" in first.stdout
+    assert "installed: " + str(launcher) in first.stdout
+
+    snapshot = {path: path.read_bytes() for path in (launcher, plist)}
+    modes = {path: path.stat().st_mode for path in (launcher, plist)}
+    second = _run("install.sh", home, "--skip-git", "--skip-launchd")
+    assert second.returncode == 0, second.stderr
+    assert "unchanged: " + str(launcher) in second.stdout
+    assert {path: path.read_bytes() for path in (launcher, plist)} == snapshot
+    assert {path: path.stat().st_mode for path in (launcher, plist)} == modes
+    assert sorted(p.name for p in app.rglob("*")) == ["Contents", "Info.plist", "MacOS", "Metsuke"]
+
+    # A Dock or Spotlight launch has no shell PATH and no uv, so the bundle must
+    # name the venv entrypoint by absolute path.
+    script = launcher.read_text()
+    binary = str(ROOT / ".venv/bin/metsuke")
+    assert f'exec "{binary}" dashboard open' in script
+    assert f"# metsuke-target: {binary}" in script
+    assert Path(binary).is_file()
+    assert "uv " not in script and "uv run" not in script
+    for line in script.splitlines():
+        if line.startswith("exec ") or line.startswith("mkdir "):
+            assert '"/' in line, f"relative path in launcher: {line}"
+    assert "metsuke dashboard open" not in script, "must not rely on PATH lookup"
+
+    plist_text = plist.read_text()
+    for fragment in (
+        "<key>CFBundleIdentifier</key>",
+        "<string>com.metsuke.app</string>",
+        "<key>CFBundleExecutable</key>",
+        "<string>Metsuke</string>",
+        "<key>CFBundlePackageType</key>",
+        "<string>APPL</string>",
+    ):
+        assert fragment in plist_text
+    plutil = subprocess.run(
+        ["plutil", "-lint", str(plist)], capture_output=True, text=True
+    )
+    assert plutil.returncode == 0, plutil.stdout + plutil.stderr
+
+
+def test_installer_can_skip_the_app(tmp_path):
+    home = tmp_path / "user"
+    home.mkdir()
+    result = _run("install.sh", home, "--skip-git", "--skip-launchd", "--skip-app")
+    assert result.returncode == 0, result.stderr
+    assert "macOS app: skipped" in result.stdout
+    assert "macOS app (--skip-app)" in result.stdout
+    assert not (home / "Applications").exists()
+
+
+def test_uninstall_removes_dashboard_surface_and_keeps_ledger_and_archive(tmp_path):
+    home = tmp_path / "user"
+    home.mkdir()
+    installed = _run("install.sh", home, "--skip-git", "--skip-launchd")
+    assert installed.returncode == 0, installed.stderr
+    data_home = home / ".metsuke"
+    app = home / "Applications" / "Metsuke.app"
+    state_dir = data_home / "state"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    dashboard_files = [
+        state_dir / "dashboard-state.json",
+        state_dir / "dashboard.lock",
+        state_dir / "dashboard-secret",
+        state_dir / "dashboard-errors.log",
+        state_dir / "trace-cache.json",
+    ]
+    for path in dashboard_files:
+        path.write_text("derived")
+    traces = data_home / "traces"
+    traces.mkdir(parents=True, exist_ok=True)
+    (traces / "session.html").write_text("<html></html>")
+    ledger_db = data_home / "ledger.db"
+    ledger_db.write_bytes(b"irreplaceable ledger")
+    archive = data_home / "archive"
+    (archive / "segments").mkdir(parents=True)
+    (archive / "manifest.jsonl").write_text("{}\n")
+    (archive / "segments" / "2026-07.jsonl.zst").write_bytes(b"irreplaceable archive")
+
+    planned = _run("uninstall.sh", home, "--git-root", str(home / "no-repositories"))
+    assert planned.returncode == 0 and "dry-run" in planned.stdout
+    assert str(app) in planned.stdout
+    assert "retained:" in planned.stdout and "ledger.db" in planned.stdout
+    assert app.exists() and all(path.exists() for path in dashboard_files)
+
+    removed = _run(
+        "uninstall.sh",
+        home,
+        "--apply",
+        "--git-root",
+        str(home / "no-repositories"),
+        env_overrides={"METSUKE_LAUNCHCTL": "/usr/bin/true"},
+    )
+    assert removed.returncode == 0, removed.stderr
+    assert not app.exists()
+    assert not any(path.exists() for path in dashboard_files)
+    assert not traces.exists()
+    assert ledger_db.read_bytes() == b"irreplaceable ledger"
+    assert (archive / "segments" / "2026-07.jsonl.zst").read_bytes() == b"irreplaceable archive"
+    assert (archive / "manifest.jsonl").is_file()
 
 
 def test_git_hook_install_refuses_existing_hook(tmp_path):

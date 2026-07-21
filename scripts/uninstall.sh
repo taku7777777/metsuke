@@ -22,10 +22,26 @@ otel_port=${METSUKE_OTEL_PORT:-4319}
 agents="$HOME/Library/LaunchAgents"
 launchctl_bin=${METSUKE_LAUNCHCTL:-launchctl}
 labels=(com.metsuke.archiver com.metsuke.tick com.metsuke.analyst com.metsuke.deadman com.metsuke.backup com.metsuke.otelcol)
+data_home=${METSUKE_HOME:-"$HOME/.metsuke"}
+app=${METSUKE_APPS_DIR:-"$HOME/Applications"}/Metsuke.app
+# The dashboard owns exactly these derived files. Everything else under the data
+# home -- above all ledger.db and archive/ -- is the user's record and survives.
+dashboard_files=(
+  "$data_home/state/dashboard-state.json"
+  "$data_home/state/dashboard.lock"
+  "$data_home/state/dashboard-secret"
+  "$data_home/state/dashboard-errors.log"
+  "$data_home/state/trace-cache.json"
+)
+trace_cache_dir="$data_home/traces"
 echo "metsuke uninstall ($([ "$apply" = true ] && printf apply || printf dry-run))"
 echo "  Claude settings: $settings"
 echo "  LaunchAgents: ${labels[*]}"
 echo "  Git root: $git_root"
+echo "  macOS app: $app"
+echo "  dashboard server state: ${dashboard_files[*]}"
+echo "  trace cache: $trace_cache_dir"
+echo "  retained: $data_home/ledger.db, $data_home/archive (never removed here)"
 if [ "$apply" = false ]; then
   [ "$purge" = true ] && echo "  data: would move metsuke home to Trash"
   echo "re-run with --apply to perform these operations"
@@ -113,6 +129,32 @@ if root.is_dir():
         if kept != lines:
             hook.write_text("\n".join(kept).rstrip() + "\n")
 PY
+
+if [ -x "$repo/.venv/bin/metsuke" ]; then
+  "$repo/.venv/bin/metsuke" dashboard stop >/dev/null 2>&1 || true
+fi
+case "$app" in
+  */Metsuke.app) ;;
+  *) echo "refusing unsafe app path: $app" >&2; exit 1 ;;
+esac
+if [ -d "$app" ]; then
+  rm -rf "$app"
+  echo "removed: $app"
+fi
+for dashboard_file in "${dashboard_files[@]}"; do
+  if [ -e "$dashboard_file" ]; then
+    rm -f "$dashboard_file"
+    echo "removed: $dashboard_file"
+  fi
+done
+case "$trace_cache_dir" in
+  */traces) ;;
+  *) echo "refusing unsafe trace cache path: $trace_cache_dir" >&2; exit 1 ;;
+esac
+if [ -d "$trace_cache_dir" ]; then
+  rm -rf "$trace_cache_dir"
+  echo "removed: $trace_cache_dir"
+fi
 
 if [ "$purge" = true ]; then
   export METSUKE_CONFIG_OVERRIDE=1

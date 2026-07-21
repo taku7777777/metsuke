@@ -102,6 +102,7 @@ def main(argv: list[str] | None = None) -> int:
     p_dashboard_serve.add_argument("--open", action="store_true")
     dashboard_sub.add_parser("status")
     dashboard_sub.add_parser("stop")
+    dashboard_sub.add_parser("open", help="reuse or start the server, then open the browser")
     p_config = sub.add_parser("config", help="show the effective central configuration")
     p_config.add_argument("--json", action="store_true")
     p_prices = sub.add_parser("prices", help="show effective bundled prices")
@@ -278,9 +279,34 @@ def main(argv: list[str] | None = None) -> int:
                 print(str(exc), file=sys.stderr)
                 return 1
             return 0
+        if args.dashboard_cmd == "open":
+            from .dashboard import launcher
+
+            try:
+                result = launcher.open_dashboard()
+            except (launcher.DashboardLaunchError, dashboard_server.DashboardServerError) as exc:
+                print(str(exc), file=sys.stderr)
+                return 1
+            # The URL carries a single-use nonce, so only the reusable address is printed.
+            action = "reusing" if result.reused else "started"
+            print(
+                f"{action} dashboard at "
+                f"http://{dashboard_server.LOOPBACK_HOST}:{result.port}/dashboard"
+            )
+            return 0
         status = dashboard_server.server_status()
         if args.dashboard_cmd == "status":
-            print("running" if status.running else "stale" if status.stale else "stopped")
+            if status.running:
+                print("running")
+            elif status.stale and status.serving:
+                # Identity is unrecognised but a dashboard is answering, so the
+                # user must not be told it is absent -- and stop will reach it.
+                port = status.state.port if status.state is not None else "-"
+                print(f"stale (a server is still answering on port {port}; stop will end it)")
+            elif status.stale:
+                print("stale")
+            else:
+                print("stopped")
             return 0 if status.running else 1
         if dashboard_server.stop():
             print("stopping")

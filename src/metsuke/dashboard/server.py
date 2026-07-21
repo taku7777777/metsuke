@@ -103,6 +103,11 @@ class ServerStatus:
     state: ServerState | None
     running: bool
     stale: bool
+    #: The recorded port answered ``/healthz``. ``running`` implies this; the
+    #: reverse does not. A stale state file with ``serving`` set means a real
+    #: dashboard is still on the port -- exactly the case where the user needs
+    #: ``stop`` to work, and where telling them "not running" would be a lie.
+    serving: bool = False
 
 
 class DashboardRequestHandler(BaseHTTPRequestHandler):
@@ -601,6 +606,16 @@ def _no_browser_opener(_path: Path, _fragment: str = "") -> bool:
 
 
 def _process_start_time(pid: int) -> str | None:
+    """Identify a process by its start time, independently of who is asking.
+
+    ``ps -o lstart=`` renders a human date in the *caller's* locale, so the same
+    pid at the same instant reads as ``火 7/21 20:47:20 2026`` from a ja_JP shell
+    and ``Tue Jul 21 20:47:20 2026`` from a Dock launch, which inherits no LANG at
+    all. Comparing those for equality declared a perfectly healthy server stale.
+    Forcing the C locale makes the value a property of the process instead of a
+    property of the environment that happened to look at it.
+    """
+
     if pid <= 0:
         return None
     try:
@@ -610,6 +625,7 @@ def _process_start_time(pid: int) -> str | None:
             text=True,
             timeout=1,
             check=False,
+            env={**os.environ, "LC_ALL": "C", "LANG": "C", "LC_TIME": "C"},
         )
     except (OSError, subprocess.SubprocessError):
         return None
@@ -717,13 +733,15 @@ def server_status(state_path: Path | None = None) -> ServerStatus:
     path = state_path or config.dashboard_state_path()
     state = _read_state(path)
     if state is None:
-        return ServerStatus(None, running=False, stale=path.exists())
+        return ServerStatus(None, running=False, stale=path.exists(), serving=False)
+    # The port is probed even when process identity does not match. Identity
+    # detection is the part that can be wrong (a locale-formatted string written
+    # by an older metsuke, a ps that failed); an answering /healthz is not.
+    serving = _health_is_ok(state.port)
     actual_start = _process_start_time(state.pid)
-    if actual_start != state.process_start_time:
-        return ServerStatus(state, running=False, stale=True)
-    if not _health_is_ok(state.port):
-        return ServerStatus(state, running=False, stale=True)
-    return ServerStatus(state, running=True, stale=False)
+    if actual_start != state.process_start_time or not serving:
+        return ServerStatus(state, running=False, stale=True, serving=serving)
+    return ServerStatus(state, running=True, stale=False, serving=True)
 
 
 def create_server(
@@ -841,8 +859,27 @@ def serve(
 
 
 def stop(state_path: Path | None = None) -> bool:
+    """Terminate the recorded server whenever the recorded port is answering.
+
+    Gating on process identity alone made a server unstoppable the moment that
+    identity check went wrong: it still held the single-instance lock, so it
+    could be neither stopped nor replaced, and the CLI reported it as "not
+    running" while it served traffic.
+
+    The health probe -- not the identity match -- is now what keeps the signal
+    safe. ``create_server`` binds the port and writes the state file with its own
+    pid under the instance lock, so when the answerer is a metsuke dashboard the
+    recorded pid is that dashboard: any server that took the port rewrote the
+    state file first. That is a real trade, not an equivalence. Dropping the
+    identity check loses one protection: a recycled pid whose unrelated new owner
+    happens to answer this exact /healthz contract on loopback would be signalled.
+    Nobody chooses which pid the OS recycles, so that is an accident rather than a
+    usable attack, and anyone who can write the state file can name any pid they
+    like regardless of what we check here.
+    """
+
     status = server_status(state_path)
-    if not status.running or status.state is None:
+    if status.state is None or not status.serving:
         return False
     os.kill(status.state.pid, signal.SIGTERM)
     return True

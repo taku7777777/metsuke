@@ -9,6 +9,7 @@ skip_launchd=false
 skip_claude_hooks=false
 skip_statusline=false
 skip_otel=false
+skip_app=false
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --git-root) git_root=$2; shift 2 ;;
@@ -18,6 +19,7 @@ while [ "$#" -gt 0 ]; do
     --skip-claude-hooks) skip_claude_hooks=true; shift ;;
     --skip-statusline) skip_statusline=true; shift ;;
     --skip-otel) skip_otel=true; shift ;;
+    --skip-app) skip_app=true; shift ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
@@ -37,6 +39,11 @@ if [ "$skip_otel" = false ]; then
   echo "  Claude OTel env: $settings (backup: $settings.bak-metsuke-otel)"
 else
   echo "  Claude OTel env: skipped"
+fi
+if [ "$skip_app" = false ]; then
+  echo "  macOS app: ${METSUKE_APPS_DIR:-$HOME/Applications}/Metsuke.app (generated bundle; no backup)"
+else
+  echo "  macOS app: skipped"
 fi
 if [ "$with_git" = true ]; then
   echo "  Git post-commit hooks: new hooks under $git_root only (existing hooks are refused)"
@@ -88,6 +95,11 @@ if [ "$skip_otel" = false ]; then
   "$repo/scripts/install-otel-env.sh"
 else
   skipped+=("OTel export (--skip-otel)")
+fi
+if [ "$skip_app" = false ]; then
+  "$repo/scripts/install-app.sh"
+else
+  skipped+=("macOS app (--skip-app)")
 fi
 if [ "$with_git" = true ]; then
   "$repo/scripts/install-git-hooks.sh" "$git_root"
