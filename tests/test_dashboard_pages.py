@@ -10,6 +10,7 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
+from conftest import assert_csp_safe
 from metsuke import cli
 from metsuke.dashboard import pages, routes, server
 from metsuke.viewmodel import cache, dist, overview, period, trend
@@ -174,17 +175,31 @@ def test_ssr_uses_shared_models_and_matches_their_values(page_env):
     assert "$0.95" in period_text
 
 
-def test_page_is_no_javascript_get_form_and_real_links(page_env):
+def test_progressive_enhancement_get_form_real_links_and_csp_safe_script(page_env):
+    """Progressive enhancement is the correctness spine: the SSR page renders real
+    data, working links and a working GET filter form on its own, and the only
+    JavaScript is the served /dashboard.js loaded with ``defer`` — no inline
+    ``<script>`` body and no inline ``on*=`` handler the CSP would block.
+
+    (Rewritten from the former "no JavaScript at all" test: the page now carries one
+    external, deferred script by design; the CSP-safety intent is strengthened, not
+    weakened.)
+    """
+
     database_path, _, _ = page_env
     text = _response(
         database_path, f"view=overview&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
     ).body.decode()
+    # SSR still stands on its own without any script running.
     assert '<form method="get" action="/dashboard">' in text
     assert 'type="date"' in text
     assert 'required max="2026-07-20"' in text
     assert '<a class="tab" href="/dashboard?' in text
     assert '<a href="/prompts/' in text
-    assert "<script" not in text.lower()
+    # The one script is external + deferred; no inline body, no inline handlers.
+    assert '<script src="/dashboard.js" defer></script>' in text
+    assert_csp_safe(text, context="overview")
+    # No client routing / history manipulation was introduced.
     assert "history." not in text.lower()
 
 
@@ -241,7 +256,7 @@ def test_overview_daily_context_chart_highlights_selection(page_env):
     assert 'class="ch-seledge"' in text
     assert 'class="ch-day-sel"' in text
     assert "style=" not in text
-    assert "<script" not in text.lower()
+    assert_csp_safe(text, context="overview daily-context")
     # The highlight colours resolve through custom properties defined for both themes.
     css = pages.stylesheet()
     assert "--ch-day-sel: #1b4fd8" in css and "--ch-day-sel: #7aa2f7" in css
@@ -304,17 +319,137 @@ def _all_dashboard_markup(database_path) -> dict[str, str]:
     }
 
 
-def test_no_view_emits_inline_style_or_script(page_env):
-    """Test 2: the browser-free CSP gate.
+def test_sortable_table_emits_data_sort_and_aria_sort_without_changing_display():
+    """Feature A: the table node path threads Column.sortable / Cell.sort into the
+    markup as attributes only — sortable <th> become keyboard-operable and carry
+    aria-sort, each <td> carries its raw orderable key in data-sort, and the
+    displayed, formatted text is byte-for-byte the same as before.
+    """
+
+    columns = (
+        Column("原因", sortable=True),
+        Column("金額 ▼", sortable=True, sort_dir="desc"),
+        Column("時刻"),
+    )
+    rows = [
+        Row(
+            [
+                Cell("rebuild", sort="rebuild"),
+                Cell("$1,702.00", sort=1702.0),
+                Cell("12:00"),
+            ]
+        )
+    ]
+    text = pages._node(node("table", columns, rows))
+    # Sortable headers are focusable and expose their current sort to assistive tech.
+    assert 'data-sortable="" tabindex="0" aria-sort="none">原因</th>' in text
+    assert (
+        'data-sortable="" data-dir="desc" tabindex="0" aria-sort="descending">金額 ▼</th>'
+        in text
+    )
+    # A non-sortable column stays a plain, inert header.
+    assert '<th scope="col">時刻</th>' in text
+    # The raw key rides in data-sort; the visible cell text is unchanged.
+    assert '<td data-sort="rebuild">rebuild</td>' in text
+    assert '<td data-sort="1702.0">$1,702.00</td>' in text
+    # A cell with no orderable key emits no data-sort attribute at all.
+    assert "<td>12:00</td>" in text
+
+
+def test_sortable_refactor_preserves_interactive_row_collapse():
+    """Threading data-sort through the table path must not weaken the existing
+    "X（対話のみ）" row-collapse: when an interactive row matches its predecessor on
+    every other cell, the two still merge into one annotated row.
+    """
+
+    columns = (Column("区分"), Column("金額", sortable=True))
+    rows = [
+        Row([Cell("全体", sort="全体"), Cell("$1.00", sort=1.0)]),
+        Row([Cell("全体（対話のみ）", sort="全体"), Cell("$1.00", sort=1.0)]),
+    ]
+    text = pages._node(node("table", columns, rows))
+    # The two rows collapse to one, annotated with the same-value note.
+    assert text.count("<tbody><tr>") == 1
+    assert text.count("<tr>") == 2  # header row + the single merged data row
+    assert '<span class="same-note">（対話のみも同値）</span>' in text
+    # The kept row still carries its own data-sort keys (attributes survived merge).
+    assert '<td data-sort="全体">' in text
+    assert '<td data-sort="1.0">$1.00</td>' in text
+
+
+def test_cache_view_marks_ranking_headers_sortable_in_dashboard(page_env):
+    """Feature A integration: the cache view's ranking table (the one whose model
+    marks columns sortable, exactly as the static renderer already does) reaches the
+    dashboard with data-sortable / aria-sort headers and data-sort cells.
+    """
+
+    database_path, _, _ = page_env
+    text = _response(
+        database_path, f"view=cache&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+    ).body.decode()
+    assert 'data-sortable=""' in text
+    assert 'aria-sort="descending"' in text
+    assert 'tabindex="0"' in text
+    assert_csp_safe(text, context="cache")
+
+
+def test_chart_svg_marks_carry_hover_data_attributes(page_env):
+    """Feature B: chart marks carry the data-* attributes the hover code reads, so
+    emphasis / crosshair / readout are driven from the DOM, not a duplicated JSON
+    blob. With JS off these attributes are inert and the native <title> stays.
+    """
+
+    database_path, _, _ = page_env
+    # The overview daily-context bars and cost-parts segments both carry them.
+    overview = _response(
+        database_path, f"view=overview&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+    ).body.decode()
+    for attribute in ("data-series=", "data-label=", "data-value="):
+        assert attribute in overview, f"overview chart lacks {attribute}"
+    # And the chart-bearing legacy views do too (stacked bars / line / cache).
+    for view in ("trend", "cache"):
+        text = _response(
+            database_path, f"view={view}&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+        ).body.decode()
+        assert 'data-series="' in text, f"{view} chart lacks data-series"
+        assert 'data-value="' in text, f"{view} chart lacks data-value"
+
+
+def test_csp_safety_gate_is_not_vacuous():
+    """The assert_csp_safe gate must reject a real inline handler and a real inline
+    script body — otherwise tests 2 / 5 would pass no matter what.
+    """
+
+    good = (
+        '<!doctype html><head><script src="/dashboard.js" defer></script></head>'
+        "<body><table><th>x</th></table></body>"
+    )
+    assert_csp_safe(good)  # the admissible shape passes
+    with pytest.raises(AssertionError):
+        assert_csp_safe(good.replace("<th>x</th>", '<th onclick="sort()">x</th>'))
+    with pytest.raises(AssertionError):
+        assert_csp_safe(good.replace("</body>", "<script>evil()</script></body>"))
+    # Escaped attacker data containing the substring "onerror=" must NOT trip it:
+    # html.escape turns the quote into &quot;, so no genuine handler syntax remains.
+    assert_csp_safe(good.replace("x</th>", "onerror=alert(1)&gt;</th>"))
+
+
+def test_no_view_emits_inline_style_or_inline_script_or_handler(page_env):
+    """Test 2: the browser-free CSP gate across all five views.
 
     ``style-src 'self'`` with no ``'unsafe-inline'`` means an inline ``style=``
-    attribute is silently dropped by the browser, and ``<script>`` never runs.
+    attribute is silently dropped by the browser; ``script-src 'self'`` means an
+    inline ``<script>`` body and any inline ``on*=`` handler never run. The only
+    admissible script is the served, deferred /dashboard.js.
     """
 
     database_path, _, _ = page_env
     for view, text in _all_dashboard_markup(database_path).items():
         assert "style=" not in text, f"{view} emits a CSP-blocked inline style"
-        assert "<script" not in text.lower(), f"{view} emits a script tag"
+        assert '<script src="/dashboard.js" defer></script>' in text, (
+            f"{view} lost the progressive-enhancement script"
+        )
+        assert_csp_safe(text, context=view)
 
 
 def test_bar_cells_render_visibly_and_encode_the_right_magnitude():
@@ -395,7 +530,7 @@ def test_accessibility_has_text_thresholds_keyboard_narrow_and_reduced_motion(pa
     assert "prefers-reduced-motion" in css
     assert "max-width: 40rem" in css
     assert "overflow-x: auto" in css
-    assert "<script" not in text.lower()
+    assert_csp_safe(text, context="dist")
 
 
 @pytest.mark.parametrize(

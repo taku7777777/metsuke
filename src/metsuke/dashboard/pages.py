@@ -217,7 +217,9 @@ def _cost_parts_chart(parts: tuple[overview.CostPart, ...]) -> str:
         value = item.amount.raw or 0
         width = value / total * 1150 if total > 0 else 0
         segments.append(
-            f'<rect class="ch-series" x="{x:.2f}" y="8" width="{width:.2f}" height="34" fill="{color}">'
+            f'<rect class="ch-series" x="{x:.2f}" y="8" width="{width:.2f}" height="34" fill="{color}"'
+            f' data-series="{_esc(item.name)}" data-label="{_esc(item.name)}"'
+            f' data-value="{_esc(item.amount.display)}">'
             f'<title>{_esc(item.name)} {_esc(item.amount.display)}</title></rect>'
         )
         labels.append(
@@ -244,6 +246,50 @@ def _trusted_table(headers: tuple[str, ...], rows: list[tuple[object, ...]]) -> 
     return (
         '<div class="table-wrap"><table><thead><tr>'
         f"{head}</tr></thead><tbody>{body}</tbody></table></div>"
+    )
+
+
+def _sort_attr(cell: Cell) -> str:
+    """The orderable key for a cell, emitted as a ``data-sort`` attribute.
+
+    The displayed value stays formatted (``$0.95``, ``1,702``) and unparseable; the
+    raw key travels in ``data-sort`` so ``dashboard.js`` can reorder rows without
+    reading the presentation text. Mirrors the static renderer in ``viewgen.render``.
+    """
+
+    if cell.sort is None:
+        return ""
+    return f' data-sort="{_esc(cell.sort)}"'
+
+
+def _sortable_table(
+    columns: tuple, rows: list[list[tuple[str, str]]]
+) -> str:
+    """Render a data table whose columns may be client-sortable.
+
+    Column sort state and the ``data-sort`` keys are attributes only; with
+    ``/dashboard.js`` absent the table renders in its existing server-sorted order.
+    The attribute shape matches ``viewgen.render.table`` so both share one script.
+    """
+
+    heads = []
+    for column in columns:
+        extra = ' data-sortable=""' if column.sortable else ""
+        if column.sort_dir:
+            extra += f' data-dir="{_esc(column.sort_dir)}"'
+        if column.sortable:
+            direction = {"asc": "ascending", "desc": "descending"}.get(
+                column.sort_dir, "none"
+            )
+            extra += f' tabindex="0" aria-sort="{direction}"'
+        heads.append(f'<th scope="col"{extra}>{_esc(column.label)}</th>')
+    body = "".join(
+        "<tr>" + "".join(f"<td{attr}>{inner}</td>" for inner, attr in row) + "</tr>"
+        for row in rows
+    )
+    return (
+        '<div class="table-wrap"><table><thead><tr>'
+        f"{''.join(heads)}</tr></thead><tbody>{body}</tbody></table></div>"
     )
 
 
@@ -399,16 +445,28 @@ def _insight(text: str) -> str:
     return f'<aside class="insight">{body_html}</aside>'
 
 
-def _collapse_interactive(rows: list[tuple[str, ...]]) -> list[tuple[str, ...]]:
-    """Merge an "X（対話のみ）" row into "X" only when every other cell is identical."""
+def _collapse_interactive(
+    rows: list[list[tuple[str, str]]],
+) -> list[list[tuple[str, str]]]:
+    """Merge an "X（対話のみ）" row into "X" only when every other cell is identical.
 
-    merged: list[tuple[str, ...]] = []
+    Each row is a list of ``(inner_html, td_attributes)`` pairs. The comparison is
+    on the rendered inner HTML alone -- exactly as before the sort attributes were
+    threaded through -- so trend/period merge behaviour is unchanged; the kept row
+    retains its own ``data-sort`` attributes.
+    """
+
+    merged: list[list[tuple[str, str]]] = []
     for row in rows:
         if merged and row and len(row) == len(merged[-1]):
             previous = merged[-1]
-            if row[0] == previous[0] + INTERACTIVE_SUFFIX and row[1:] == previous[1:]:
-                label = f'{previous[0]}<span class="same-note">{SAME_VALUES_NOTE}</span>'
-                merged[-1] = (label, *previous[1:])
+            previous_inner = [inner for inner, _attr in previous]
+            row_inner = [inner for inner, _attr in row]
+            if row_inner[0] == previous_inner[0] + INTERACTIVE_SUFFIX and (
+                row_inner[1:] == previous_inner[1:]
+            ):
+                label = f'{previous_inner[0]}<span class="same-note">{SAME_VALUES_NOTE}</span>'
+                merged[-1] = [(label, previous[0][1]), *previous[1:]]
                 continue
         merged.append(row)
     return merged
@@ -485,17 +543,16 @@ def _node(node: Node, page: Page | None = None) -> str:
         columns, rows = args[:2]
         if page is not None:
             rows = rows[page.offset : page.offset + page.limit]
-        rendered_rows = []
+        rendered_rows: list[list[tuple[str, str]]] = []
         for row_value in rows:
             row = row_value.cells if isinstance(row_value, Row) else row_value
-            cells = [_cell(cell, page) for cell in row]
+            cells = [(_cell(cell, page), _sort_attr(cell)) for cell in row]
             if isinstance(row_value, Row) and row_value.highlight and cells:
-                cells[0] = '<span class="threshold">⚠ 注目</span> ' + cells[0]
-            rendered_rows.append(tuple(cells))
+                inner, attr = cells[0]
+                cells[0] = ('<span class="threshold">⚠ 注目</span> ' + inner, attr)
+            rendered_rows.append(cells)
         empty = '<p class="empty">このページに該当するデータはありません。</p>' if not rows else ""
-        return empty + _trusted_table(
-            tuple(column.label for column in columns), _collapse_interactive(rendered_rows)
-        )
+        return empty + _sortable_table(columns, _collapse_interactive(rendered_rows))
     if node.kind == "stacked_bars":
         options = thaw(node.kwargs)
         labels, series, colors = args[:3]
@@ -640,6 +697,7 @@ def _shell(title: str, content: str, freshness: Freshness | None = None, header:
         '<!doctype html><html lang="ja"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         '<link rel="stylesheet" href="/dashboard.css">'
+        '<script src="/dashboard.js" defer></script>'
         f'<title>{_esc(title)}</title></head><body><header><h1>{_esc(title)}</h1>'
         f'{_freshness_header(freshness)}{header}</header><main>{content}</main></body></html>'
     )
@@ -806,6 +864,22 @@ th:first-child, td:first-child { text-align: left; }
 .metric-bar { display: grid; grid-template-columns: minmax(5rem, 8rem) auto; align-items: center; gap: .45rem; min-width: 10rem; }
 .metric-bar svg { display: block; width: 100%; height: .5rem; }
 .cost-parts-chart { margin-bottom: .45rem; }
+/* --- progressive enhancement (only active when /dashboard.js loads) ----- */
+/* Sortable headers: cursor + keyboard focus ring. With JS off these are inert
+   plain <th>, and the table keeps its server-sorted order. */
+th[data-sortable] { cursor: pointer; user-select: none; }
+th[data-sortable]:focus-visible { outline: .2rem solid var(--accent); outline-offset: -.2rem; }
+/* Chart hover: de-emphasise every series but the focused one, and reveal a
+   crosshair guide + value readout. Class-driven only — no inline style, which the
+   CSP would block. With JS off none of these classes are ever added and the native
+   <title> tooltips remain the interaction. */
+svg.chart [data-series] { transition: opacity .12s ease; }
+svg.chart.ch-hovering [data-series] { opacity: .28; }
+svg.chart.ch-hovering [data-series].ch-focus { opacity: 1; }
+.ch-crosshair { stroke: var(--ch-axis); stroke-width: 1; stroke-dasharray: 3 3; pointer-events: none; display: none; }
+.ch-crosshair.on { display: inline; }
+.ch-readout { fill: var(--ch-value); font-size: 12px; font-weight: 600; pointer-events: none; display: none; }
+.ch-readout.on { display: inline; }
 .threshold { font-weight: 700; color: var(--warn); }
 .empty { color: var(--muted); font-size: .875rem; }
 .empty, aside { padding: .75rem .9rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .35rem; }
@@ -824,6 +898,165 @@ th:first-child, td:first-child { text-align: left; }
 """
         + view_render.CHART_CSS
     ).strip()
+
+
+def dashboard_js() -> str:
+    """Return the served progressive-enhancement script.
+
+    Loaded via ``<script src="/dashboard.js" defer>`` — the CSP is ``script-src
+    'self'`` with no ``'unsafe-inline'``, so this file is the *only* place behaviour
+    may live: inline ``<script>`` bodies and inline ``on*=`` handlers are blocked by
+    the browser and would silently never run. Everything here attaches with
+    ``addEventListener`` after the DOM is ready, and every feature is a no-op when
+    its target elements are absent, so the SSR page is fully functional without it.
+    """
+
+    return """
+(function () {
+  "use strict";
+
+  function ready(fn) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fn);
+    } else {
+      fn();
+    }
+  }
+
+  // --- Feature A: client-side column sorting --------------------------------
+  // Rows are reordered purely from each cell's data-sort key (the raw, orderable
+  // value); the displayed, formatted text is never parsed. Toggles asc/desc, keeps
+  // aria-sort in step, and shows direction with a caret glyph, not colour alone.
+  var CARET = /\\s*[\\u25b2\\u25bc]$/;
+
+  function cleanLabel(th) {
+    if (th.dataset.label === undefined) {
+      th.dataset.label = th.textContent.replace(CARET, "");
+    }
+    return th.dataset.label;
+  }
+
+  function sortByHeader(th) {
+    var table = th.closest("table");
+    if (!table || !table.tBodies.length) return;
+    var heads = Array.prototype.slice.call(th.parentNode.children);
+    var index = heads.indexOf(th);
+    var dir = th.dataset.dir === "desc" ? "asc" : "desc";
+    heads.forEach(function (other) {
+      if (other.dataset.sortable === undefined) return;
+      other.textContent = cleanLabel(other);
+      delete other.dataset.dir;
+      other.setAttribute("aria-sort", "none");
+    });
+    th.dataset.dir = dir;
+    th.setAttribute("aria-sort", dir === "desc" ? "descending" : "ascending");
+    th.textContent = cleanLabel(th) + (dir === "desc" ? " \\u25bc" : " \\u25b2");
+    var body = table.tBodies[0];
+    var rows = Array.prototype.slice.call(body.rows);
+    rows.sort(function (a, b) {
+      var x = (a.cells[index] && a.cells[index].dataset.sort) || "";
+      var y = (b.cells[index] && b.cells[index].dataset.sort) || "";
+      var xn = Number(x);
+      var yn = Number(y);
+      var cmp;
+      if (x === "" || y === "" || Number.isNaN(xn) || Number.isNaN(yn)) {
+        cmp = String(x).localeCompare(String(y), "ja");
+      } else {
+        cmp = xn - yn;
+      }
+      return dir === "desc" ? -cmp : cmp;
+    });
+    rows.forEach(function (row) { body.appendChild(row); });
+  }
+
+  function bindSort(th) {
+    th.addEventListener("click", function () { sortByHeader(th); });
+    th.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+        event.preventDefault();
+        sortByHeader(th);
+      }
+    });
+  }
+
+  // --- Feature B: chart hover emphasis + crosshair --------------------------
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  function markX(mark) {
+    var tag = mark.tagName.toLowerCase();
+    if (tag === "circle") return parseFloat(mark.getAttribute("cx"));
+    if (tag === "rect") {
+      var x = parseFloat(mark.getAttribute("x"));
+      var w = parseFloat(mark.getAttribute("width"));
+      if (!isNaN(x) && !isNaN(w)) return x + w / 2;
+    }
+    return NaN;
+  }
+
+  function enhanceChart(svg) {
+    var marks = svg.querySelectorAll("[data-series]");
+    if (!marks.length) return;
+    var box = svg.viewBox && svg.viewBox.baseVal;
+    var top = box ? box.y : 0;
+    var bottom = box ? box.y + box.height : 0;
+
+    var crosshair = document.createElementNS(SVGNS, "line");
+    crosshair.setAttribute("class", "ch-crosshair");
+    crosshair.setAttribute("y1", top);
+    crosshair.setAttribute("y2", bottom);
+    var readout = document.createElementNS(SVGNS, "text");
+    readout.setAttribute("class", "ch-readout");
+    readout.setAttribute("text-anchor", "middle");
+    readout.setAttribute("y", top + 12);
+    svg.appendChild(crosshair);
+    svg.appendChild(readout);
+
+    function focus(mark) {
+      var series = mark.getAttribute("data-series");
+      Array.prototype.forEach.call(marks, function (m) {
+        m.classList.toggle("ch-focus", m.getAttribute("data-series") === series);
+      });
+      svg.classList.add("ch-hovering");
+      var x = markX(mark);
+      if (!isNaN(x)) {
+        crosshair.setAttribute("x1", x);
+        crosshair.setAttribute("x2", x);
+        crosshair.classList.add("on");
+        var label = mark.getAttribute("data-label") || "";
+        var value = mark.getAttribute("data-value") || "";
+        readout.setAttribute("x", x);
+        readout.textContent = (label ? label + " " : "") + value;
+        readout.classList.add("on");
+      }
+    }
+
+    function clear() {
+      svg.classList.remove("ch-hovering");
+      crosshair.classList.remove("on");
+      readout.classList.remove("on");
+      Array.prototype.forEach.call(marks, function (m) {
+        m.classList.remove("ch-focus");
+      });
+    }
+
+    function pick(event) {
+      var target = event.target;
+      var mark = target && target.closest ? target.closest("[data-series]") : null;
+      if (mark) focus(mark);
+    }
+
+    svg.addEventListener("mouseover", pick);
+    svg.addEventListener("mouseleave", clear);
+    svg.addEventListener("focusin", pick);
+    svg.addEventListener("focusout", clear);
+  }
+
+  ready(function () {
+    document.querySelectorAll("th[data-sortable]").forEach(bindSort);
+    document.querySelectorAll("svg.chart").forEach(enhanceChart);
+  });
+})();
+""".strip() + "\n"
 
 
 def dashboard_page(

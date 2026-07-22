@@ -8,6 +8,7 @@ from urllib.parse import urlsplit
 
 import pytest
 
+from conftest import assert_csp_safe
 from metsuke.dashboard import pages, routes
 from metsuke.viewmodel import prompt, session
 from test_views import FIXTURE_DAY, view_env as shared_view_env  # noqa: F401
@@ -253,4 +254,6 @@ def test_detail_pages_emit_no_inline_style_or_script(detail_env):
     for target in (f"/prompts/{PROMPT_ID}", f"/sessions/{SESSION_ID}"):
         text = _detail(database_path, target).body.decode()
         assert "style=" not in text, f"{target} emits a CSP-blocked inline style"
-        assert "<script" not in text.lower(), f"{target} emits a script tag"
+        # Detail pages share _shell, so they carry the same one deferred script and
+        # no inline script body or handler.
+        assert_csp_safe(text, context=target)
