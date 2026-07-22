@@ -19,6 +19,7 @@ import subprocess
 import threading
 import time
 from collections.abc import Callable
+from contextlib import closing
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -26,6 +27,8 @@ from typing import Any
 from urllib.parse import parse_qs
 
 from .. import config
+from ..dashboard2 import web as dashboard2_web
+from ..viewmodel import cache, dist, overview, period, trend
 from . import pages
 from .auth import (
     AuthClaims,
@@ -35,7 +38,18 @@ from .auth import (
     DashboardAuthError,
     load_or_create_secret,
 )
-from .routes import ID_PATTERN, dashboard_response, detail_response, detail_target_is_valid
+from .db import DashboardDatabaseError, LedgerNotFoundError, connect_dashboard
+from .routes import (
+    ID_PATTERN,
+    DashboardResponse,
+    InvalidDashboardRequest,
+    _ledger_state,
+    _write_diagnostic,
+    dashboard_response,
+    detail_response,
+    detail_target_is_valid,
+    resolve_query,
+)
 from .trace_cache import TraceCache
 from .trace_jobs import TraceJobError, TraceJobManager, TraceSessionNotFoundError
 from .usage import record_trace_opened, record_view_opened
@@ -158,6 +172,64 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 content_type="text/javascript; charset=utf-8",
             )
             return
+        if request_path in ("/v2/app.js", "/v2/app.css"):
+            # The committed client bundle + stylesheet. Served without auth, exactly like
+            # /dashboard.css: they carry no ledger data, only the app's code and styling.
+            name = request_path.rsplit("/", 1)[1]
+            body = dashboard2_web.asset_bytes(name)
+            if body is None:
+                self._not_found()
+                return
+            self._respond(
+                200,
+                body,
+                content_type=dashboard2_web.ASSET_CONTENT_TYPES[name],
+            )
+            return
+        if request_path == "/v2/dashboard":
+            # Authenticated (unauth -> identical 401 as /dashboard), but the shell is
+            # data-free and query-independent: the client reads location.search and fetches
+            # /v2/api/overview itself. Canonicalization of a bare/preset query happens in the
+            # client (replaceState to the API's canonical form), not via a server redirect.
+            claims = self._authenticated_claims()
+            if claims is None:
+                self._unauthorized()
+                return
+            self._respond(
+                200,
+                dashboard2_web.shell_html().encode(),
+                {"X-CSRF-Token": claims.csrf_token},
+                "text/html; charset=utf-8",
+            )
+            return
+        if request_path == "/v2/api/overview":
+            claims = self._authenticated_claims()
+            if claims is None:
+                self._unauthorized()
+                return
+            response = self._v2_api_overview(self.path.partition("?")[2])
+            self._respond(
+                response.status,
+                response.body,
+                {**response.headers, "X-CSRF-Token": claims.csrf_token},
+                response.content_type,
+            )
+            return
+        if request_path in ("/v2/api/period", "/v2/api/dist", "/v2/api/trend", "/v2/api/cache"):
+            claims = self._authenticated_claims()
+            if claims is None:
+                self._unauthorized()
+                return
+            response = self._v2_api_view(
+                self.path.partition("?")[2], request_path.rsplit("/", 1)[1]
+            )
+            self._respond(
+                response.status,
+                response.body,
+                {**response.headers, "X-CSRF-Token": claims.csrf_token},
+                response.content_type,
+            )
+            return
         if request_path == "/bootstrap":
             self._bootstrap()
             return
@@ -255,6 +327,78 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             pages.state_page("not_found").encode(),
             content_type="text/html; charset=utf-8",
         )
+
+    def _v2_api_overview(self, raw_query: str) -> DashboardResponse:
+        """Resolve the query and return the overview model as JSON for the client app.
+
+        Reuses the exact same query-string -> window resolution, ``today`` value, secure
+        read-only connection, and ledger-state handling as v1 (``resolve_query`` /
+        ``connect_dashboard`` / ``_ledger_state`` / ``overview.query``). Only the response
+        shape differs: JSON via ``dashboard2.web`` instead of v1's HTML. This endpoint does
+        NOT redirect a bare/preset query -- it resolves it and returns the canonical form in
+        the payload so the *client* normalizes its own URL (``connect-src 'self'`` keeps the
+        fetch same-origin). Errors are reported as small JSON envelopes, never HTML.
+        """
+
+        content_type = "application/json; charset=utf-8"
+        today = self._dashboard_server.today()
+        try:
+            request, _redirect_query = resolve_query(raw_query, today)
+        except (InvalidDashboardRequest, ValueError):
+            return DashboardResponse(400, b'{"error":"bad_request"}', {}, content_type)
+        try:
+            with closing(connect_dashboard(self._dashboard_server.database_path)) as conn:
+                has_data, freshness = _ledger_state(conn, self._dashboard_server.clock())
+                if not has_data:
+                    return DashboardResponse(503, b'{"error":"initial_sync"}', {}, content_type)
+                model = overview.query(conn, request.window, request.page, today=today)
+        except DashboardDatabaseError as error:
+            _write_diagnostic(self._dashboard_server.diagnostic_path, error)
+            kind = "initial_sync" if isinstance(error, LedgerNotFoundError) else "unavailable"
+            return DashboardResponse(
+                503, f'{{"error":"{kind}"}}'.encode("ascii"), {}, content_type
+            )
+        body = dashboard2_web.overview_json(request, model, freshness)
+        return DashboardResponse(200, body, {}, content_type, view="overview")
+
+    def _v2_api_view(self, raw_query: str, view: str) -> DashboardResponse:
+        """Resolve the query and return a node-tree view model (period/dist/trend/cache) as JSON.
+
+        Shares the *exact* security, resolution, connection, and ledger-state handling with
+        :meth:`_v2_api_overview` — only the view-model function differs. ``period.query`` takes
+        the resolved page (its cost-ranked tables paginate); ``dist``/``trend``/``cache`` take
+        only the window. The response body is the ``to_jsonable`` transcription of the view query,
+        wrapped with the same ``request``/``freshness`` envelope, so the client renders it with
+        a generic node renderer instead of the bespoke overview components.
+        """
+
+        content_type = "application/json; charset=utf-8"
+        today = self._dashboard_server.today()
+        try:
+            request, _redirect_query = resolve_query(raw_query, today)
+        except (InvalidDashboardRequest, ValueError):
+            return DashboardResponse(400, b'{"error":"bad_request"}', {}, content_type)
+        try:
+            with closing(connect_dashboard(self._dashboard_server.database_path)) as conn:
+                has_data, freshness = _ledger_state(conn, self._dashboard_server.clock())
+                if not has_data:
+                    return DashboardResponse(503, b'{"error":"initial_sync"}', {}, content_type)
+                if view == "period":
+                    model = period.query(conn, request.window, request.page)
+                elif view == "trend":
+                    model = trend.query(conn, request.window)
+                elif view == "cache":
+                    model = cache.query(conn, request.window)
+                else:
+                    model = dist.query(conn, request.window)
+        except DashboardDatabaseError as error:
+            _write_diagnostic(self._dashboard_server.diagnostic_path, error)
+            kind = "initial_sync" if isinstance(error, LedgerNotFoundError) else "unavailable"
+            return DashboardResponse(
+                503, f'{{"error":"{kind}"}}'.encode("ascii"), {}, content_type
+            )
+        body = dashboard2_web.view_json(request, model, freshness)
+        return DashboardResponse(200, body, {}, content_type, view=view)
 
     def do_POST(self) -> None:
         if not self._request_origin_is_allowed():

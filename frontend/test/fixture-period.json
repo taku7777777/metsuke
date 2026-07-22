@@ -1,0 +1,2820 @@
+{
+  "request": {
+    "view": "period",
+    "preset": "7d",
+    "from": "2026-07-14",
+    "to": "2026-07-20",
+    "project": null,
+    "limit": 40,
+    "order": "desc",
+    "canonical_query": "view=period&from=2026-07-14&to=2026-07-20"
+  },
+  "freshness": {
+    "stale": false,
+    "last_ingest": 1784552400.0,
+    "age_seconds": 120.0
+  },
+  "model": {
+    "title": "metsuke · 期間ビュー",
+    "period": "2026-07-14 — 2026-07-20",
+    "total": {
+      "kind": "plain",
+      "args": [
+        "$22.29 · 9 requests · 6 sessions · 4 projects"
+      ],
+      "kwargs": {}
+    },
+    "body": {
+      "kind": "join",
+      "args": [
+        {
+          "kind": "tabs",
+          "args": [
+            "v1",
+            [
+              [
+                "s",
+                "セッション",
+                true
+              ],
+              [
+                "p",
+                "プロンプト",
+                false
+              ],
+              [
+                "j",
+                "プロジェクト",
+                false
+              ]
+            ]
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "block",
+          "args": [
+            {
+              "kind": "join",
+              "args": [
+                {
+                  "kind": "code",
+                  "args": [
+                    "metsuke trace <session>"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "plain",
+                  "args": [
+                    "=セッション全体の背景（fan-out・時間構造）を見る / "
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "code",
+                  "args": [
+                    "metsuke explain <prompt>"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "plain",
+                  "args": [
+                    "=1プロンプトのコスト内訳を見る"
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {
+            "cls": "dim"
+          }
+        },
+        {
+          "kind": "panel",
+          "args": [
+            "v1",
+            "s",
+            {
+              "kind": "join",
+              "args": [
+                {
+                  "kind": "insight",
+                  "args": [
+                    "上位10件で全request総額の 100.0% / $1以上は 2件（全6中）で 92.5%"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "table",
+                  "args": [
+                    [
+                      {
+                        "label": "順位",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "コスト",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "累積",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "開始",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "期間",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "project",
+                        "cls": "left",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "prompts",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "req",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "$/prompt",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "平均ピークctx",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "command",
+                        "cls": "left",
+                        "sortable": 0,
+                        "sort_dir": ""
+                      }
+                    ],
+                    [
+                      {
+                        "cells": [
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 10.33395,
+                              "display": "$10.33"
+                            },
+                            "cls": "",
+                            "sort": 10.33395,
+                            "title": null,
+                            "bar": 1.0,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "46.4%",
+                            "cls": "",
+                            "sort": 46.36364253058454,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-18 12:00",
+                            "cls": "",
+                            "sort": 1784376000.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "orbit-cli",
+                            "cls": "left",
+                            "sort": "orbit-cli",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 10.33395,
+                              "display": "$10.33"
+                            },
+                            "cls": "",
+                            "sort": 10.33395,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1,163k",
+                            "cls": "",
+                            "sort": 1163090.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke trace sess-zet --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 10.28736,
+                              "display": "$10.29"
+                            },
+                            "cls": "",
+                            "sort": 10.28736,
+                            "title": null,
+                            "bar": 0.9954915593746825,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "92.5%",
+                            "cls": "",
+                            "sort": 92.51825733164651,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-19 12:00",
+                            "cls": "",
+                            "sort": 1784462400.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1d 00h 00m",
+                            "cls": "",
+                            "sort": 86400.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "metsuke",
+                            "cls": "left",
+                            "sort": "metsuke",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 3.4291199999999997,
+                              "display": "$3.43"
+                            },
+                            "cls": "",
+                            "sort": 3.4291199999999997,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "477k",
+                            "cls": "",
+                            "sort": 477356.6666666667,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke trace sess-alp --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.9223928,
+                              "display": "$0.92"
+                            },
+                            "cls": "",
+                            "sort": 0.9223928,
+                            "title": null,
+                            "bar": 0.08925849263834255,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "96.7%",
+                            "cls": "",
+                            "sort": 96.65660617714944,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-20 12:00",
+                            "cls": "",
+                            "sort": 1784548800.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "atlas-api",
+                            "cls": "left",
+                            "sort": "atlas-api",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.9223928,
+                              "display": "$0.92"
+                            },
+                            "cls": "",
+                            "sort": 0.9223928,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "321k",
+                            "cls": "",
+                            "sort": 320830.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke trace sess-bet --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "4",
+                            "cls": "",
+                            "sort": 4,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.45609,
+                              "display": "$0.46"
+                            },
+                            "cls": "",
+                            "sort": 0.45609,
+                            "title": null,
+                            "bar": 0.04413510806613154,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "98.7%",
+                            "cls": "",
+                            "sort": 98.70287055057628,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-17 12:00",
+                            "cls": "",
+                            "sort": 1784289600.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "atlas-api",
+                            "cls": "left",
+                            "sort": "atlas-api",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.45609,
+                              "display": "$0.46"
+                            },
+                            "cls": "",
+                            "sort": 0.45609,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "230k",
+                            "cls": "",
+                            "sort": 230415.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke trace sess-gam --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "5",
+                            "cls": "",
+                            "sort": 5,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.241548,
+                              "display": "$0.24"
+                            },
+                            "cls": "",
+                            "sort": 0.241548,
+                            "title": null,
+                            "bar": 0.023374217990216713,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "99.8%",
+                            "cls": "",
+                            "sort": 99.78658443790664,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-16 12:00",
+                            "cls": "",
+                            "sort": 1784203200.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "orbit-cli",
+                            "cls": "left",
+                            "sort": "orbit-cli",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.241548,
+                              "display": "$0.24"
+                            },
+                            "cls": "",
+                            "sort": 0.241548,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "115k",
+                            "cls": "",
+                            "sort": 115208.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke trace sess-del --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "6",
+                            "cls": "",
+                            "sort": 6,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.047568,
+                              "display": "$0.05"
+                            },
+                            "cls": "",
+                            "sort": 0.047568,
+                            "title": null,
+                            "bar": 0.004603080138765913,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "100.0%",
+                            "cls": "",
+                            "sort": 100.00000000000003,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-15 12:00",
+                            "cls": "",
+                            "sort": 1784116800.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "sandbox-experiments",
+                            "cls": "left",
+                            "sort": "sandbox-experiments",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.047568,
+                              "display": "$0.05"
+                            },
+                            "cls": "",
+                            "sort": 0.047568,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "80k",
+                            "cls": "",
+                            "sort": 80125.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke trace sess-eps --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      }
+                    ]
+                  ],
+                  "kwargs": {
+                    "foot": null
+                  }
+                }
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {
+            "active": true
+          }
+        },
+        {
+          "kind": "panel",
+          "args": [
+            "v1",
+            "p",
+            {
+              "kind": "join",
+              "args": [
+                {
+                  "kind": "insight_body",
+                  "args": [
+                    {
+                      "kind": "join",
+                      "args": [
+                        {
+                          "kind": "plain",
+                          "args": [
+                            "上位10件で $22.29（帰属済み総額の 100.0%） / 最大 $10.33（orbit-cli） / 中断プロンプト支出 $0.34（1件） / 帰属不能 $0.00（0.0%） · "
+                          ],
+                          "kwargs": {}
+                        },
+                        {
+                          "kind": "code",
+                          "args": [
+                            "metsuke view dist"
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "legend",
+                  "args": [
+                    [
+                      [
+                        "cache_read",
+                        "#2dd4bf"
+                      ],
+                      [
+                        "cache_creation",
+                        "#facc15"
+                      ],
+                      [
+                        "output",
+                        "#f472b6"
+                      ],
+                      [
+                        "input",
+                        "#94a3b8"
+                      ],
+                      [
+                        "server_tool",
+                        "#a78bfa"
+                      ]
+                    ]
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "table",
+                  "args": [
+                    [
+                      {
+                        "label": "順位",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "コスト",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "累積",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "日時",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "期間",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "project",
+                        "cls": "left",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "prompt",
+                        "cls": "left",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "req",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "agent",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "費目",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "command",
+                        "cls": "left",
+                        "sortable": 0,
+                        "sort_dir": ""
+                      }
+                    ],
+                    [
+                      {
+                        "cells": [
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 10.33395,
+                              "display": "$10.33"
+                            },
+                            "cls": "",
+                            "sort": 10.33395,
+                            "title": null,
+                            "bar": 1.0,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "46.4%",
+                            "cls": "",
+                            "sort": 46.36364253058454,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-18 12:00",
+                            "cls": "",
+                            "sort": 1784376000.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "orbit-cli",
+                            "cls": "left",
+                            "sort": "orbit-cli",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "巨大コンテキストの調査",
+                            "cls": "left",
+                            "sort": "巨大コンテキストの調査",
+                            "title": "巨大コンテキストの調査",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-zeta --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 6.9612,
+                              "display": "$6.96"
+                            },
+                            "cls": "",
+                            "sort": 6.9612,
+                            "title": null,
+                            "bar": 0.6736243159682406,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "77.6%",
+                            "cls": "",
+                            "sort": 77.59531951604558,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-20 12:00",
+                            "cls": "",
+                            "sort": 1784548800.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "metsuke",
+                            "cls": "left",
+                            "sort": "metsuke",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "dashboard v2 のレンダリングを Preact に移行する計画",
+                            "cls": "left",
+                            "sort": "dashboard v2 のレンダリングを Preact に移行する計画",
+                            "title": "dashboard v2 のレンダリングを Preact に移行する計画",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-alph --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 2.987475,
+                              "display": "$2.99"
+                            },
+                            "cls": "",
+                            "sort": 2.987475,
+                            "title": null,
+                            "bar": 0.2890932315329569,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "91.0%",
+                            "cls": "",
+                            "sort": 90.99873476085111,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-19 12:00",
+                            "cls": "",
+                            "sort": 1784462400.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "metsuke",
+                            "cls": "left",
+                            "sort": "metsuke",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "CSP を保ったまま SVG チャートを実装する方法",
+                            "cls": "left",
+                            "sort": "CSP を保ったまま SVG チャートを実装する方法",
+                            "title": "CSP を保ったまま SVG チャートを実装する方法",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-alph --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "4",
+                            "cls": "",
+                            "sort": 4,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.9223928,
+                              "display": "$0.92"
+                            },
+                            "cls": "",
+                            "sort": 0.9223928,
+                            "title": null,
+                            "bar": 0.08925849263834255,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "95.1%",
+                            "cls": "",
+                            "sort": 95.13708360635404,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-20 12:00",
+                            "cls": "",
+                            "sort": 1784548800.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "atlas-api",
+                            "cls": "left",
+                            "sort": "atlas-api",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "SQL クエリの N+1 を解消したい",
+                            "cls": "left",
+                            "sort": "SQL クエリの N+1 を解消したい",
+                            "title": "SQL クエリの N+1 を解消したい",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-beta --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "5",
+                            "cls": "",
+                            "sort": 5,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.45609,
+                              "display": "$0.46"
+                            },
+                            "cls": "",
+                            "sort": 0.45609,
+                            "title": null,
+                            "bar": 0.04413510806613154,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "97.2%",
+                            "cls": "",
+                            "sort": 97.18334797978088,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-17 12:00",
+                            "cls": "",
+                            "sort": 1784289600.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "atlas-api",
+                            "cls": "left",
+                            "sort": "atlas-api",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "デプロイスクリプトのレビュー",
+                            "cls": "left",
+                            "sort": "デプロイスクリプトのレビュー",
+                            "title": "デプロイスクリプトのレビュー",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-gamm --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "6",
+                            "cls": "",
+                            "sort": 6,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.338685,
+                              "display": "$0.34"
+                            },
+                            "cls": "",
+                            "sort": 0.338685,
+                            "title": null,
+                            "bar": 0.03277401187348497,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "98.7%",
+                            "cls": "",
+                            "sort": 98.70287055057628,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-20 12:00",
+                            "cls": "",
+                            "sort": 1784548800.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "metsuke",
+                            "cls": "left",
+                            "sort": "metsuke",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "テストが落ちる原因を調べて",
+                            "cls": "left",
+                            "sort": "テストが落ちる原因を調べて",
+                            "title": "テストが落ちる原因を調べて",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": true
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-alph --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "7",
+                            "cls": "",
+                            "sort": 7,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.241548,
+                              "display": "$0.24"
+                            },
+                            "cls": "",
+                            "sort": 0.241548,
+                            "title": null,
+                            "bar": 0.023374217990216713,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "99.8%",
+                            "cls": "",
+                            "sort": 99.78658443790664,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-16 12:00",
+                            "cls": "",
+                            "sort": 1784203200.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "orbit-cli",
+                            "cls": "left",
+                            "sort": "orbit-cli",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "型エラーの修正",
+                            "cls": "left",
+                            "sort": "型エラーの修正",
+                            "title": "型エラーの修正",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-delt --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "8",
+                            "cls": "",
+                            "sort": 8,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.047568,
+                              "display": "$0.05"
+                            },
+                            "cls": "",
+                            "sort": 0.047568,
+                            "title": null,
+                            "bar": 0.004603080138765913,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "100.0%",
+                            "cls": "",
+                            "sort": 100.00000000000003,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "07-15 12:00",
+                            "cls": "",
+                            "sort": 1784116800.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0m",
+                            "cls": "",
+                            "sort": 0.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "sandbox-experiments",
+                            "cls": "left",
+                            "sort": "sandbox-experiments",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "自動実行タスク（対話のみから除外）",
+                            "cls": "left",
+                            "sort": "自動実行タスク（対話のみから除外）",
+                            "title": "自動実行タスク（対話のみから除外）",
+                            "bar": null,
+                            "content": null,
+                            "clip": "prompt-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0",
+                            "cls": "",
+                            "sort": 0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "",
+                            "sort": "input",
+                            "title": "input",
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": "#94a3b8",
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": null,
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke explain prm-eps- --html"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      }
+                    ]
+                  ],
+                  "kwargs": {
+                    "foot": null
+                  }
+                }
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {
+            "active": false
+          }
+        },
+        {
+          "kind": "panel",
+          "args": [
+            "v1",
+            "j",
+            {
+              "kind": "join",
+              "args": [
+                {
+                  "kind": "insight",
+                  "args": [
+                    "上位3件で期間全体の 99.8% / 全4プロジェクト中 $1未満が 1件"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "table",
+                  "args": [
+                    [
+                      {
+                        "label": "project",
+                        "cls": "left",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "コスト",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "share",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "sessions",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "prompts",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "req",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "$/prompt",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "平均ピークctx",
+                        "cls": "",
+                        "sortable": 1,
+                        "sort_dir": ""
+                      },
+                      {
+                        "label": "command",
+                        "cls": "left",
+                        "sortable": 0,
+                        "sort_dir": ""
+                      }
+                    ],
+                    [
+                      {
+                        "cells": [
+                          {
+                            "text": "orbit-cli",
+                            "cls": "left",
+                            "sort": "orbit-cli",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 10.575498,
+                              "display": "$10.58"
+                            },
+                            "cls": "",
+                            "sort": 10.575498,
+                            "title": null,
+                            "bar": 1.0,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "47.4%",
+                            "cls": "",
+                            "sort": 0.4744735641791491,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 5.287749,
+                              "display": "$5.29"
+                            },
+                            "cls": "",
+                            "sort": 5.287749,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "639k",
+                            "cls": "",
+                            "sort": 639149.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": "metsuke view period --from 2026-07-14 --to 2026-07-20 --project orbit-cli",
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke view period --from 2026-07-14 --to 2026-07-20 --project orbit-cli"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "metsuke",
+                            "cls": "left",
+                            "sort": "metsuke",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 10.28736,
+                              "display": "$10.29"
+                            },
+                            "cls": "",
+                            "sort": 10.28736,
+                            "title": null,
+                            "bar": 0.9727541908664726,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "46.2%",
+                            "cls": "",
+                            "sort": 0.46154614801061955,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 3.4291199999999997,
+                              "display": "$3.43"
+                            },
+                            "cls": "",
+                            "sort": 3.4291199999999997,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "477k",
+                            "cls": "",
+                            "sort": 477356.6666666667,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": "metsuke view period --from 2026-07-14 --to 2026-07-20 --project metsuke",
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke view period --from 2026-07-14 --to 2026-07-20 --project metsuke"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "atlas-api",
+                            "cls": "left",
+                            "sort": "atlas-api",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 1.3784828,
+                              "display": "$1.38"
+                            },
+                            "cls": "",
+                            "sort": 1.3784828,
+                            "title": null,
+                            "bar": 0.13034684513202122,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "6.2%",
+                            "cls": "",
+                            "sort": 0.06184613218929767,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "2",
+                            "cls": "",
+                            "sort": 2,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "3",
+                            "cls": "",
+                            "sort": 3,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.6892414,
+                              "display": "$0.69"
+                            },
+                            "cls": "",
+                            "sort": 0.6892414,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "276k",
+                            "cls": "",
+                            "sort": 275622.5,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": "metsuke view period --from 2026-07-14 --to 2026-07-20 --project atlas-api",
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke view period --from 2026-07-14 --to 2026-07-20 --project atlas-api"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "sandbox-experiments",
+                            "cls": "left",
+                            "sort": "sandbox-experiments",
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "project-clip",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.047568,
+                              "display": "$0.05"
+                            },
+                            "cls": "",
+                            "sort": 0.047568,
+                            "title": null,
+                            "bar": 0.004497944210286835,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "0.2%",
+                            "cls": "",
+                            "sort": 0.0021341556209337623,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "1",
+                            "cls": "",
+                            "sort": 1,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": {
+                              "raw": 0.047568,
+                              "display": "$0.05"
+                            },
+                            "cls": "",
+                            "sort": 0.047568,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "80k",
+                            "cls": "",
+                            "sort": 80125.0,
+                            "title": null,
+                            "bar": null,
+                            "content": null,
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          },
+                          {
+                            "text": "",
+                            "cls": "left",
+                            "sort": null,
+                            "title": "metsuke view period --from 2026-07-14 --to 2026-07-20 --project sandbox-experiments",
+                            "bar": null,
+                            "content": {
+                              "kind": "code",
+                              "args": [
+                                "metsuke view period --from 2026-07-14 --to 2026-07-20 --project sandbox-experiments"
+                              ],
+                              "kwargs": {}
+                            },
+                            "clip": "",
+                            "dot": null,
+                            "warn": false
+                          }
+                        ],
+                        "highlight": false
+                      }
+                    ]
+                  ],
+                  "kwargs": {
+                    "foot": null
+                  }
+                }
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {
+            "active": false
+          }
+        },
+        {
+          "kind": "text_block",
+          "args": [
+            "対話のみ判別は暫定: projectに sandbox-experiments を含む、または -private-tmp- で始まるものを自動実行として扱う。"
+          ],
+          "kwargs": {
+            "cls": "dim"
+          }
+        }
+      ],
+      "kwargs": {}
+    },
+    "timezone": "UTC"
+  }
+}

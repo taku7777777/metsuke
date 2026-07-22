@@ -1,0 +1,3734 @@
+{
+  "request": {
+    "view": "trend",
+    "preset": "custom",
+    "from": "2000-01-01",
+    "to": "2000-01-07",
+    "project": null,
+    "limit": 40,
+    "order": "desc",
+    "canonical_query": "view=trend&from=2000-01-01&to=2000-01-07"
+  },
+  "freshness": {
+    "stale": false,
+    "last_ingest": 1784552400.0,
+    "age_seconds": 120.0
+  },
+  "model": {
+    "title": "metsuke · 推移ビュー",
+    "period": "2000-01-01 — 2000-01-07 · 計測開始 2026-07-11",
+    "total": {
+      "kind": "plain",
+      "args": [
+        "$0.00 · 日次/週次/月次コスト推移"
+      ],
+      "kwargs": {}
+    },
+    "body": {
+      "kind": "join",
+      "args": [
+        {
+          "kind": "insight",
+          "args": [
+            "今週 $0.00（先週同時点比 比較不可） / 最大増加寄与: — +0.00$"
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "grain_tabs",
+          "args": [
+            [
+              [
+                "daily",
+                "日次",
+                true,
+                null
+              ],
+              [
+                "weekly",
+                "週次",
+                false,
+                null
+              ],
+              [
+                "monthly",
+                "月次",
+                false,
+                "データ蓄積とともに有効"
+              ]
+            ]
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "① 総量"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "tabs",
+              "args": [
+                "v2-axis",
+                [
+                  [
+                    "fee",
+                    "費目",
+                    true
+                  ],
+                  [
+                    "model",
+                    "モデル",
+                    false
+                  ],
+                  [
+                    "project",
+                    "プロジェクト",
+                    false
+                  ]
+                ]
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "panel",
+              "args": [
+                "v2-axis",
+                "fee",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "daily",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "cache_read",
+                                    "#2dd4bf"
+                                  ],
+                                  [
+                                    "cache_w5m",
+                                    "#facc15"
+                                  ],
+                                  [
+                                    "cache_w1h",
+                                    "#fb923c"
+                                  ],
+                                  [
+                                    "input",
+                                    "#94a3b8"
+                                  ],
+                                  [
+                                    "output",
+                                    "#f472b6"
+                                  ],
+                                  [
+                                    "7日移動平均",
+                                    "#fff"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2000-01-01",
+                                      "2000-01-02",
+                                      "2000-01-03",
+                                      "2000-01-04",
+                                      "2000-01-05",
+                                      "2000-01-06",
+                                      "2000-01-07"
+                                    ],
+                                    {
+                                      "cache_read": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "cache_w5m": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "cache_w1h": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "input": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "output": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    [
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0
+                                    ],
+                                    "daily",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": true
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "weekly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "cache_read",
+                                    "#2dd4bf"
+                                  ],
+                                  [
+                                    "cache_w5m",
+                                    "#facc15"
+                                  ],
+                                  [
+                                    "cache_w1h",
+                                    "#fb923c"
+                                  ],
+                                  [
+                                    "input",
+                                    "#94a3b8"
+                                  ],
+                                  [
+                                    "output",
+                                    "#f472b6"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "1999-12-27",
+                                      "2000-01-03"
+                                    ],
+                                    {
+                                      "cache_read": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "cache_w5m": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "cache_w1h": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "input": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "output": [
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "weekly",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "monthly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "cache_read",
+                                    "#2dd4bf"
+                                  ],
+                                  [
+                                    "cache_w5m",
+                                    "#facc15"
+                                  ],
+                                  [
+                                    "cache_w1h",
+                                    "#fb923c"
+                                  ],
+                                  [
+                                    "input",
+                                    "#94a3b8"
+                                  ],
+                                  [
+                                    "output",
+                                    "#f472b6"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2000-01-01"
+                                    ],
+                                    {
+                                      "cache_read": [
+                                        0.0
+                                      ],
+                                      "cache_w5m": [
+                                        0.0
+                                      ],
+                                      "cache_w1h": [
+                                        0.0
+                                      ],
+                                      "input": [
+                                        0.0
+                                      ],
+                                      "output": [
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "monthly",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "panel",
+              "args": [
+                "v2-axis",
+                "model",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "daily",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "fable",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "opus",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "sonnet",
+                                    "#38bdf8"
+                                  ],
+                                  [
+                                    "haiku",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "other",
+                                    "#6b7280"
+                                  ],
+                                  [
+                                    "7日移動平均",
+                                    "#fff"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2000-01-01",
+                                      "2000-01-02",
+                                      "2000-01-03",
+                                      "2000-01-04",
+                                      "2000-01-05",
+                                      "2000-01-06",
+                                      "2000-01-07"
+                                    ],
+                                    {
+                                      "fable": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "opus": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "sonnet": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "haiku": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "other": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    [
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0
+                                    ],
+                                    "daily",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": true
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "weekly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "fable",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "opus",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "sonnet",
+                                    "#38bdf8"
+                                  ],
+                                  [
+                                    "haiku",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "other",
+                                    "#6b7280"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "1999-12-27",
+                                      "2000-01-03"
+                                    ],
+                                    {
+                                      "fable": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "opus": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "sonnet": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "haiku": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "other": [
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "weekly",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "monthly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "fable",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "opus",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "sonnet",
+                                    "#38bdf8"
+                                  ],
+                                  [
+                                    "haiku",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "other",
+                                    "#6b7280"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2000-01-01"
+                                    ],
+                                    {
+                                      "fable": [
+                                        0.0
+                                      ],
+                                      "opus": [
+                                        0.0
+                                      ],
+                                      "sonnet": [
+                                        0.0
+                                      ],
+                                      "haiku": [
+                                        0.0
+                                      ],
+                                      "other": [
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "monthly",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "panel",
+              "args": [
+                "v2-axis",
+                "project",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "daily",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "その他",
+                                    "#7aa2f7"
+                                  ],
+                                  [
+                                    "7日移動平均",
+                                    "#fff"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2000-01-01",
+                                      "2000-01-02",
+                                      "2000-01-03",
+                                      "2000-01-04",
+                                      "2000-01-05",
+                                      "2000-01-06",
+                                      "2000-01-07"
+                                    ],
+                                    {
+                                      "その他": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "その他": "#7aa2f7"
+                                    },
+                                    [
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0,
+                                      0.0
+                                    ],
+                                    "daily",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": true
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "weekly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "その他",
+                                    "#7aa2f7"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "1999-12-27",
+                                      "2000-01-03"
+                                    ],
+                                    {
+                                      "その他": [
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "その他": "#7aa2f7"
+                                    },
+                                    null,
+                                    "weekly",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "monthly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "その他",
+                                    "#7aa2f7"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2000-01-01"
+                                    ],
+                                    {
+                                      "その他": [
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "その他": "#7aa2f7"
+                                    },
+                                    null,
+                                    "monthly",
+                                    946684800.0,
+                                    947289600.0,
+                                    [],
+                                    []
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "text_block",
+          "args": [
+            "観測日以後の欠行は$0補完（取込停止との区別は metsuke doctor）。marker=0件、regime_event=0件。"
+          ],
+          "kwargs": {
+            "cls": "dim"
+          }
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "② 分布形の推移（対話のみ）"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "daily",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "平均",
+                            "#facc15"
+                          ],
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "平均": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p50": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p90": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p95": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ]
+                            },
+                            {
+                              "平均": "#facc15",
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "p50": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p90": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#fb923c"
+                            },
+                            "k"
+                          ],
+                          "kwargs": {
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "heading",
+                      "args": [
+                        2,
+                        "実行時間（観測スパン）"
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "p50": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p90": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p95": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            "分"
+                          ],
+                          "kwargs": {
+                            "grain": "daily",
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "text_block",
+                      "args": [
+                        "n<20の日は非表示（線も中断）。対話のみ判別は暫定project名分類。"
+                      ],
+                      "kwargs": {
+                        "cls": "dim"
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "weekly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "平均",
+                            "#facc15"
+                          ],
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "平均": [],
+                              "p50": [],
+                              "p90": [],
+                              "p95": []
+                            },
+                            {
+                              "平均": "#facc15",
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "p50": [],
+                              "p90": []
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#fb923c"
+                            },
+                            "k"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "heading",
+                      "args": [
+                        2,
+                        "実行時間（観測スパン）"
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "p50": [],
+                              "p90": [],
+                              "p95": []
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            "分"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly",
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "text_block",
+                      "args": [
+                        "対話のみ判別は暫定project名分類。"
+                      ],
+                      "kwargs": {
+                        "cls": "dim"
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "monthly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "平均",
+                            "#facc15"
+                          ],
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "平均": [],
+                              "p50": [],
+                              "p90": [],
+                              "p95": []
+                            },
+                            {
+                              "平均": "#facc15",
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "p50": [],
+                              "p90": []
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#fb923c"
+                            },
+                            "k"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "heading",
+                      "args": [
+                        2,
+                        "実行時間（観測スパン）"
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "p50": [],
+                              "p90": [],
+                              "p95": []
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            "分"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly",
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "text_block",
+                      "args": [
+                        "データ蓄積とともに有効。対話のみ判別は暫定project名分類。"
+                      ],
+                      "kwargs": {
+                        "cls": "dim"
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "③ 行動イベントの推移"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "daily",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "gap>1h再開",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "中断プロンプト",
+                            "#f87171"
+                          ],
+                          [
+                            "compaction",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "gap>1h再開": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "中断プロンプト": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "compaction": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "gap>1h再開": "#7aa2f7",
+                              "中断プロンプト": "#f87171",
+                              "compaction": "#fb923c"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "weekly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "gap>1h再開",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "中断プロンプト",
+                            "#f87171"
+                          ],
+                          [
+                            "compaction",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "gap>1h再開": [],
+                              "中断プロンプト": [],
+                              "compaction": []
+                            },
+                            {
+                              "gap>1h再開": "#7aa2f7",
+                              "中断プロンプト": "#f87171",
+                              "compaction": "#fb923c"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "monthly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "gap>1h再開",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "中断プロンプト",
+                            "#f87171"
+                          ],
+                          [
+                            "compaction",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "gap>1h再開": [],
+                              "中断プロンプト": [],
+                              "compaction": []
+                            },
+                            {
+                              "gap>1h再開": "#7aa2f7",
+                              "中断プロンプト": "#f87171",
+                              "compaction": "#fb923c"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "④ 挙動サマリ（グラフ＋表）"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "daily",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "委任費率",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "fable+opus費率",
+                            "#f472b6"
+                          ],
+                          [
+                            "≥200k費率",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "委任費率": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "fable+opus費率": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "≥200k費率": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "委任費率": "#7aa2f7",
+                              "fable+opus費率": "#f472b6",
+                              "≥200k費率": "#fb923c"
+                            },
+                            "%"
+                          ],
+                          "kwargs": {
+                            "grain": "daily",
+                            "fixed_top": 100,
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "対話n",
+                            "#34d399"
+                          ],
+                          [
+                            "高reqプロンプト数",
+                            "#facc15"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "対話n": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "高reqプロンプト数": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "対話n": "#34d399",
+                              "高reqプロンプト数": "#facc15"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "blended$(対話)",
+                            "#a78bfa"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2000-01-01",
+                              "2000-01-02",
+                              "2000-01-03",
+                              "2000-01-04",
+                              "2000-01-05",
+                              "2000-01-06",
+                              "2000-01-07"
+                            ],
+                            {
+                              "blended$(対話)": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "blended$(対話)": "#a78bfa"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "table",
+                      "args": [
+                        [
+                          {
+                            "label": "期間",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "合計",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "前日比",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "利用日数",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "最大寄与project",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "対話n",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "委任費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "fable+opus費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "≥200k費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "blended$(対話)",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "高req",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "command",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          }
+                        ],
+                        [
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-01",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-01 --to 2000-01-01"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-02",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-02 --to 2000-01-02"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-03",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-03 --to 2000-01-03"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-04",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-04 --to 2000-01-04"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-05",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-05 --to 2000-01-05"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-06",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-06 --to 2000-01-06"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2000-01-07",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2000-01-07 --to 2000-01-07"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          }
+                        ]
+                      ],
+                      "kwargs": {
+                        "foot": null
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "weekly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "委任費率",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "fable+opus費率",
+                            "#f472b6"
+                          ],
+                          [
+                            "≥200k費率",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "委任費率": [],
+                              "fable+opus費率": [],
+                              "≥200k費率": []
+                            },
+                            {
+                              "委任費率": "#7aa2f7",
+                              "fable+opus費率": "#f472b6",
+                              "≥200k費率": "#fb923c"
+                            },
+                            "%"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly",
+                            "fixed_top": 100,
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "対話n",
+                            "#34d399"
+                          ],
+                          [
+                            "高reqプロンプト数",
+                            "#facc15"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "対話n": [],
+                              "高reqプロンプト数": []
+                            },
+                            {
+                              "対話n": "#34d399",
+                              "高reqプロンプト数": "#facc15"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "blended$(対話)",
+                            "#a78bfa"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "blended$(対話)": []
+                            },
+                            {
+                              "blended$(対話)": "#a78bfa"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "table",
+                      "args": [
+                        [
+                          {
+                            "label": "期間",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "合計",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "前週比",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "利用日数",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "最大寄与project",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "対話n",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "委任費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "fable+opus費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "≥200k費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "blended$(対話)",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "高req",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "command",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          }
+                        ],
+                        []
+                      ],
+                      "kwargs": {
+                        "foot": null
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "monthly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "委任費率",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "fable+opus費率",
+                            "#f472b6"
+                          ],
+                          [
+                            "≥200k費率",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "委任費率": [],
+                              "fable+opus費率": [],
+                              "≥200k費率": []
+                            },
+                            {
+                              "委任費率": "#7aa2f7",
+                              "fable+opus費率": "#f472b6",
+                              "≥200k費率": "#fb923c"
+                            },
+                            "%"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly",
+                            "fixed_top": 100,
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "対話n",
+                            "#34d399"
+                          ],
+                          [
+                            "高reqプロンプト数",
+                            "#facc15"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "対話n": [],
+                              "高reqプロンプト数": []
+                            },
+                            {
+                              "対話n": "#34d399",
+                              "高reqプロンプト数": "#facc15"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "blended$(対話)",
+                            "#a78bfa"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [],
+                            {
+                              "blended$(対話)": []
+                            },
+                            {
+                              "blended$(対話)": "#a78bfa"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "table",
+                      "args": [
+                        [
+                          {
+                            "label": "期間",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "合計",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "前月比",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "利用日数",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "最大寄与project",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "対話n",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "委任費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "fable+opus費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "≥200k費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "blended$(対話)",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "高req",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "command",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          }
+                        ],
+                        []
+                      ],
+                      "kwargs": {
+                        "foot": null
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        }
+      ],
+      "kwargs": {}
+    },
+    "timezone": "UTC"
+  }
+}

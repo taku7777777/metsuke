@@ -1,0 +1,524 @@
+{
+  "request": {
+    "view": "overview",
+    "preset": "7d",
+    "from": "2026-07-14",
+    "to": "2026-07-20",
+    "project": null,
+    "limit": 40,
+    "order": "desc",
+    "canonical_query": "view=overview&from=2026-07-14&to=2026-07-20"
+  },
+  "freshness": {
+    "stale": false,
+    "last_ingest": 1784552400.0,
+    "age_seconds": 120.0
+  },
+  "model": {
+    "window": {
+      "start": "2026-07-14",
+      "end": "2026-07-20",
+      "project": null,
+      "label": "2026-07-14 — 2026-07-20"
+    },
+    "previous_window": {
+      "start": "2026-07-07",
+      "end": "2026-07-13",
+      "project": null,
+      "label": ""
+    },
+    "timezone": "UTC",
+    "kpis": [
+      {
+        "name": "API換算コスト",
+        "value": 3.848238,
+        "display": "$3.85",
+        "comparison": {
+          "current": 3.848238,
+          "previous": 0.345954,
+          "percent_change": 1012.3553998508472,
+          "display": "+1012.4%"
+        }
+      },
+      {
+        "name": "コスト発生prompt",
+        "value": 6,
+        "display": "6",
+        "comparison": {
+          "current": 6,
+          "previous": 2,
+          "percent_change": 200.0,
+          "display": "+200.0%"
+        }
+      },
+      {
+        "name": "request",
+        "value": 6,
+        "display": "6",
+        "comparison": {
+          "current": 6,
+          "previous": 2,
+          "percent_change": 200.0,
+          "display": "+200.0%"
+        }
+      },
+      {
+        "name": "session",
+        "value": 4,
+        "display": "4",
+        "comparison": {
+          "current": 4,
+          "previous": 2,
+          "percent_change": 100.0,
+          "display": "+100.0%"
+        }
+      },
+      {
+        "name": "project",
+        "value": 2,
+        "display": "2",
+        "comparison": {
+          "current": 2,
+          "previous": 2,
+          "percent_change": 0.0,
+          "display": "+0.0%"
+        }
+      }
+    ],
+    "daily_costs": [
+      {
+        "day": "2026-06-20",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-21",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-22",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-23",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-24",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-25",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-26",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-27",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-28",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-29",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-06-30",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-01",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-02",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-03",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-04",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-05",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-06",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-07",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-08",
+        "amount": {
+          "raw": 0.1533615,
+          "display": "$0.15"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-09",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-10",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-11",
+        "amount": {
+          "raw": 0.1925925,
+          "display": "$0.19"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-12",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-13",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": false
+      },
+      {
+        "day": "2026-07-14",
+        "amount": {
+          "raw": 0.241548,
+          "display": "$0.24"
+        },
+        "selected": true
+      },
+      {
+        "day": "2026-07-15",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": true
+      },
+      {
+        "day": "2026-07-16",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": true
+      },
+      {
+        "day": "2026-07-17",
+        "amount": {
+          "raw": 0.45609,
+          "display": "$0.46"
+        },
+        "selected": true
+      },
+      {
+        "day": "2026-07-18",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        },
+        "selected": true
+      },
+      {
+        "day": "2026-07-19",
+        "amount": {
+          "raw": 0.597495,
+          "display": "$0.60"
+        },
+        "selected": true
+      },
+      {
+        "day": "2026-07-20",
+        "amount": {
+          "raw": 2.553105,
+          "display": "$2.55"
+        },
+        "selected": true
+      }
+    ],
+    "cost_parts": [
+      {
+        "name": "input",
+        "amount": {
+          "raw": 3.495,
+          "display": "$3.50"
+        }
+      },
+      {
+        "name": "output",
+        "amount": {
+          "raw": 0.06075,
+          "display": "$0.06"
+        }
+      },
+      {
+        "name": "cache_read",
+        "amount": {
+          "raw": 0.279,
+          "display": "$0.28"
+        }
+      },
+      {
+        "name": "cache_w5m",
+        "amount": {
+          "raw": 0.01275,
+          "display": "$0.01"
+        }
+      },
+      {
+        "name": "cache_w1h",
+        "amount": {
+          "raw": 0.000738,
+          "display": "$0.00"
+        }
+      },
+      {
+        "name": "server_tool",
+        "amount": {
+          "raw": 0.0,
+          "display": "$0.00"
+        }
+      }
+    ],
+    "top_prompts": [
+      {
+        "prompt_id": "prm-alpha-0000000000000000a1",
+        "session_id": "sess-alpha-000000000000000001",
+        "project": "metsuke",
+        "ts": 1784548800.0,
+        "text": "リファクタリング: dashboard v2 のレンダリングを Preact に移行する計画を立てて",
+        "request_count": 1,
+        "context_peak": 801240,
+        "amount": {
+          "raw": 1.39224,
+          "display": "$1.39"
+        }
+      },
+      {
+        "prompt_id": "prm-beta-00000000000000000b1",
+        "session_id": "sess-beta-0000000000000000b1",
+        "project": "atlas-api",
+        "ts": 1784548800.0,
+        "text": "SQL クエリの N+1 を解消したい",
+        "request_count": 1,
+        "context_peak": 320830,
+        "amount": {
+          "raw": 0.82218,
+          "display": "$0.82"
+        }
+      },
+      {
+        "prompt_id": "prm-alpha-0000000000000000a3",
+        "session_id": "sess-alpha-000000000000000001",
+        "project": "metsuke",
+        "ts": 1784462400.0,
+        "text": "CSP を厳格に保ったまま SVG チャートを実装する方法",
+        "request_count": 1,
+        "context_peak": 330520,
+        "amount": {
+          "raw": 0.597495,
+          "display": "$0.60"
+        }
+      },
+      {
+        "prompt_id": "prm-gamma-00000000000000000c1",
+        "session_id": "sess-gamma-000000000000000c1",
+        "project": "atlas-api",
+        "ts": 1784289600.0,
+        "text": "デプロイスクリプトのレビュー",
+        "request_count": 1,
+        "context_peak": 230415,
+        "amount": {
+          "raw": 0.45609,
+          "display": "$0.46"
+        }
+      },
+      {
+        "prompt_id": "prm-alpha-0000000000000000a2",
+        "session_id": "sess-alpha-000000000000000001",
+        "project": "metsuke",
+        "ts": 1784548800.0,
+        "text": "テストが落ちる原因を調べて",
+        "request_count": 1,
+        "context_peak": 300310,
+        "amount": {
+          "raw": 0.338685,
+          "display": "$0.34"
+        }
+      },
+      {
+        "prompt_id": "prm-delta-00000000000000000d1",
+        "session_id": "sess-delta-000000000000000d1",
+        "project": "metsuke",
+        "ts": 1784030400.0,
+        "text": "型エラーの修正",
+        "request_count": 1,
+        "context_peak": 115208,
+        "amount": {
+          "raw": 0.241548,
+          "display": "$0.24"
+        }
+      }
+    ],
+    "top_sessions": [
+      {
+        "session_id": "sess-alpha-000000000000000001",
+        "project": "metsuke",
+        "first_ts": 1784462400.0,
+        "last_ts": 1784548800.0,
+        "request_count": 3,
+        "prompt_count": 3,
+        "amount": {
+          "raw": 2.32842,
+          "display": "$2.33"
+        }
+      },
+      {
+        "session_id": "sess-beta-0000000000000000b1",
+        "project": "atlas-api",
+        "first_ts": 1784548800.0,
+        "last_ts": 1784548800.0,
+        "request_count": 1,
+        "prompt_count": 1,
+        "amount": {
+          "raw": 0.82218,
+          "display": "$0.82"
+        }
+      },
+      {
+        "session_id": "sess-gamma-000000000000000c1",
+        "project": "atlas-api",
+        "first_ts": 1784289600.0,
+        "last_ts": 1784289600.0,
+        "request_count": 1,
+        "prompt_count": 1,
+        "amount": {
+          "raw": 0.45609,
+          "display": "$0.46"
+        }
+      },
+      {
+        "session_id": "sess-delta-000000000000000d1",
+        "project": "metsuke",
+        "first_ts": 1784030400.0,
+        "last_ts": 1784030400.0,
+        "request_count": 1,
+        "prompt_count": 1,
+        "amount": {
+          "raw": 0.241548,
+          "display": "$0.24"
+        }
+      }
+    ],
+    "cache_rebuilds": [
+      {
+        "cause": "ttl_expiry",
+        "request_count": 2,
+        "amount": {
+          "raw": 0.006735,
+          "display": "$0.01"
+        }
+      }
+    ],
+    "unknown_cost_request_count": 0
+  }
+}

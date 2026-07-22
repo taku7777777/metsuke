@@ -1,0 +1,20 @@
+{
+  "name": "metsuke-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Client-rendered TypeScript/Preact source for the metsuke v2 dashboard. The committed build output lives in ../src/metsuke/dashboard2/assets and is what ships; end users never run node.",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "preact": "10.25.4"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.2",
+    "jsdom": "25.0.1",
+    "typescript": "5.7.3"
+  }
+}

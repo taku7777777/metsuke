@@ -1,0 +1,4750 @@
+{
+  "request": {
+    "view": "trend",
+    "preset": "7d",
+    "from": "2026-07-14",
+    "to": "2026-07-20",
+    "project": null,
+    "limit": 40,
+    "order": "desc",
+    "canonical_query": "view=trend&from=2026-07-14&to=2026-07-20"
+  },
+  "freshness": {
+    "stale": false,
+    "last_ingest": 1784552400.0,
+    "age_seconds": 120.0
+  },
+  "model": {
+    "title": "metsuke · 推移ビュー",
+    "period": "2026-07-14 — 2026-07-20 · 計測開始 2026-07-11",
+    "total": {
+      "kind": "plain",
+      "args": [
+        "$22.29 · 日次/週次/月次コスト推移"
+      ],
+      "kwargs": {}
+    },
+    "body": {
+      "kind": "join",
+      "args": [
+        {
+          "kind": "insight",
+          "args": [
+            "今週 $8.22（先週同時点比 比較不可） / 最大増加寄与: metsuke +7.30$"
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "grain_tabs",
+          "args": [
+            [
+              [
+                "daily",
+                "日次",
+                true,
+                null
+              ],
+              [
+                "weekly",
+                "週次",
+                false,
+                null
+              ],
+              [
+                "monthly",
+                "月次",
+                false,
+                "データ蓄積とともに有効"
+              ]
+            ]
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "① 総量"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "tabs",
+              "args": [
+                "v2-axis",
+                [
+                  [
+                    "fee",
+                    "費目",
+                    true
+                  ],
+                  [
+                    "model",
+                    "モデル",
+                    false
+                  ],
+                  [
+                    "project",
+                    "プロジェクト",
+                    false
+                  ]
+                ]
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "panel",
+              "args": [
+                "v2-axis",
+                "fee",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "daily",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "cache_read",
+                                    "#2dd4bf"
+                                  ],
+                                  [
+                                    "cache_w5m",
+                                    "#facc15"
+                                  ],
+                                  [
+                                    "cache_w1h",
+                                    "#fb923c"
+                                  ],
+                                  [
+                                    "input",
+                                    "#94a3b8"
+                                  ],
+                                  [
+                                    "output",
+                                    "#f472b6"
+                                  ],
+                                  [
+                                    "7日移動平均",
+                                    "#fff"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-14",
+                                      "2026-07-15",
+                                      "2026-07-16",
+                                      "2026-07-17",
+                                      "2026-07-18",
+                                      "2026-07-19",
+                                      "2026-07-20"
+                                    ],
+                                    {
+                                      "cache_read": [
+                                        0.0,
+                                        0.00192,
+                                        0.012,
+                                        0.027,
+                                        0.81,
+                                        0.225,
+                                        0.6534
+                                      ],
+                                      "cache_w5m": [
+                                        0.0,
+                                        0.00012,
+                                        0.00075,
+                                        0.0015,
+                                        0.05625,
+                                        0.009375,
+                                        0.026824999999999998
+                                      ],
+                                      "cache_w1h": [
+                                        0.0,
+                                        8e-06,
+                                        4.8e-05,
+                                        9e-05,
+                                        0.0027,
+                                        0.0006,
+                                        0.0014528
+                                      ],
+                                      "input": [
+                                        0.0,
+                                        0.0448,
+                                        0.225,
+                                        0.42,
+                                        9.3,
+                                        2.7,
+                                        7.446
+                                      ],
+                                      "output": [
+                                        0.0,
+                                        0.00072,
+                                        0.00375,
+                                        0.0075,
+                                        0.165,
+                                        0.0525,
+                                        0.09460000000000002
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    [
+                                      0.0,
+                                      0.023784,
+                                      0.09637200000000001,
+                                      0.1863015,
+                                      2.2158312000000002,
+                                      2.3444385000000003,
+                                      3.184129828571429
+                                    ],
+                                    "daily",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": true
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "weekly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "cache_read",
+                                    "#2dd4bf"
+                                  ],
+                                  [
+                                    "cache_w5m",
+                                    "#facc15"
+                                  ],
+                                  [
+                                    "cache_w1h",
+                                    "#fb923c"
+                                  ],
+                                  [
+                                    "input",
+                                    "#94a3b8"
+                                  ],
+                                  [
+                                    "output",
+                                    "#f472b6"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-13",
+                                      "2026-07-20"
+                                    ],
+                                    {
+                                      "cache_read": [
+                                        1.07592,
+                                        0.6534
+                                      ],
+                                      "cache_w5m": [
+                                        0.067995,
+                                        0.026824999999999998
+                                      ],
+                                      "cache_w1h": [
+                                        0.003446,
+                                        0.0014528
+                                      ],
+                                      "input": [
+                                        12.689800000000002,
+                                        7.446
+                                      ],
+                                      "output": [
+                                        0.22947,
+                                        0.09460000000000002
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "weekly",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "monthly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "cache_read",
+                                    "#2dd4bf"
+                                  ],
+                                  [
+                                    "cache_w5m",
+                                    "#facc15"
+                                  ],
+                                  [
+                                    "cache_w1h",
+                                    "#fb923c"
+                                  ],
+                                  [
+                                    "input",
+                                    "#94a3b8"
+                                  ],
+                                  [
+                                    "output",
+                                    "#f472b6"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-01"
+                                    ],
+                                    {
+                                      "cache_read": [
+                                        1.72932
+                                      ],
+                                      "cache_w5m": [
+                                        0.09482
+                                      ],
+                                      "cache_w1h": [
+                                        0.0048988
+                                      ],
+                                      "input": [
+                                        20.135800000000003
+                                      ],
+                                      "output": [
+                                        0.32407
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "monthly",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "panel",
+              "args": [
+                "v2-axis",
+                "model",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "daily",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "fable",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "opus",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "sonnet",
+                                    "#38bdf8"
+                                  ],
+                                  [
+                                    "haiku",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "other",
+                                    "#6b7280"
+                                  ],
+                                  [
+                                    "7日移動平均",
+                                    "#fff"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-14",
+                                      "2026-07-15",
+                                      "2026-07-16",
+                                      "2026-07-17",
+                                      "2026-07-18",
+                                      "2026-07-19",
+                                      "2026-07-20"
+                                    ],
+                                    {
+                                      "fable": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "opus": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        10.33395,
+                                        2.987475,
+                                        6.9612
+                                      ],
+                                      "sonnet": [
+                                        0.0,
+                                        0.0,
+                                        0.241548,
+                                        0.45609,
+                                        0.0,
+                                        0.0,
+                                        1.160865
+                                      ],
+                                      "haiku": [
+                                        0.0,
+                                        0.047568,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.1002128
+                                      ],
+                                      "other": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    [
+                                      0.0,
+                                      0.023784,
+                                      0.09637200000000001,
+                                      0.1863015,
+                                      2.2158312000000002,
+                                      2.3444385000000003,
+                                      3.184129828571429
+                                    ],
+                                    "daily",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": true
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "weekly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "fable",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "opus",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "sonnet",
+                                    "#38bdf8"
+                                  ],
+                                  [
+                                    "haiku",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "other",
+                                    "#6b7280"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-13",
+                                      "2026-07-20"
+                                    ],
+                                    {
+                                      "fable": [
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "opus": [
+                                        13.321425,
+                                        6.9612
+                                      ],
+                                      "sonnet": [
+                                        0.697638,
+                                        1.160865
+                                      ],
+                                      "haiku": [
+                                        0.047568,
+                                        0.1002128
+                                      ],
+                                      "other": [
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "weekly",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "monthly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "fable",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "opus",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "sonnet",
+                                    "#38bdf8"
+                                  ],
+                                  [
+                                    "haiku",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "other",
+                                    "#6b7280"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-01"
+                                    ],
+                                    {
+                                      "fable": [
+                                        0.0
+                                      ],
+                                      "opus": [
+                                        20.282625
+                                      ],
+                                      "sonnet": [
+                                        1.858503
+                                      ],
+                                      "haiku": [
+                                        0.1477808
+                                      ],
+                                      "other": [
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "cache_read": "#2dd4bf",
+                                      "cache_w5m": "#facc15",
+                                      "cache_w1h": "#fb923c",
+                                      "input": "#94a3b8",
+                                      "output": "#f472b6",
+                                      "fable": "#a78bfa",
+                                      "opus": "#f59e0b",
+                                      "sonnet": "#38bdf8",
+                                      "haiku": "#34d399",
+                                      "other": "#6b7280"
+                                    },
+                                    null,
+                                    "monthly",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "panel",
+              "args": [
+                "v2-axis",
+                "project",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "daily",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "orbit-cli",
+                                    "#7aa2f7"
+                                  ],
+                                  [
+                                    "metsuke",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "atlas-api",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "sandbox-experiments",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "その他",
+                                    "#f472b6"
+                                  ],
+                                  [
+                                    "7日移動平均",
+                                    "#fff"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-14",
+                                      "2026-07-15",
+                                      "2026-07-16",
+                                      "2026-07-17",
+                                      "2026-07-18",
+                                      "2026-07-19",
+                                      "2026-07-20"
+                                    ],
+                                    {
+                                      "orbit-cli": [
+                                        0.0,
+                                        0.0,
+                                        0.241548,
+                                        0.0,
+                                        10.33395,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "metsuke": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        2.987475,
+                                        7.299885
+                                      ],
+                                      "atlas-api": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.45609,
+                                        0.0,
+                                        0.0,
+                                        0.9223928
+                                      ],
+                                      "sandbox-experiments": [
+                                        0.0,
+                                        0.047568,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ],
+                                      "その他": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "orbit-cli": "#7aa2f7",
+                                      "metsuke": "#a78bfa",
+                                      "atlas-api": "#34d399",
+                                      "sandbox-experiments": "#f59e0b",
+                                      "その他": "#f472b6"
+                                    },
+                                    [
+                                      0.0,
+                                      0.023784,
+                                      0.09637200000000001,
+                                      0.1863015,
+                                      2.2158312000000002,
+                                      2.3444385000000003,
+                                      3.184129828571429
+                                    ],
+                                    "daily",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": true
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "weekly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "orbit-cli",
+                                    "#7aa2f7"
+                                  ],
+                                  [
+                                    "metsuke",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "atlas-api",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "sandbox-experiments",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "その他",
+                                    "#f472b6"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-13",
+                                      "2026-07-20"
+                                    ],
+                                    {
+                                      "orbit-cli": [
+                                        10.575498,
+                                        0.0
+                                      ],
+                                      "metsuke": [
+                                        2.987475,
+                                        7.299885
+                                      ],
+                                      "atlas-api": [
+                                        0.45609,
+                                        0.9223928
+                                      ],
+                                      "sandbox-experiments": [
+                                        0.047568,
+                                        0.0
+                                      ],
+                                      "その他": [
+                                        0.0,
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "orbit-cli": "#7aa2f7",
+                                      "metsuke": "#a78bfa",
+                                      "atlas-api": "#34d399",
+                                      "sandbox-experiments": "#f59e0b",
+                                      "その他": "#f472b6"
+                                    },
+                                    null,
+                                    "weekly",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    },
+                    {
+                      "kind": "grain_panel",
+                      "args": [
+                        "monthly",
+                        {
+                          "kind": "join",
+                          "args": [
+                            {
+                              "kind": "legend",
+                              "args": [
+                                [
+                                  [
+                                    "orbit-cli",
+                                    "#7aa2f7"
+                                  ],
+                                  [
+                                    "metsuke",
+                                    "#a78bfa"
+                                  ],
+                                  [
+                                    "atlas-api",
+                                    "#34d399"
+                                  ],
+                                  [
+                                    "sandbox-experiments",
+                                    "#f59e0b"
+                                  ],
+                                  [
+                                    "その他",
+                                    "#f472b6"
+                                  ]
+                                ]
+                              ],
+                              "kwargs": {}
+                            },
+                            {
+                              "kind": "card",
+                              "args": [
+                                {
+                                  "kind": "volume_chart",
+                                  "args": [
+                                    [
+                                      "2026-07-01"
+                                    ],
+                                    {
+                                      "orbit-cli": [
+                                        10.575498
+                                      ],
+                                      "metsuke": [
+                                        10.28736
+                                      ],
+                                      "atlas-api": [
+                                        1.3784828
+                                      ],
+                                      "sandbox-experiments": [
+                                        0.047568
+                                      ],
+                                      "その他": [
+                                        0.0
+                                      ]
+                                    },
+                                    {
+                                      "orbit-cli": "#7aa2f7",
+                                      "metsuke": "#a78bfa",
+                                      "atlas-api": "#34d399",
+                                      "sandbox-experiments": "#f59e0b",
+                                      "その他": "#f472b6"
+                                    },
+                                    null,
+                                    "monthly",
+                                    1783987200.0,
+                                    1784592000.0,
+                                    [
+                                      {
+                                        "ts_start": 1784203200.0,
+                                        "ts_end": 1784376000.0,
+                                        "category": "施策A",
+                                        "verdict": "pending"
+                                      }
+                                    ],
+                                    [
+                                      {
+                                        "ts": 1784289600.0,
+                                        "kind": "price_change"
+                                      }
+                                    ]
+                                  ],
+                                  "kwargs": {}
+                                }
+                              ],
+                              "kwargs": {}
+                            }
+                          ],
+                          "kwargs": {}
+                        }
+                      ],
+                      "kwargs": {
+                        "active": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "text_block",
+          "args": [
+            "観測日以後の欠行は$0補完（取込停止との区別は metsuke doctor）。marker=1件、regime_event=1件。施策A: after窓 暫定（2日経過）"
+          ],
+          "kwargs": {
+            "cls": "dim"
+          }
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "② 分布形の推移（対話のみ）"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "daily",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "平均",
+                            "#facc15"
+                          ],
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "平均": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p50": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p90": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p95": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ]
+                            },
+                            {
+                              "平均": "#facc15",
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "p50": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p90": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#fb923c"
+                            },
+                            "k"
+                          ],
+                          "kwargs": {
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "heading",
+                      "args": [
+                        2,
+                        "実行時間（観測スパン）"
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "p50": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p90": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ],
+                              "p95": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            "分"
+                          ],
+                          "kwargs": {
+                            "grain": "daily",
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "text_block",
+                      "args": [
+                        "n<20の日は非表示（線も中断）。対話のみ判別は暫定project名分類。"
+                      ],
+                      "kwargs": {
+                        "cls": "dim"
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "weekly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "平均",
+                            "#facc15"
+                          ],
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "平均": [
+                                0.1925925,
+                                3.50476575,
+                                2.7407592666666667
+                              ],
+                              "p50": [
+                                0.1925925,
+                                1.7217824999999998,
+                                0.9223928
+                              ],
+                              "p90": [
+                                0.1925925,
+                                8.130007500000001,
+                                5.75343856
+                              ],
+                              "p95": [
+                                0.1925925,
+                                9.231978749999996,
+                                6.35731928
+                              ]
+                            },
+                            {
+                              "平均": "#facc15",
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "p50": [
+                                90.155,
+                                280.4675,
+                                320.83
+                              ],
+                              "p90": [
+                                90.155,
+                                913.3190000000001,
+                                705.158
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#fb923c"
+                            },
+                            "k"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "heading",
+                      "args": [
+                        2,
+                        "実行時間（観測スパン）"
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "p50": [
+                                0.0,
+                                0.0,
+                                0.0
+                              ],
+                              "p90": [
+                                0.0,
+                                0.0,
+                                0.0
+                              ],
+                              "p95": [
+                                0.0,
+                                0.0,
+                                0.0
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            "分"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly",
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "text_block",
+                      "args": [
+                        "対話のみ判別は暫定project名分類。"
+                      ],
+                      "kwargs": {
+                        "cls": "dim"
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "monthly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "平均",
+                            "#facc15"
+                          ],
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "平均": [
+                                2.8042416625
+                              ],
+                              "p50": [
+                                0.6892414
+                              ],
+                              "p90": [
+                                7.973024999999999
+                              ],
+                              "p95": [
+                                9.153487499999997
+                              ]
+                            },
+                            {
+                              "平均": "#facc15",
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "p50": [
+                                310.57
+                              ],
+                              "p90": [
+                                909.795
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#fb923c"
+                            },
+                            "k"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "heading",
+                      "args": [
+                        2,
+                        "実行時間（観測スパン）"
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "p50",
+                            "#34d399"
+                          ],
+                          [
+                            "p90",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "p95",
+                            "#f472b6"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "p50": [
+                                0.0
+                              ],
+                              "p90": [
+                                0.0
+                              ],
+                              "p95": [
+                                0.0
+                              ]
+                            },
+                            {
+                              "p50": "#34d399",
+                              "p90": "#7aa2f7",
+                              "p95": "#f472b6"
+                            },
+                            "分"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly",
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "text_block",
+                      "args": [
+                        "データ蓄積とともに有効。対話のみ判別は暫定project名分類。"
+                      ],
+                      "kwargs": {
+                        "cls": "dim"
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "③ 行動イベントの推移"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "daily",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "gap>1h再開",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "中断プロンプト",
+                            "#f87171"
+                          ],
+                          [
+                            "compaction",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "gap>1h再開": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                1
+                              ],
+                              "中断プロンプト": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1
+                              ],
+                              "compaction": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "gap>1h再開": "#7aa2f7",
+                              "中断プロンプト": "#f87171",
+                              "compaction": "#fb923c"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "weekly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "gap>1h再開",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "中断プロンプト",
+                            "#f87171"
+                          ],
+                          [
+                            "compaction",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "gap>1h再開": [
+                                0,
+                                1,
+                                1
+                              ],
+                              "中断プロンプト": [
+                                0,
+                                0,
+                                1
+                              ],
+                              "compaction": [
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "gap>1h再開": "#7aa2f7",
+                              "中断プロンプト": "#f87171",
+                              "compaction": "#fb923c"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "monthly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "gap>1h再開",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "中断プロンプト",
+                            "#f87171"
+                          ],
+                          [
+                            "compaction",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "gap>1h再開": [
+                                2
+                              ],
+                              "中断プロンプト": [
+                                1
+                              ],
+                              "compaction": [
+                                0
+                              ]
+                            },
+                            {
+                              "gap>1h再開": "#7aa2f7",
+                              "中断プロンプト": "#f87171",
+                              "compaction": "#fb923c"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "④ 挙動サマリ（グラフ＋表）"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "daily",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "委任費率",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "fable+opus費率",
+                            "#f472b6"
+                          ],
+                          [
+                            "≥200k費率",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "委任費率": [
+                                0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                1.2187960859215923
+                              ],
+                              "fable+opus費率": [
+                                0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                100.0,
+                                100.0,
+                                84.66267096935111
+                              ],
+                              "≥200k費率": [
+                                0,
+                                0.0,
+                                0.0,
+                                100.0,
+                                100.0,
+                                100.0,
+                                100.0
+                              ]
+                            },
+                            {
+                              "委任費率": "#7aa2f7",
+                              "fable+opus費率": "#f472b6",
+                              "≥200k費率": "#fb923c"
+                            },
+                            "%"
+                          ],
+                          "kwargs": {
+                            "grain": "daily",
+                            "fixed_top": 100,
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "対話n",
+                            "#34d399"
+                          ],
+                          [
+                            "高reqプロンプト数",
+                            "#facc15"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "対話n": [
+                                0,
+                                0,
+                                1,
+                                1,
+                                1,
+                                1,
+                                3
+                              ],
+                              "高reqプロンプト数": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "対話n": "#34d399",
+                              "高reqプロンプト数": "#facc15"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "blended$(対話)",
+                            "#a78bfa"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-14",
+                              "2026-07-15",
+                              "2026-07-16",
+                              "2026-07-17",
+                              "2026-07-18",
+                              "2026-07-19",
+                              "2026-07-20"
+                            ],
+                            {
+                              "blended$(対話)": [
+                                0,
+                                0,
+                                2.09208543366419,
+                                1.975142368403958,
+                                8.868135828849471,
+                                9.019609323108508,
+                                5.21854558425172
+                              ]
+                            },
+                            {
+                              "blended$(対話)": "#a78bfa"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "daily"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "table",
+                      "args": [
+                        [
+                          {
+                            "label": "期間",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "合計",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "前日比",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "利用日数",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "最大寄与project",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "対話n",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "委任費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "fable+opus費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "≥200k費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "blended$(対話)",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "高req",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "command",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          }
+                        ],
+                        [
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-14",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 — +0.00$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 — +0.00$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-14 --to 2026-07-14"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-15",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.047568,
+                                  "display": "$0.05"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 sandbox-experiments +0.05$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 sandbox-experiments +0.05$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0,
+                                  "display": "$0.00"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-15 --to 2026-07-15 --project sandbox-experiments"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-16",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.241548,
+                                  "display": "$0.24"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "+407.8%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 orbit-cli +0.24$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 orbit-cli +0.24$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 2.09208543366419,
+                                  "display": "$2.09"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-16 --to 2026-07-16 --project orbit-cli"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-17",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.45609,
+                                  "display": "$0.46"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "+88.8%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 atlas-api +0.46$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 atlas-api +0.46$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 1.975142368403958,
+                                  "display": "$1.98"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-17 --to 2026-07-17 --project atlas-api"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-18",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 10.33395,
+                                  "display": "$10.33"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "+2165.8%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 orbit-cli +10.33$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 orbit-cli +10.33$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 8.868135828849471,
+                                  "display": "$8.87"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-18 --to 2026-07-18 --project orbit-cli"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-19",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 2.987475,
+                                  "display": "$2.99"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "-71.1%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大減少寄与 orbit-cli -10.33$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大減少寄与 orbit-cli -10.33$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 9.019609323108508,
+                                  "display": "$9.02"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-19 --to 2026-07-19 --project orbit-cli"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-20",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 8.222277799999999,
+                                  "display": "$8.22"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "+175.2%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 metsuke +4.31$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 metsuke +4.31$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "3",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1.2%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "84.7%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 5.21854558425172,
+                                  "display": "$5.22"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-20 --to 2026-07-20 --project metsuke"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          }
+                        ]
+                      ],
+                      "kwargs": {
+                        "foot": null
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": true
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "weekly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "委任費率",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "fable+opus費率",
+                            "#f472b6"
+                          ],
+                          [
+                            "≥200k費率",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "委任費率": [
+                                0.0,
+                                0.0,
+                                1.2187960859215923
+                              ],
+                              "fable+opus費率": [
+                                0.0,
+                                94.70231358169558,
+                                84.66267096935111
+                              ],
+                              "≥200k費率": [
+                                0.0,
+                                97.94466777439459,
+                                100.0
+                              ]
+                            },
+                            {
+                              "委任費率": "#7aa2f7",
+                              "fable+opus費率": "#f472b6",
+                              "≥200k費率": "#fb923c"
+                            },
+                            "%"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly",
+                            "fixed_top": 100,
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "対話n",
+                            "#34d399"
+                          ],
+                          [
+                            "高reqプロンプト数",
+                            "#facc15"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "対話n": [
+                                1,
+                                4,
+                                3
+                              ],
+                              "高reqプロンプト数": [
+                                0,
+                                0,
+                                0
+                              ]
+                            },
+                            {
+                              "対話n": "#34d399",
+                              "高reqプロンプト数": "#facc15"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "blended$(対話)",
+                            "#a78bfa"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-06",
+                              "2026-07-13",
+                              "2026-07-20"
+                            ],
+                            {
+                              "blended$(対話)": [
+                                2.1315090476453986,
+                                7.607136752577347,
+                                5.21854558425172
+                              ]
+                            },
+                            {
+                              "blended$(対話)": "#a78bfa"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "weekly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "table",
+                      "args": [
+                        [
+                          {
+                            "label": "期間",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "合計",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "前週比",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "利用日数",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "最大寄与project",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "対話n",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "委任費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "fable+opus費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "≥200k費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "blended$(対話)",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "高req",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "command",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          }
+                        ],
+                        [
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-06 — 2026-07-12",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 0.1925925,
+                                  "display": "$0.19"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/7",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 metsuke +0.19$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 metsuke +0.19$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 2.1315090476453986,
+                                  "display": "$2.13"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-06 --to 2026-07-12"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-13 — 2026-07-19",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 14.066631,
+                                  "display": "$14.07"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "5/7",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 orbit-cli +10.58$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 orbit-cli +10.58$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "4",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "94.7%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "97.9%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 7.607136752577347,
+                                  "display": "$7.61"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-13 --to 2026-07-19"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          },
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07-20 — 2026-07-26",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 8.222277799999999,
+                                  "display": "$8.22"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1/7",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 metsuke +7.30$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 metsuke +7.30$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "3",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "1.2%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "84.7%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "100.0%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 5.21854558425172,
+                                  "display": "$5.22"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-20 --to 2026-07-26 --project metsuke"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          }
+                        ]
+                      ],
+                      "kwargs": {
+                        "foot": null
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            },
+            {
+              "kind": "grain_panel",
+              "args": [
+                "monthly",
+                {
+                  "kind": "join",
+                  "args": [
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "委任費率",
+                            "#7aa2f7"
+                          ],
+                          [
+                            "fable+opus費率",
+                            "#f472b6"
+                          ],
+                          [
+                            "≥200k費率",
+                            "#fb923c"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "委任費率": [
+                                0.4457567075380327
+                              ],
+                              "fable+opus費率": [
+                                90.21917499789038
+                              ],
+                              "≥200k費率": [
+                                97.8573116911903
+                              ]
+                            },
+                            {
+                              "委任費率": "#7aa2f7",
+                              "fable+opus費率": "#f472b6",
+                              "≥200k費率": "#fb923c"
+                            },
+                            "%"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly",
+                            "fixed_top": 100,
+                            "precision": 1
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "対話n",
+                            "#34d399"
+                          ],
+                          [
+                            "高reqプロンプト数",
+                            "#facc15"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "対話n": [
+                                8
+                              ],
+                              "高reqプロンプト数": [
+                                0
+                              ]
+                            },
+                            {
+                              "対話n": "#34d399",
+                              "高reqプロンプト数": "#facc15"
+                            },
+                            "件"
+                          ],
+                          "kwargs": {
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "legend",
+                      "args": [
+                        [
+                          [
+                            "blended$(対話)",
+                            "#a78bfa"
+                          ]
+                        ]
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "card",
+                      "args": [
+                        {
+                          "kind": "line_chart",
+                          "args": [
+                            [
+                              "2026-07-01"
+                            ],
+                            {
+                              "blended$(対話)": [
+                                6.393572465548306
+                              ]
+                            },
+                            {
+                              "blended$(対話)": "#a78bfa"
+                            },
+                            ""
+                          ],
+                          "kwargs": {
+                            "money_axis": true,
+                            "grain": "monthly"
+                          }
+                        }
+                      ],
+                      "kwargs": {}
+                    },
+                    {
+                      "kind": "table",
+                      "args": [
+                        [
+                          {
+                            "label": "期間",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "合計",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "前月比",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "利用日数",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "最大寄与project",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "対話n",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "委任費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "fable+opus費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "≥200k費率",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "blended$(対話)",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "高req",
+                            "cls": "",
+                            "sortable": false,
+                            "sort_dir": ""
+                          },
+                          {
+                            "label": "command",
+                            "cls": "left",
+                            "sortable": false,
+                            "sort_dir": ""
+                          }
+                        ],
+                        [
+                          {
+                            "cells": [
+                              {
+                                "text": "2026-07",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 22.481501299999998,
+                                  "display": "$22.48"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "—",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "7/31",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "clip",
+                                  "args": [
+                                    "最大増加寄与 orbit-cli +10.58$"
+                                  ],
+                                  "kwargs": {
+                                    "max_width": 170,
+                                    "title": "最大増加寄与 orbit-cli +10.58$"
+                                  }
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "8",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0.4%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "90.2%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "97.9%",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": {
+                                  "raw": 6.393572465548306,
+                                  "display": "$6.39"
+                                },
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "0",
+                                "cls": "",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": null,
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              },
+                              {
+                                "text": "",
+                                "cls": "left",
+                                "sort": null,
+                                "title": null,
+                                "bar": null,
+                                "content": {
+                                  "kind": "code",
+                                  "args": [
+                                    "metsuke view period --from 2026-07-01 --to 2026-07-31"
+                                  ],
+                                  "kwargs": {}
+                                },
+                                "clip": "",
+                                "dot": null,
+                                "warn": false
+                              }
+                            ],
+                            "highlight": false
+                          }
+                        ]
+                      ],
+                      "kwargs": {
+                        "foot": null
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                }
+              ],
+              "kwargs": {
+                "active": false
+              }
+            }
+          ],
+          "kwargs": {}
+        }
+      ],
+      "kwargs": {}
+    },
+    "timezone": "UTC"
+  }
+}

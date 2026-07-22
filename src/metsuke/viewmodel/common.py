@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import sqlite3
 from dataclasses import dataclass, fields, is_dataclass
 from typing import Any, Literal
 
@@ -309,6 +310,14 @@ def to_jsonable(value: Any) -> Any:
         return {key: to_jsonable(item) for key, item in value.items}
     if is_dataclass(value):
         return {field.name: to_jsonable(getattr(value, field.name)) for field in fields(value)}
+    if isinstance(value, sqlite3.Row):
+        # Chart nodes (trend's volume_chart) carry raw sqlite3.Row markers/regimes straight
+        # from fetchall(). A Row is not a dict/list/tuple/dataclass, so it would otherwise
+        # fall through to the identity return and break json.dumps. Serialize it as a
+        # column->value object (self-describing, matching how render.py reads row["field"]).
+        # Purely additive: no existing model embeds a Row, and every value is passed through
+        # to_jsonable unchanged, so no number is altered.
+        return {key: to_jsonable(value[key]) for key in value.keys()}
     if isinstance(value, tuple):
         return [to_jsonable(item) for item in value]
     return value

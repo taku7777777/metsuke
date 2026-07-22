@@ -1,0 +1,1401 @@
+{
+  "request": {
+    "view": "dist",
+    "preset": "custom",
+    "from": "2000-01-01",
+    "to": "2000-01-07",
+    "project": null,
+    "limit": 40,
+    "order": "desc",
+    "canonical_query": "view=dist&from=2000-01-01&to=2000-01-07"
+  },
+  "freshness": {
+    "stale": false,
+    "last_ingest": 1784552400.0,
+    "age_seconds": 120.0
+  },
+  "model": {
+    "title": "metsuke · プロンプト分布",
+    "period": "2000-01-01 — 2000-01-07",
+    "total": {
+      "kind": "plain",
+      "args": [
+        "0 prompts · 合計$0.00 · 帰属カバレッジ 0.0%"
+      ],
+      "kwargs": {}
+    },
+    "body": {
+      "kind": "join",
+      "args": [
+        {
+          "kind": "insight",
+          "args": [
+            "≥200k: 件数 0.0% → コスト 0.0%\ncost上位10%: req中央値 0.0（残りは 0.0）・観測スパン 0.0分\nコスト分位点 全体 p50 $0.00 / p90 $0.00 / p95 $0.00 / p99 $0.00\n全体（対話のみ） p50 $0.00 / p90 $0.00 / p95 $0.00 / p99 $0.00"
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "コスト分位点 × プロジェクト"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "table",
+              "args": [
+                [
+                  {
+                    "label": "project",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "n",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "合計",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "p50",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "p90",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "p95",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  }
+                ],
+                [
+                  {
+                    "cells": [
+                      {
+                        "text": "その他",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "全体",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "全体（対話のみ）",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  }
+                ]
+              ],
+              "kwargs": {
+                "foot": null
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "ピークコンテキスト帯"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "table",
+              "args": [
+                [
+                  {
+                    "label": "帯",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "prompts",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "件数シェア",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "コスト",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "コストシェア",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "$/prompt中央値",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "主モデル",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "代表例",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  }
+                ],
+                [
+                  {
+                    "cells": [
+                      {
+                        "text": "<200k",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "<200k（対話のみ）",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "≥200k–<500k",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "≥200k–<500k（対話のみ）",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "≥500k",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "≥500k（対話のみ）",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": 0,
+                        "title": null,
+                        "bar": 0,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": {
+                          "raw": 0,
+                          "display": "$0.00"
+                        },
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  }
+                ]
+              ],
+              "kwargs": {
+                "foot": null
+              }
+            },
+            {
+              "kind": "text_block",
+              "args": [
+                "メインレーンrequestなし 0 prompts（帯表から除外） · ≥1M 0 prompts"
+              ],
+              "kwargs": {
+                "cls": "dim"
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "cost上位10%のプロファイル"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "table",
+              "args": [
+                [
+                  {
+                    "label": "",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "n",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "req中央値",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "観測スパン中央値",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "中断率",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "委任費率",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "req p90",
+                    "cls": "",
+                    "sortable": false,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "代表例",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  }
+                ],
+                [
+                  {
+                    "cells": [
+                      {
+                        "text": "cost上位10%",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0分",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "残り90%",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0分",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  },
+                  {
+                    "cells": [
+                      {
+                        "text": "全体",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0分",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0%",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "0.0",
+                        "cls": "",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      },
+                      {
+                        "text": "—",
+                        "cls": "left",
+                        "sort": null,
+                        "title": null,
+                        "bar": null,
+                        "content": null,
+                        "clip": "",
+                        "dot": null,
+                        "warn": false
+                      }
+                    ],
+                    "highlight": false
+                  }
+                ]
+              ],
+              "kwargs": {
+                "foot": null
+              }
+            },
+            {
+              "kind": "text_block",
+              "args": [
+                "上位10%は残り90%よりreq中央値が 0.0倍・観測スパン中央値が 0.0倍・委任費率が +0.0pt。"
+              ],
+              "kwargs": {
+                "cls": "dim"
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "text_block",
+          "args": [
+            "対話のみ判別は暫定: projectに sandbox-experiments を含む、または -private-tmp- で始まるものを自動実行として除外。注記は機械生成。"
+          ],
+          "kwargs": {
+            "cls": "dim"
+          }
+        }
+      ],
+      "kwargs": {}
+    },
+    "timezone": "UTC"
+  }
+}

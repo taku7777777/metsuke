@@ -16,3 +16,10 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# Frontend (v2 dashboard) dev-only artifacts. The BUILT bundle in
+# src/metsuke/dashboard2/assets/ is committed and is what ships; only node_modules
+# and local esbuild/tsc caches are ignored. End users never run node.
+frontend/node_modules/
+frontend/.esbuild/
+*.tsbuildinfo

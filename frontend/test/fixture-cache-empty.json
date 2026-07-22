@@ -1,0 +1,1002 @@
+{
+  "request": {
+    "view": "cache",
+    "preset": "custom",
+    "from": "2000-01-01",
+    "to": "2000-01-07",
+    "project": null,
+    "limit": 40,
+    "order": "desc",
+    "canonical_query": "view=cache&from=2000-01-01&to=2000-01-07"
+  },
+  "freshness": {
+    "stale": false,
+    "last_ingest": 1784552400.0,
+    "age_seconds": 120.0
+  },
+  "model": {
+    "title": "metsuke · キャッシュ健全性",
+    "period": "2000-01-01 — 2000-01-07",
+    "total": {
+      "kind": "plain",
+      "args": [
+        "read $0.00 / write $0.00 · 期間内read/write 0.00倍 · 未相殺write費 $0.00（推定） · 起動固定費 —"
+      ],
+      "kwargs": {}
+    },
+    "body": {
+      "kind": "join",
+      "args": [
+        {
+          "kind": "insight",
+          "args": [
+            "⚡再構築費 推定$0.00（原因別: interruption $0.00 / compaction $0.00 / model_switch $0.00 / config_change $0.00 / ttl_expiry $0.00 / 未分類 $0.00） · 分類カバレッジ 0.0%（件数ベース） · — 直近4週ttl_expiry 0回"
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "plain",
+          "args": [
+            ""
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "legend",
+          "args": [
+            [
+              [
+                "interruption",
+                "#f87171"
+              ],
+              [
+                "compaction",
+                "#fb923c"
+              ],
+              [
+                "model_switch",
+                "#a78bfa"
+              ],
+              [
+                "config_change",
+                "#38bdf8"
+              ],
+              [
+                "ttl_expiry",
+                "#facc15"
+              ],
+              [
+                "未分類",
+                "#6b7280"
+              ]
+            ]
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "tabs",
+          "args": [
+            "metric",
+            [
+              [
+                "metric-count",
+                "件数",
+                true
+              ],
+              [
+                "metric-cost",
+                "再構築費",
+                false
+              ]
+            ]
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "panel",
+          "args": [
+            "metric",
+            "metric-count",
+            {
+              "kind": "join",
+              "args": [
+                {
+                  "kind": "heading",
+                  "args": [
+                    2,
+                    "日次⚡件数（喪失・放置起因 ≥5分間隔）"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "card",
+                  "args": [
+                    {
+                      "kind": "stacked_bars",
+                      "args": [
+                        [
+                          "2000-01-01",
+                          "2000-01-02",
+                          "2000-01-03",
+                          "2000-01-04",
+                          "2000-01-05",
+                          "2000-01-06",
+                          "2000-01-07"
+                        ],
+                        {
+                          "interruption": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "compaction": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "model_switch": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "config_change": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "ttl_expiry": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "unknown": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        {
+                          "interruption": "#f87171",
+                          "compaction": "#fb923c",
+                          "model_switch": "#a78bfa",
+                          "config_change": "#38bdf8",
+                          "ttl_expiry": "#facc15",
+                          "unknown": "#6b7280"
+                        }
+                      ],
+                      "kwargs": {
+                        "height": 240,
+                        "money_values": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "text_block",
+                  "args": [
+                    "直前リクエストから5分以上空いた後の喪失。1h/5m キャッシュのTTL失効。回避レバー＝離席前の区切り・再開のまとめ方・モデル切替タイミング。"
+                  ],
+                  "kwargs": {
+                    "cls": "dim"
+                  }
+                },
+                {
+                  "kind": "heading",
+                  "args": [
+                    2,
+                    "日次⚡件数（喪失・活動中 <5分間隔＝会話キャッシュ全リセット）"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "card",
+                  "args": [
+                    {
+                      "kind": "stacked_bars",
+                      "args": [
+                        [
+                          "2000-01-01",
+                          "2000-01-02",
+                          "2000-01-03",
+                          "2000-01-04",
+                          "2000-01-05",
+                          "2000-01-06",
+                          "2000-01-07"
+                        ],
+                        {
+                          "interruption": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "compaction": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "model_switch": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "config_change": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "ttl_expiry": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "unknown": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        {
+                          "interruption": "#f87171",
+                          "compaction": "#fb923c",
+                          "model_switch": "#a78bfa",
+                          "config_change": "#38bdf8",
+                          "ttl_expiry": "#facc15",
+                          "unknown": "#6b7280"
+                        }
+                      ],
+                      "kwargs": {
+                        "height": 240,
+                        "money_values": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "text_block",
+                  "args": [
+                    "5分以内の連続作業中に、内容が変わっていないのに会話キャッシュが一括ミスし全再write（read≈9-18kへ）した喪失。147/169が同量再write（縮小なし）・102件が30秒未満・132/147がtool loop途中。idle TTL/context edit/内容変化はいずれも棄却され、prompt caching が best-effort（TTL内・活動中でも保持保証なし）である挙動と整合＝ユーザー起因ではない（06-open-questions Q14）。provider側evictionかCC側挙動かは transcript から区別不可。"
+                  ],
+                  "kwargs": {
+                    "cls": "dim"
+                  }
+                },
+                {
+                  "kind": "heading",
+                  "args": [
+                    2,
+                    "日次⚡件数（増加・参考／損失ではない）"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "card",
+                  "args": [
+                    {
+                      "kind": "stacked_bars",
+                      "args": [
+                        [
+                          "2000-01-01",
+                          "2000-01-02",
+                          "2000-01-03",
+                          "2000-01-04",
+                          "2000-01-05",
+                          "2000-01-06",
+                          "2000-01-07"
+                        ],
+                        {
+                          "interruption": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "compaction": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "model_switch": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "config_change": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "ttl_expiry": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "unknown": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        {
+                          "interruption": "#f87171",
+                          "compaction": "#fb923c",
+                          "model_switch": "#a78bfa",
+                          "config_change": "#38bdf8",
+                          "ttl_expiry": "#facc15",
+                          "unknown": "#6b7280"
+                        }
+                      ],
+                      "kwargs": {
+                        "height": 240,
+                        "money_values": false
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "text_block",
+                  "args": [
+                    "gap>0＝別経路で作られたキャッシュを読んだ・喪失ではない。実測で約8割が『直前ターンの output 再読』による会計上の偽陽性、残り約2割は大容量context再アタッチ（別経路で書かれたブロックの読み戻し）。増加側は金額影響が軽微（再構築費総額の約1%）のため補正は見送り。件数とcauseの解釈時のみ留意。"
+                  ],
+                  "kwargs": {
+                    "cls": "dim"
+                  }
+                }
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {
+            "active": true
+          }
+        },
+        {
+          "kind": "panel",
+          "args": [
+            "metric",
+            "metric-cost",
+            {
+              "kind": "join",
+              "args": [
+                {
+                  "kind": "heading",
+                  "args": [
+                    2,
+                    "日次⚡再構築費（喪失・放置起因 ≥5分間隔）"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "card",
+                  "args": [
+                    {
+                      "kind": "stacked_bars",
+                      "args": [
+                        [
+                          "2000-01-01",
+                          "2000-01-02",
+                          "2000-01-03",
+                          "2000-01-04",
+                          "2000-01-05",
+                          "2000-01-06",
+                          "2000-01-07"
+                        ],
+                        {
+                          "interruption": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "compaction": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "model_switch": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "config_change": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "ttl_expiry": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "unknown": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        {
+                          "interruption": "#f87171",
+                          "compaction": "#fb923c",
+                          "model_switch": "#a78bfa",
+                          "config_change": "#38bdf8",
+                          "ttl_expiry": "#facc15",
+                          "unknown": "#6b7280"
+                        }
+                      ],
+                      "kwargs": {
+                        "height": 240,
+                        "money_values": true
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "text_block",
+                  "args": [
+                    "（再構築費・ドル）直前リクエストから5分以上空いた後の喪失。1h/5m キャッシュのTTL失効。回避レバー＝離席前の区切り・再開のまとめ方・モデル切替タイミング。"
+                  ],
+                  "kwargs": {
+                    "cls": "dim"
+                  }
+                },
+                {
+                  "kind": "heading",
+                  "args": [
+                    2,
+                    "日次⚡再構築費（喪失・活動中 <5分間隔＝会話キャッシュ全リセット）"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "card",
+                  "args": [
+                    {
+                      "kind": "stacked_bars",
+                      "args": [
+                        [
+                          "2000-01-01",
+                          "2000-01-02",
+                          "2000-01-03",
+                          "2000-01-04",
+                          "2000-01-05",
+                          "2000-01-06",
+                          "2000-01-07"
+                        ],
+                        {
+                          "interruption": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "compaction": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "model_switch": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "config_change": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "ttl_expiry": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "unknown": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        {
+                          "interruption": "#f87171",
+                          "compaction": "#fb923c",
+                          "model_switch": "#a78bfa",
+                          "config_change": "#38bdf8",
+                          "ttl_expiry": "#facc15",
+                          "unknown": "#6b7280"
+                        }
+                      ],
+                      "kwargs": {
+                        "height": 240,
+                        "money_values": true
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "text_block",
+                  "args": [
+                    "（再構築費・ドル）5分以内の連続作業中に、内容が変わっていないのに会話キャッシュが一括ミスし全再write（read≈9-18kへ）した喪失。147/169が同量再write（縮小なし）・102件が30秒未満・132/147がtool loop途中。idle TTL/context edit/内容変化はいずれも棄却され、prompt caching が best-effort（TTL内・活動中でも保持保証なし）である挙動と整合＝ユーザー起因ではない（06-open-questions Q14）。provider側evictionかCC側挙動かは transcript から区別不可。"
+                  ],
+                  "kwargs": {
+                    "cls": "dim"
+                  }
+                },
+                {
+                  "kind": "heading",
+                  "args": [
+                    2,
+                    "日次⚡再構築費（増加・参考／損失ではない）"
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "card",
+                  "args": [
+                    {
+                      "kind": "stacked_bars",
+                      "args": [
+                        [
+                          "2000-01-01",
+                          "2000-01-02",
+                          "2000-01-03",
+                          "2000-01-04",
+                          "2000-01-05",
+                          "2000-01-06",
+                          "2000-01-07"
+                        ],
+                        {
+                          "interruption": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "compaction": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "model_switch": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "config_change": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "ttl_expiry": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ],
+                          "unknown": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        {
+                          "interruption": "#f87171",
+                          "compaction": "#fb923c",
+                          "model_switch": "#a78bfa",
+                          "config_change": "#38bdf8",
+                          "ttl_expiry": "#facc15",
+                          "unknown": "#6b7280"
+                        }
+                      ],
+                      "kwargs": {
+                        "height": 240,
+                        "money_values": true
+                      }
+                    }
+                  ],
+                  "kwargs": {}
+                },
+                {
+                  "kind": "text_block",
+                  "args": [
+                    "（再構築費・ドル）gap>0＝別経路で作られたキャッシュを読んだ・喪失ではない。実測で約8割が『直前ターンの output 再読』による会計上の偽陽性、残り約2割は大容量context再アタッチ（別経路で書かれたブロックの読み戻し）。増加側は金額影響が軽微（再構築費総額の約1%）のため補正は見送り。件数とcauseの解釈時のみ留意。"
+                  ],
+                  "kwargs": {
+                    "cls": "dim"
+                  }
+                }
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {
+            "active": false
+          }
+        },
+        {
+          "kind": "join",
+          "args": [
+            {
+              "kind": "heading",
+              "args": [
+                2,
+                "⚡喪失 再構築費 上位15（コスト影響順）"
+              ],
+              "kwargs": {}
+            },
+            {
+              "kind": "table",
+              "args": [
+                [
+                  {
+                    "label": "区分",
+                    "cls": "left",
+                    "sortable": true,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "sid",
+                    "cls": "left",
+                    "sortable": true,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "project",
+                    "cls": "left",
+                    "sortable": true,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "原因",
+                    "cls": "",
+                    "sortable": true,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "間隔",
+                    "cls": "",
+                    "sortable": true,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "喪失tok",
+                    "cls": "",
+                    "sortable": true,
+                    "sort_dir": ""
+                  },
+                  {
+                    "label": "再構築費 ▼",
+                    "cls": "",
+                    "sortable": true,
+                    "sort_dir": "desc"
+                  },
+                  {
+                    "label": "command",
+                    "cls": "left",
+                    "sortable": false,
+                    "sort_dir": ""
+                  }
+                ],
+                []
+              ],
+              "kwargs": {
+                "foot": null
+              }
+            },
+            {
+              "kind": "text_block",
+              "args": [
+                "再構築費＝リセットrequestのwrite費（read の約20倍高い1h/5m単価で書き直したドル）。compaction 行は意図的な要約writeを含むため純粋な無駄ではない点に注意。個別精査は metsuke trace へ。"
+              ],
+              "kwargs": {
+                "cls": "dim"
+              }
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "heading",
+          "args": [
+            2,
+            "日次費目バランス"
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "legend",
+          "args": [
+            [
+              [
+                "cache read",
+                "#2dd4bf"
+              ],
+              [
+                "cache write",
+                "#facc15"
+              ],
+              [
+                "w1h選択率",
+                "#fb923c"
+              ]
+            ]
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "card",
+          "args": [
+            {
+              "kind": "cache_balance",
+              "args": [
+                [
+                  "2000-01-01",
+                  "2000-01-02",
+                  "2000-01-03",
+                  "2000-01-04",
+                  "2000-01-05",
+                  "2000-01-06",
+                  "2000-01-07"
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ]
+              ],
+              "kwargs": {}
+            }
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "heading",
+          "args": [
+            2,
+            "write費の多いセッション上位15"
+          ],
+          "kwargs": {}
+        },
+        {
+          "kind": "table",
+          "args": [
+            [
+              {
+                "label": "sid",
+                "cls": "left",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "project",
+                "cls": "left",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "⚡上位原因",
+                "cls": "",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "write 5m / 1h",
+                "cls": "",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "cache_read率",
+                "cls": "",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "主モデル",
+                "cls": "",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "blended単価",
+                "cls": "",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "read費",
+                "cls": "",
+                "sortable": 0,
+                "sort_dir": ""
+              },
+              {
+                "label": "command",
+                "cls": "left",
+                "sortable": 0,
+                "sort_dir": ""
+              }
+            ],
+            []
+          ],
+          "kwargs": {
+            "foot": null
+          }
+        },
+        {
+          "kind": "text_block",
+          "args": [
+            "ハイライト: 非混合かつcache_read率<90%かつ総額≥$1。blended単価はモデル間比較不可・生トークン分母（中断output未計上で過小方向）。write→read非対応の期間集計近似。対話のみ判別基準は暫定。"
+          ],
+          "kwargs": {
+            "cls": "dim"
+          }
+        }
+      ],
+      "kwargs": {}
+    },
+    "timezone": "UTC"
+  }
+}

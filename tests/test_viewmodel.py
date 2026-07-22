@@ -141,6 +141,30 @@ def test_common_dtos_are_frozen_validated_and_json_serializable():
     assert display_name(None) == "—"
 
 
+def test_to_jsonable_serializes_sqlite_row_as_a_column_value_object():
+    """trend's volume_chart embeds raw sqlite3.Row markers/regimes; to_jsonable must render
+    them as JSON objects (else json.dumps would break). Purely additive — every value passes
+    through to_jsonable unchanged, so no number is altered."""
+    import sqlite3
+
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "select 1784203200.0 as ts_start, null as ts_end, '施策A' as category, 'pending' as verdict"
+    ).fetchone()
+    assert to_jsonable(row) == {
+        "ts_start": 1784203200.0,
+        "ts_end": None,
+        "category": "施策A",
+        "verdict": "pending",
+    }
+    # A list of Rows (how markers/regimes actually arrive) round-trips through json.dumps.
+    assert json.loads(json.dumps(to_jsonable((row,)))) == [
+        {"ts_start": 1784203200.0, "ts_end": None, "category": "施策A", "verdict": "pending"}
+    ]
+    conn.close()
+
+
 def test_prompt_kpi_single_definition_supports_window_and_project(model_env):
     _, conn, _ = model_env
     assert count_cost_bearing_prompts(conn) == 2
