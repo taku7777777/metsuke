@@ -149,6 +149,15 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 content_type="text/css; charset=utf-8",
             )
             return
+        if request_path == "/dashboard.js":
+            # Served without auth, exactly like /dashboard.css: it carries no ledger
+            # data, only progressive-enhancement behaviour attached after DOM ready.
+            self._respond(
+                200,
+                pages.dashboard_js().encode(),
+                content_type="text/javascript; charset=utf-8",
+            )
+            return
         if request_path == "/bootstrap":
             self._bootstrap()
             return

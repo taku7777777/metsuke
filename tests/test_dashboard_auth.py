@@ -14,6 +14,7 @@ from pathlib import Path
 
 import pytest
 
+from conftest import assert_csp_safe
 from metsuke import ledger, trace_html
 from metsuke.dashboard import auth, server, usage
 
@@ -677,7 +678,9 @@ def test_authenticated_trace_post_runs_job_and_status_page_never_links_file(auth
     assert detail_status == 200
     assert b'<form method="post" action="/trace-jobs">' in detail
     assert f'name="csrf_token" value="{csrf}"'.encode() in detail
-    assert b"<script" not in detail.lower()
+    # Detail pages share _shell: only the served, deferred /dashboard.js, no inline
+    # script body and no inline handler.
+    assert_csp_safe(detail, context="session detail")
 
     def generate(session_id, conn):
         assert session_id == AUTH_SESSION_ID
@@ -899,7 +902,7 @@ def test_pending_job_page_polls_and_never_claims_another_tab(auth_server, status
     assert "別タブ".encode() not in body
     assert "開きました".encode() not in body
     assert b"/traces/" not in body
-    assert b"<script" not in body.lower()
+    assert_csp_safe(body, context="trace-job pending")
 
 
 def test_ready_job_page_navigates_this_tab_and_keeps_the_prompt_fragment(auth_server):
@@ -916,7 +919,7 @@ def test_ready_job_page_navigates_this_tab_and_keeps_the_prompt_fragment(auth_se
     # page rather than bouncing through the job page again.
     assert _headers(headers)["Refresh"] == f"0; url={target}"
     assert target.encode() in body
-    assert b"<script" not in body.lower()
+    assert_csp_safe(body, context="trace-job ready")
 
 
 def test_ready_job_page_without_a_prompt_omits_the_fragment(auth_server):

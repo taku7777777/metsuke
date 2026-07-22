@@ -410,7 +410,7 @@ def stacked_bars(
             base -= segment_height
             value_label = money(value) if money_values else f"{value:g}件"
             out.append(
-                f'<rect class="ch-series" x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment_height):.2f}" fill="{colors[key]}"><title>{_esc(day.strftime("%m-%d"))} {_esc(key)} {_esc(value_label)}</title></rect>'
+                f'<rect class="ch-series" x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment_height):.2f}" fill="{colors[key]}" data-series="{_esc(key)}" data-label="{_esc(day.strftime("%m-%d"))}" data-value="{_esc(value_label)}"><title>{_esc(day.strftime("%m-%d"))} {_esc(key)} {_esc(value_label)}</title></rect>'
             )
         if totals[index] > 0.8 * max(totals, default=1):
             total_label = money(totals[index]) if money_values else f"{totals[index]:g}"
@@ -454,7 +454,7 @@ def cache_balance(days, read, write_5m, write_1h, *, width=1150, height=240) -> 
         ):
             bar_height = value / top * ph
             out.append(
-                f'<rect class="ch-series" x="{x + offset - bar_width / 2:.1f}" y="{mt + ph - bar_height:.1f}" width="{bar_width:.1f}" height="{bar_height:.1f}" fill="{color}"><title>{_esc(day.strftime("%m-%d"))} {name} {_esc(money(value))}</title></rect>'
+                f'<rect class="ch-series" x="{x + offset - bar_width / 2:.1f}" y="{mt + ph - bar_height:.1f}" width="{bar_width:.1f}" height="{bar_height:.1f}" fill="{color}" data-series="{_esc(name)}" data-label="{_esc(day.strftime("%m-%d"))}" data-value="{_esc(money(value))}"><title>{_esc(day.strftime("%m-%d"))} {name} {_esc(money(value))}</title></rect>'
             )
         points.append(f"{x:.1f},{mt + ph - ratio / 100 * ph:.1f}")
         out.append(
@@ -509,7 +509,7 @@ def volume_chart(labels, data, colors, moving, grain, lo_ts, hi_ts, markers, reg
             segment = values[index] / top * ph
             base -= segment
             out.append(
-                f'<rect class="ch-series" x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment):.2f}" fill="{colors[key]}"><title>{_esc(_axis_label(label, grain))} {_esc(key)} {money(values[index])}</title></rect>'
+                f'<rect class="ch-series" x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment):.2f}" fill="{colors[key]}" data-series="{_esc(key)}" data-label="{_esc(_axis_label(label, grain))}" data-value="{_esc(money(values[index]))}"><title>{_esc(_axis_label(label, grain))} {_esc(key)} {money(values[index])}</title></rect>'
             )
         if grain != "daily" or index % 2 == 0:
             out.append(
@@ -570,7 +570,7 @@ def line_chart(
             y = mt + ph - value / top * ph
             segment.append(f"{x:.1f},{y:.1f}")
             out.append(
-                f'<circle class="ch-series" cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{colors[name]}"><title>{_esc(_axis_label(labels[index], grain))} {_esc(name)} {_esc(fmt(value))}</title></circle>'
+                f'<circle class="ch-series" cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{colors[name]}" data-series="{_esc(name)}" data-label="{_esc(_axis_label(labels[index], grain))}" data-value="{_esc(fmt(value))}"><title>{_esc(_axis_label(labels[index], grain))} {_esc(name)} {_esc(fmt(value))}</title></circle>'
             )
         if segment:
             segments.append(segment)
@@ -642,7 +642,8 @@ def daily_context(days, values, selected, *, width=1150, height=230) -> Html:
         label = money(value) if value is not None else "—"
         out.append(
             f'<rect class="{cls}" x="{x - bar_width / 2:.1f}" y="{mt + ph - height_px:.1f}" '
-            f'width="{bar_width:.1f}" height="{max(0, height_px):.2f}">'
+            f'width="{bar_width:.1f}" height="{max(0, height_px):.2f}" '
+            f'data-series="cost" data-label="{_esc(day.strftime("%m-%d"))}" data-value="{_esc(label)}">'
             f'<title>{_esc(day.strftime("%m-%d"))} {_esc(label)}</title></rect>'
         )
         if index % 3 == 0 or index == len(days) - 1:

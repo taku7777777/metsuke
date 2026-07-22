@@ -126,6 +126,22 @@ def test_security_headers_are_present_and_cors_is_absent(running_server):
     assert not any(name.lower().startswith("access-control-") for name in style_headers)
 
 
+def test_dashboard_js_is_served_unauthenticated_as_javascript(running_server):
+    """The progressive-enhancement script is served exactly like the stylesheet:
+
+    no cookie required (it carries no ledger data) and a JavaScript content type.
+    """
+
+    dashboard, _ = running_server
+    status, body, headers = _request(dashboard.port, "/dashboard.js")
+    assert status == 200
+    assert headers["Content-Type"] == "text/javascript; charset=utf-8"
+    # It attaches behaviour with addEventListener after DOM ready — never inline.
+    assert b"addEventListener" in body
+    assert b"th[data-sortable]" in body and b"[data-series]" in body
+    assert not any(name.lower().startswith("access-control-") for name in headers)
+
+
 def test_port_conflict_fails_without_contacting_other_listener(tmp_path):
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listener.bind((server.LOOPBACK_HOST, 0))
