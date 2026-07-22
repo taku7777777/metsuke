@@ -77,7 +77,9 @@ install_file() {
   body=$2
   mode=$3
   if [ -f "$target" ] && [ "$(cat "$target")" = "$body" ]; then
-    current_mode=$(stat -f '%Lp' "$target" 2>/dev/null || echo "")
+    # GNU and BSD stat use different flags to print the mode without a leading zero,
+    # so try each form to keep the idempotence check portable.
+    current_mode=$(stat -c '%a' "$target" 2>/dev/null || stat -f '%Lp' "$target" 2>/dev/null || echo "")
     if [ "$current_mode" = "$mode" ]; then
       echo "unchanged: $target"
       return 0
