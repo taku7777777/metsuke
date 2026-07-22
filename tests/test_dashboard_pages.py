@@ -208,6 +208,182 @@ def test_pages_have_no_external_hosts_and_server_supplies_strict_csp(page_env):
         assert directive in source
 
 
+def test_overview_uses_csp_safe_svg_charts_theme_aware_and_full_width(page_env):
+    database_path, _, _ = page_env
+    text = _response(
+        database_path, f"view=overview&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+    ).body.decode()
+    css = pages.stylesheet()
+    assert "<title>API換算コスト の推移</title>" in text
+    assert "<title>費目別コスト構成</title>" in text
+    assert 'class="metric-bar"' in text
+    assert "style=" not in text
+    # The dashboard is theme-aware: charts must read correctly on light and dark.
+    assert "color-scheme: light dark" in css
+    assert "prefers-color-scheme: dark" in css
+    assert ':root[data-theme="dark"]' in css and ':root[data-theme="light"]' in css
+    # Chart colours resolve through custom properties defined for both themes.
+    assert "--ch-axis: #5c6472" in css and "--ch-axis: #7d8899" in css
+    assert "--ch-avg: #16181d" in css and "--ch-avg: #ffffff" in css
+    assert "max-width: 96rem" not in css
+    assert "body { margin: 0; width: 100%" in css
+
+
+def test_overview_daily_context_chart_highlights_selection(page_env):
+    """Test 6: the daily context chart is an SVG that marks the selected range via
+    CSS classes (band + edges + brighter bars), with no inline style or script."""
+    database_path, _, _ = page_env
+    text = _response(
+        database_path, f"view=overview&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+    ).body.decode()
+    assert '<svg class="chart"' in text
+    assert 'class="ch-selband"' in text
+    assert 'class="ch-seledge"' in text
+    assert 'class="ch-day-sel"' in text
+    assert "style=" not in text
+    assert "<script" not in text.lower()
+    # The highlight colours resolve through custom properties defined for both themes.
+    css = pages.stylesheet()
+    assert "--ch-day-sel: #1b4fd8" in css and "--ch-day-sel: #7aa2f7" in css
+    assert "--ch-sel-band: #1b4fd8" in css and "--ch-sel-band: #7aa2f7" in css
+
+
+def test_chart_svg_carries_no_hardcoded_theme_colours(page_env):
+    """Structural chart colours must come from CSS, not baked-in dark hexes."""
+
+    database_path, _, _ = page_env
+    for view in ("overview", "period", "trend", "cache", "dist"):
+        text = _response(
+            database_path, f"view={view}&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+        ).body.decode()
+        for dark_only in ('stroke="#2d3648"', 'fill="#7d8899"', 'fill="#d6dde8"', 'stroke="#fff"'):
+            assert dark_only not in text, f"{view} still hardcodes {dark_only}"
+
+
+def test_every_chart_node_kind_renders_svg_not_a_numeric_table():
+    """Test 1: all four chart kinds must reach the SVG renderer in the dashboard.
+
+    Before the shared-renderer change every one of these was degraded to a
+    numeric table by ``_series_table`` and produced no ``<svg>`` at all.
+    """
+
+    labels = [FIXTURE_DAY - dt.timedelta(days=index) for index in (2, 1, 0)]
+    values = [1.0, 2.0, 3.0]
+    colors = {"費用": "#7aa2f7"}
+    kinds = {
+        "stacked_bars": node("stacked_bars", labels, {"費用": values}, colors),
+        "line_chart": node(
+            "line_chart", labels, {"費用": values}, colors, "", money_axis=True, grain="daily"
+        ),
+        "volume_chart": node(
+            "volume_chart",
+            labels,
+            {"費用": values},
+            colors,
+            None,
+            "daily",
+            0,
+            1,
+            [],
+            [],
+        ),
+        "cache_balance": node("cache_balance", labels, values, values, values),
+    }
+    for kind, chart in kinds.items():
+        text = pages._node(chart)
+        assert '<svg class="chart"' in text, f"{kind} did not render a chart svg"
+        assert "<title>" in text, f"{kind} lost its native tooltip title"
+
+
+def _all_dashboard_markup(database_path) -> dict[str, str]:
+    return {
+        view: _response(
+            database_path, f"view={view}&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+        ).body.decode()
+        for view in ("overview", "period", "trend", "cache", "dist")
+    }
+
+
+def test_no_view_emits_inline_style_or_script(page_env):
+    """Test 2: the browser-free CSP gate.
+
+    ``style-src 'self'`` with no ``'unsafe-inline'`` means an inline ``style=``
+    attribute is silently dropped by the browser, and ``<script>`` never runs.
+    """
+
+    database_path, _, _ = page_env
+    for view, text in _all_dashboard_markup(database_path).items():
+        assert "style=" not in text, f"{view} emits a CSP-blocked inline style"
+        assert "<script" not in text.lower(), f"{view} emits a script tag"
+
+
+def test_bar_cells_render_visibly_and_encode_the_right_magnitude():
+    """Test 3: bar cells are real geometry, not an inline width style."""
+
+    for ratio in (0.0, 0.25, 0.5, 1.0):
+        text = pages._cell(Cell("$1.00", bar=ratio))
+        assert "style=" not in text
+        assert 'class="bar-track"' in text and 'class="bar-fill"' in text
+        # The fill width is the magnitude, on a 0..100 viewBox.
+        assert f'class="bar-fill" width="{ratio * 100:.2f}"' in text
+
+    # A themed class, not a hardcoded colour, so the bar is visible in both themes.
+    css = pages.stylesheet()
+    assert ".bar-fill{fill:var(--ch-bar-fill" in css
+    assert "--ch-bar-fill: #1b4fd8" in css and "--ch-bar-fill: #7aa2f7" in css
+
+
+def test_chart_nodes_render_svg_with_validated_legends_and_ignore_page_offset():
+    labels = [
+        FIXTURE_DAY - dt.timedelta(days=2),
+        FIXTURE_DAY - dt.timedelta(days=1),
+        FIXTURE_DAY,
+    ]
+    chart = node(
+        "line_chart",
+        labels,
+        {"費用": [1.0, 2.0, 3.0]},
+        {"費用": "#7aa2f7"},
+        "",
+        money_axis=True,
+        grain="daily",
+    )
+    text = pages._node(chart, Page(limit=1, page=3))
+    assert "<svg " in text and text.count("<circle ") == 3
+    assert all(day.strftime("%m-%d") in text for day in labels)
+    assert text.count("<tbody><tr>") == 1 and text.count("<tr>") == 4
+    assert "<details" in text
+
+    legend = pages._node(node("legend", [("費用", "#7aa2f7")]))
+    assert "<svg " in legend and 'fill="#7aa2f7"' in legend
+    with pytest.raises(ValueError):
+        pages._node(node("legend", [("危険", "red; background:url(x)")]))
+
+
+def test_cell_bar_and_dot_are_inline_svg_without_inline_style():
+    text = pages._cell(Cell("$1.00", bar=0.5, dot="#2dd4bf"))
+    assert text.count("<svg ") == 2
+    assert 'width="50.00"' in text and 'fill="#2dd4bf"' in text
+    assert "style=" not in text
+    with pytest.raises(ValueError):
+        pages._cell(Cell("x", dot="url(evil)"))
+
+
+def test_trend_and_cache_restore_existing_svg_primitives(page_env):
+    database_path, _, _ = page_env
+    trend_text = _response(
+        database_path, f"view=trend&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+    ).body.decode()
+    cache_text = _response(
+        database_path, f"view=cache&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
+    ).body.decode()
+    assert "期間別コストと施策・外生イベント" in trend_text
+    assert " の推移</title>" in trend_text
+    assert "期間別件数の積み上げ棒グラフ" in cache_text
+    assert "キャッシュ読み書き費用と1時間キャッシュ比率" in cache_text
+    assert "<details" in trend_text and "<details" in cache_text
+
+
 def test_accessibility_has_text_thresholds_keyboard_narrow_and_reduced_motion(page_env):
     database_path, _, _ = page_env
     response = _response(database_path, f"view=dist&from={FIXTURE_DAY}&to={FIXTURE_DAY}")

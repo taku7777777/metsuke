@@ -122,6 +122,10 @@ def extract_dashboard_values(html: str, *, view: str, timezone: str) -> dict:
 
     charts = []
     for svg in _nodes(main, "svg"):
+        # Only real charts carry class="chart". The inline swatch and magnitude-bar
+        # SVGs are cell decoration, not charts, and would otherwise flood this list.
+        if "chart" not in _classes(svg):
+            continue
         charts.append(
             {
                 "titles": [_text(node) for node in _nodes(svg, "title")],

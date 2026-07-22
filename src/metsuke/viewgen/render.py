@@ -25,6 +25,92 @@ _COLOR = re.compile(r"#[0-9a-fA-F]{3,8}\Z")
 _ID = re.compile(r"[A-Za-z][A-Za-z0-9_-]*\Z")
 
 
+def validate_color(value: str) -> str:
+    """Return a renderer-safe SVG color or reject it."""
+
+    if not _COLOR.fullmatch(value):
+        raise ValueError(f"invalid color: {value}")
+    return value
+
+
+_CLIP_LADDER = "".join(f".cw{step}{{max-width:{step * 20}px}}" for step in range(1, 31))
+
+CHART_CSS = (
+    """
+/* --- shared chart + cell presentation (single source for both renderers) ---
+   Colours resolve through custom properties so the same markup reads correctly
+   in light and dark. Each host defines the properties for its themes; the
+   fallbacks below are the dark values. */
+svg.chart{display:block;width:100%;height:auto}
+svg.chart text{font-size:11px}
+.ch-grid{stroke:var(--ch-grid,#2d3648)}
+.ch-divider{stroke:var(--ch-divider,#394254)}
+.ch-axis{fill:var(--ch-axis,#7d8899)}
+.ch-weekday{fill:var(--ch-weekday,#aab4c3)}
+.ch-value{fill:var(--ch-value,#d6dde8)}
+.ch-avg{stroke:var(--ch-avg,#ffffff)}
+.ch-regime{stroke:var(--ch-regime,#f87171)}
+.ch-marker{fill:var(--ch-marker,#7aa2f7);opacity:.10}
+/* Series keep their data-driven fill; the edge stroke guarantees the shape stays
+   legible against a light surface, where saturated fills alone can wash out. */
+.ch-series{stroke:var(--ch-series-edge,transparent);stroke-width:.5}
+.ch-line{stroke-linejoin:round;stroke-linecap:round}
+/* Daily context bars: a fixed ~month of days with the selected range highlighted.
+   Selection is conveyed three independent ways so it never relies on colour alone:
+   a translucent band behind the range, dashed boundary edges, and brighter bars. */
+.ch-day{fill:var(--ch-day,#3d4657)}
+.ch-day-sel{fill:var(--ch-day-sel,#7aa2f7)}
+.ch-selband{fill:var(--ch-sel-band,#7aa2f7);opacity:.14}
+.ch-seledge{stroke:var(--ch-sel-edge,#7aa2f7);stroke-width:1.5;stroke-dasharray:4 3}
+.dot{display:inline-block;width:8px;height:8px;margin-right:5px;vertical-align:middle}
+.barcell{display:inline-flex;width:132px;align-items:center;justify-content:space-between;vertical-align:middle}
+.barcell b{display:inline-block;width:65px;text-align:right}
+svg.bar{display:inline-block;width:60px;height:7px;vertical-align:middle}
+.bar-track{fill:var(--ch-bar-track,#1c2330)}
+.bar-fill{fill:var(--ch-bar-fill,#7aa2f7)}
+tr.hl{background:var(--ch-highlight,#3a2025)}
+.grain-panel{display:none}
+.grain-panel.on{display:block}
+.clip,.project-clip,.prompt-clip{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.project-clip{max-width:220px}
+.prompt-clip{max-width:260px}
+"""
+    + _CLIP_LADDER
+)
+
+
+def swatch(color: str) -> str:
+    """A colour chip as inline SVG.
+
+    Presentation attributes are CSP-safe; an inline ``style=`` attribute is not.
+    """
+
+    safe = validate_color(color)
+    return (
+        '<svg class="dot" viewBox="0 0 10 10" aria-hidden="true">'
+        f'<circle cx="5" cy="5" r="5" fill="{safe}"/></svg>'
+    )
+
+
+def bar_svg(ratio: float) -> str:
+    """The in-table magnitude bar, drawn as SVG so no inline width style is needed."""
+
+    filled = min(100.0, max(0.0, ratio * 100))
+    return (
+        '<span class="barcell"><svg class="bar" viewBox="0 0 100 7" preserveAspectRatio="none" '
+        f'role="img" aria-label="{filled:.1f}%">'
+        '<rect class="bar-track" width="100" height="7"/>'
+        f'<rect class="bar-fill" width="{filled:.2f}" height="7"/></svg>'
+    )
+
+
+def _clip_width_class(max_width: int) -> str:
+    """Quantise a pixel width onto a fixed CSS class ladder (20px steps)."""
+
+    step = min(30, max(1, math.ceil(max_width / 20)))
+    return f"cw{step}"
+
+
 @dataclass(frozen=True)
 class Cell:
     text: str = ""
@@ -117,25 +203,16 @@ def table(
             if cell.dot is not None:
                 if not _COLOR.fullmatch(cell.dot):
                     raise ValueError(f"invalid dot color: {cell.dot}")
-                content = f'<i class="dot" style="background:{cell.dot}"></i>' + content
+                content = swatch(cell.dot) + content
             if cell.clip:
                 if cell.clip not in {"clip", "project-clip", "prompt-clip"}:
                     raise ValueError(f"invalid clip kind: {cell.clip}")
-                style = ' style="max-width:260px"' if cell.clip == "prompt-clip" else ""
-                cls = "clip" if cell.clip == "prompt-clip" else cell.clip
-                content = f'<span class="{cls}"{style}>{content}</span>'
+                content = f'<span class="{cell.clip}">{content}</span>'
             if cell.bar is not None:
-                content = (
-                    '<span class="barcell"><span class="bar"><i style="width:'
-                    f'{cell.bar * 100:.1f}%"></i></span><b>{content}</b></span>'
-                )
+                content = f"{bar_svg(cell.bar)}<b>{content}</b></span>"
             cells.append(f"<td{attrs(cell.cls, cell.sort, cell.title)}>{content}</td>")
-        style = (
-            ' style="background:#3a2025"'
-            if isinstance(row_value, Row) and row_value.highlight
-            else ""
-        )
-        body_rows.append(f"<tr{style}>" + "".join(cells) + "</tr>")
+        highlight = ' class="hl"' if isinstance(row_value, Row) and row_value.highlight else ""
+        body_rows.append(f"<tr{highlight}>" + "".join(cells) + "</tr>")
     footer = ""
     if foot is not None:
         footer = (
@@ -175,7 +252,7 @@ def legend(items: Sequence[tuple[str, str]]) -> Html:
     for label, color in items:
         if not _COLOR.fullmatch(color):
             raise ValueError(f"invalid color: {color}")
-        parts.append(f'<span><i style="background:{color}"></i>{_esc(label)}</span>')
+        parts.append(f"<span>{swatch(color)}{_esc(label)}</span>")
     return Html('<div class="legend">' + "".join(parts) + "</div>")
 
 
@@ -228,11 +305,11 @@ def grain_tabs(items: Sequence[tuple[str, str, bool, str | None]]) -> Html:
 def grain_panel(grain: str, body: Html, *, active: bool) -> Html:
     if grain not in {"daily", "weekly", "monthly"}:
         raise ValueError("invalid grain")
-    display = "block" if active else "none"
+    cls = "grain-panel on" if active else "grain-panel"
     hidden = "" if active else " hidden"
     return Html(
-        f'<div class="grain-panel" role="tabpanel" data-grain-panel="{grain}" '
-        f'style="display:{display}"{hidden}>{_safe(body)}</div>'
+        f'<div class="{cls}" role="tabpanel" data-grain-panel="{grain}"{hidden}>'
+        f"{_safe(body)}</div>"
     )
 
 
@@ -251,7 +328,7 @@ def clip(text: str, *, max_width: int, title: str | None = None) -> Html:
         raise ValueError("clip max_width must be an integer from 1 to 1000")
     title_attr = f' title="{_esc(title)}"' if title is not None else ""
     return Html(
-        f'<span class="clip" style="max-width:{max_width}px"{title_attr}>{_esc(text)}</span>'
+        f'<span class="clip {_clip_width_class(max_width)}"{title_attr}>{_esc(text)}</span>'
     )
 
 
@@ -317,7 +394,7 @@ def stacked_bars(
         y = mt + ph - value / top * ph
         label = money(value) if money_values else f"{value:g}"
         out.append(
-            f'<line x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}" stroke="#2d3648"/><text x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end" fill="#7d8899">{_esc(label)}</text>'
+            f'<line class="ch-grid" x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}"/><text class="ch-axis" x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end">{_esc(label)}</text>'
         )
     bar_width = max(3, pw / max(1, len(days)) * 0.68)
     for index, day in enumerate(days):
@@ -325,7 +402,7 @@ def stacked_bars(
         base = mt + ph
         if day.weekday() == 0:
             out.append(
-                f'<line x1="{x:.1f}" y1="{mt}" x2="{x:.1f}" y2="{mt + ph}" stroke="#394254"/>'
+                f'<line class="ch-divider" x1="{x:.1f}" y1="{mt}" x2="{x:.1f}" y2="{mt + ph}"/>'
             )
         for key, values in series.items():
             value = values[index]
@@ -333,21 +410,21 @@ def stacked_bars(
             base -= segment_height
             value_label = money(value) if money_values else f"{value:g}件"
             out.append(
-                f'<rect x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment_height):.2f}" fill="{colors[key]}"><title>{_esc(day.strftime("%m-%d"))} {_esc(key)} {_esc(value_label)}</title></rect>'
+                f'<rect class="ch-series" x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment_height):.2f}" fill="{colors[key]}"><title>{_esc(day.strftime("%m-%d"))} {_esc(key)} {_esc(value_label)}</title></rect>'
             )
         if totals[index] > 0.8 * max(totals, default=1):
             total_label = money(totals[index]) if money_values else f"{totals[index]:g}"
             out.append(
-                f'<text x="{x:.1f}" y="{base - 4:.1f}" text-anchor="middle" fill="#d6dde8">{_esc(total_label)}</text>'
+                f'<text class="ch-value" x="{x:.1f}" y="{base - 4:.1f}" text-anchor="middle">{_esc(total_label)}</text>'
             )
         if index % 2 == 0:
-            color = "#7d8899" if day.weekday() > 4 else "#aab4c3"
+            cls = "ch-axis" if day.weekday() > 4 else "ch-axis ch-weekday"
             out.append(
-                f'<text x="{x:.1f}" y="{height - 12}" text-anchor="middle" fill="{color}">{_esc(day.strftime("%m-%d"))}</text>'
+                f'<text class="{cls}" x="{x:.1f}" y="{height - 12}" text-anchor="middle">{_esc(day.strftime("%m-%d"))}</text>'
             )
     title = "期間別コストの積み上げ棒グラフ" if money_values else "期間別件数の積み上げ棒グラフ"
     return Html(
-        f'<svg viewBox="0 0 {width} {height}" role="img"><title>{title}</title>'
+        f'<svg class="chart" viewBox="0 0 {width} {height}" role="img"><title>{title}</title>'
         + "".join(out)
         + "</svg>"
     )
@@ -363,7 +440,7 @@ def cache_balance(days, read, write_5m, write_1h, *, width=1150, height=240) -> 
         value = top * index / 4
         y = mt + ph - value / top * ph
         out.append(
-            f'<line x1="{ml}" y1="{y}" x2="{width - mr}" y2="{y}" stroke="#2d3648"/><text x="{ml - 6}" y="{y + 4}" text-anchor="end" fill="#7d8899">${value:.2f}</text>'
+            f'<line class="ch-grid" x1="{ml}" y1="{y}" x2="{width - mr}" y2="{y}"/><text class="ch-axis" x="{ml - 6}" y="{y + 4}" text-anchor="end">${value:.2f}</text>'
         )
     points = []
     colors = {"read": "#2dd4bf", "write": "#facc15", "ratio": "#fb923c"}
@@ -377,17 +454,17 @@ def cache_balance(days, read, write_5m, write_1h, *, width=1150, height=240) -> 
         ):
             bar_height = value / top * ph
             out.append(
-                f'<rect x="{x + offset - bar_width / 2:.1f}" y="{mt + ph - bar_height:.1f}" width="{bar_width:.1f}" height="{bar_height:.1f}" fill="{color}"><title>{_esc(day.strftime("%m-%d"))} {name} {_esc(money(value))}</title></rect>'
+                f'<rect class="ch-series" x="{x + offset - bar_width / 2:.1f}" y="{mt + ph - bar_height:.1f}" width="{bar_width:.1f}" height="{bar_height:.1f}" fill="{color}"><title>{_esc(day.strftime("%m-%d"))} {name} {_esc(money(value))}</title></rect>'
             )
         points.append(f"{x:.1f},{mt + ph - ratio / 100 * ph:.1f}")
         out.append(
-            f'<text x="{x:.1f}" y="{height - 10}" text-anchor="middle" fill="#7d8899">{_esc(day.strftime("%m-%d"))}</text>'
+            f'<text class="ch-axis" x="{x:.1f}" y="{height - 10}" text-anchor="middle">{_esc(day.strftime("%m-%d"))}</text>'
         )
     out.append(
-        f'<polyline points="{" ".join(points)}" fill="none" stroke="{colors["ratio"]}" stroke-width="2"/>'
+        f'<polyline class="ch-line" points="{" ".join(points)}" fill="none" stroke="{colors["ratio"]}" stroke-width="2"/>'
     )
     return Html(
-        f'<svg viewBox="0 0 {width} {height}" role="img">'
+        f'<svg class="chart" viewBox="0 0 {width} {height}" role="img">'
         "<title>キャッシュ読み書き費用と1時間キャッシュ比率</title>"
         + "".join(out)
         + "</svg>"
@@ -416,13 +493,13 @@ def volume_chart(labels, data, colors, moving, grain, lo_ts, hi_ts, markers, reg
         x1 = max(ml, xpos(marker["ts_start"]))
         x2 = min(width - mr, xpos(marker["ts_end"] or hi_ts))
         out.append(
-            f'<rect x="{x1:.1f}" y="{mt}" width="{max(1, x2 - x1):.1f}" height="{ph}" fill="#7aa2f7" opacity=".10"><title>{_esc(marker["category"] or "marker")} · {_esc(marker["verdict"] or "pending")}</title></rect>'
+            f'<rect class="ch-marker" x="{x1:.1f}" y="{mt}" width="{max(1, x2 - x1):.1f}" height="{ph}"><title>{_esc(marker["category"] or "marker")} · {_esc(marker["verdict"] or "pending")}</title></rect>'
         )
     for index in range(5):
         value = top * index / 4
         y = mt + ph - value / top * ph
         out.append(
-            f'<line x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}" stroke="#2d3648"/><text x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end" fill="#7d8899">{money(value)}</text>'
+            f'<line class="ch-grid" x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}"/><text class="ch-axis" x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end">{money(value)}</text>'
         )
     bar_width = max(8, pw / max(1, len(labels)) * 0.68)
     for index, label in enumerate(labels):
@@ -432,11 +509,11 @@ def volume_chart(labels, data, colors, moving, grain, lo_ts, hi_ts, markers, reg
             segment = values[index] / top * ph
             base -= segment
             out.append(
-                f'<rect x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment):.2f}" fill="{colors[key]}"><title>{_esc(_axis_label(label, grain))} {_esc(key)} {money(values[index])}</title></rect>'
+                f'<rect class="ch-series" x="{x - bar_width / 2:.1f}" y="{base:.1f}" width="{bar_width:.1f}" height="{max(0, segment):.2f}" fill="{colors[key]}"><title>{_esc(_axis_label(label, grain))} {_esc(key)} {money(values[index])}</title></rect>'
             )
         if grain != "daily" or index % 2 == 0:
             out.append(
-                f'<text x="{x:.1f}" y="{height - 12}" text-anchor="middle" fill="#7d8899">{_esc(_axis_label(label, grain))}</text>'
+                f'<text class="ch-axis" x="{x:.1f}" y="{height - 12}" text-anchor="middle">{_esc(_axis_label(label, grain))}</text>'
             )
     if moving:
         points = " ".join(
@@ -444,15 +521,15 @@ def volume_chart(labels, data, colors, moving, grain, lo_ts, hi_ts, markers, reg
             for i, value in enumerate(moving)
         )
         out.append(
-            f'<polyline points="{points}" fill="none" stroke="#fff" stroke-width="2"><title>7日移動平均</title></polyline>'
+            f'<polyline class="ch-avg" points="{points}" fill="none" stroke-width="2"><title>7日移動平均</title></polyline>'
         )
     for regime in regimes:
         x = xpos(regime["ts"])
         out.append(
-            f'<line x1="{x:.1f}" y1="{mt}" x2="{x:.1f}" y2="{mt + ph}" stroke="#f87171" stroke-dasharray="4 3"><title>{_esc(regime["kind"])}</title></line>'
+            f'<line class="ch-regime" x1="{x:.1f}" y1="{mt}" x2="{x:.1f}" y2="{mt + ph}" stroke-dasharray="4 3"><title>{_esc(regime["kind"])}</title></line>'
         )
     return Html(
-        f'<svg viewBox="0 0 {width} {height}" role="img">'
+        f'<svg class="chart" viewBox="0 0 {width} {height}" role="img">'
         "<title>期間別コストと施策・外生イベント</title>"
         + "".join(out)
         + "</svg>"
@@ -479,7 +556,7 @@ def line_chart(
         value = top * index / 4
         y = mt + ph - value / top * ph
         out.append(
-            f'<line x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}" stroke="#2d3648"/><text x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end" fill="#7d8899">{_esc(fmt(value))}</text>'
+            f'<line class="ch-grid" x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}"/><text class="ch-axis" x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end">{_esc(fmt(value))}</text>'
         )
     for name, values in series.items():
         segments, segment = [], []
@@ -493,25 +570,89 @@ def line_chart(
             y = mt + ph - value / top * ph
             segment.append(f"{x:.1f},{y:.1f}")
             out.append(
-                f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{colors[name]}"><title>{_esc(_axis_label(labels[index], grain))} {_esc(name)} {_esc(fmt(value))}</title></circle>'
+                f'<circle class="ch-series" cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{colors[name]}"><title>{_esc(_axis_label(labels[index], grain))} {_esc(name)} {_esc(fmt(value))}</title></circle>'
             )
         if segment:
             segments.append(segment)
         for points in segments:
             if len(points) > 1:
                 out.append(
-                    f'<polyline points="{" ".join(points)}" fill="none" stroke="{colors[name]}" stroke-width="2"/>'
+                    f'<polyline class="ch-line" points="{" ".join(points)}" fill="none" stroke="{colors[name]}" stroke-width="2"/>'
                 )
     for index, label in enumerate(labels):
         x = ml + (index + 0.5) * pw / len(labels)
         out.append(
-            f'<text x="{x:.1f}" y="{height - 12}" text-anchor="middle" fill="#7d8899">{_esc(_axis_label(label, grain))}</text>'
+            f'<text class="ch-axis" x="{x:.1f}" y="{height - 12}" text-anchor="middle">{_esc(_axis_label(label, grain))}</text>'
         )
     series_label = "、".join(_esc(name) for name in series)
     return Html(
-        f'<svg viewBox="0 0 {width} {height}" role="img"><title>{series_label} の推移</title>'
+        f'<svg class="chart" viewBox="0 0 {width} {height}" role="img"><title>{series_label} の推移</title>'
         + "".join(out)
         + "</svg>"
+    )
+
+
+def daily_context(days, values, selected, *, width=1150, height=230) -> Html:
+    """A fixed-window daily cost bar chart with the selected range highlighted.
+
+    ``days``/``values``/``selected`` are parallel lists (one entry per day; a value
+    of ``None`` is an unknown-price day). Colours come entirely from CSS classes so
+    the chart reads correctly in light and dark, and the selection is marked with a
+    band + dashed boundary edges + brighter bars — never colour alone.
+    """
+
+    if not (len(days) == len(values) == len(selected)):
+        raise ValueError("daily_context lists must be the same length")
+    mr, mt, mb = 16, 18, 38
+    valid = [value for value in values if value is not None]
+    top = _nice_top(max(valid, default=0))
+    ml = max(58, len(money(top)) * 7 + 14)
+    pw, ph = width - ml - mr, height - mt - mb
+    count = max(1, len(days))
+    out = []
+    chosen = [index for index, flag in enumerate(selected) if flag]
+    if chosen:
+        lo, hi = chosen[0], chosen[-1]
+        x1 = ml + lo * pw / count
+        x2 = ml + (hi + 1) * pw / count
+        out.append(
+            f'<rect class="ch-selband" x="{x1:.1f}" y="{mt}" width="{max(0, x2 - x1):.1f}" '
+            f'height="{ph}"><title>選択範囲 {_esc(days[lo].strftime("%m-%d"))}〜'
+            f'{_esc(days[hi].strftime("%m-%d"))}</title></rect>'
+        )
+        out.append(
+            f'<line class="ch-seledge" x1="{x1:.1f}" y1="{mt}" x2="{x1:.1f}" y2="{mt + ph}"/>'
+        )
+        out.append(
+            f'<line class="ch-seledge" x1="{x2:.1f}" y1="{mt}" x2="{x2:.1f}" y2="{mt + ph}"/>'
+        )
+    for index in range(5):
+        value = top * index / 4
+        y = mt + ph - value / top * ph
+        out.append(
+            f'<line class="ch-grid" x1="{ml}" y1="{y:.1f}" x2="{width - mr}" y2="{y:.1f}"/>'
+            f'<text class="ch-axis" x="{ml - 7}" y="{y + 4:.1f}" text-anchor="end">{money(value)}</text>'
+        )
+    bar_width = max(3, pw / count * 0.68)
+    for index, day in enumerate(days):
+        x = ml + (index + 0.5) * pw / count
+        value = values[index]
+        height_px = (value or 0.0) / top * ph
+        cls = "ch-day-sel" if selected[index] else "ch-day"
+        label = money(value) if value is not None else "—"
+        out.append(
+            f'<rect class="{cls}" x="{x - bar_width / 2:.1f}" y="{mt + ph - height_px:.1f}" '
+            f'width="{bar_width:.1f}" height="{max(0, height_px):.2f}">'
+            f'<title>{_esc(day.strftime("%m-%d"))} {_esc(label)}</title></rect>'
+        )
+        if index % 3 == 0 or index == len(days) - 1:
+            out.append(
+                f'<text class="ch-axis" x="{x:.1f}" y="{height - 12}" '
+                f'text-anchor="middle">{_esc(day.strftime("%m-%d"))}</text>'
+            )
+    return Html(
+        f'<svg class="chart" viewBox="0 0 {width} {height}" role="img">'
+        "<title>API換算コスト の推移</title>" + "".join(out) + "</svg>"
     )
 
 
@@ -530,6 +671,7 @@ def shell(*, title: str, period: str, total: Html | str, body: Html, stamp: str)
         "__VIEW_TOTAL__": safe_total,
         "__VIEW_BODY__": _safe(body),
         "__VIEW_STAMP__": _esc(stamp),
+        "__VIEW_CHART_CSS__": CHART_CSS,
     }
     for marker, value in values.items():
         expected = 1

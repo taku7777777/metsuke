@@ -240,3 +240,17 @@ def test_port_conflict_state_copy_matches_doctor_guidance():
     assert "port" in text
     assert "別サービスへは接続していません" in text
     assert "metsuke doctor" in text
+
+
+def test_detail_pages_emit_no_inline_style_or_script(detail_env):
+    """Test 2 (detail half): the CSP gate also covers prompt/session detail pages.
+
+    ``style-src 'self'`` has no ``'unsafe-inline'``, so an inline ``style=``
+    attribute would simply never apply in the browser.
+    """
+
+    database_path, _ = detail_env
+    for target in (f"/prompts/{PROMPT_ID}", f"/sessions/{SESSION_ID}"):
+        text = _detail(database_path, target).body.decode()
+        assert "style=" not in text, f"{target} emits a CSP-blocked inline style"
+        assert "<script" not in text.lower(), f"{target} emits a script tag"

@@ -265,7 +265,9 @@ def dashboard_response(
             if not has_data:
                 return _initial_sync_response()
             queries = {
-                "overview": lambda: overview.query(conn, request.window, request.page),
+                "overview": lambda: overview.query(
+                    conn, request.window, request.page, today=today
+                ),
                 "period": lambda: period.query(conn, request.window, request.page),
                 "trend": lambda: trend.query(conn, request.window),
                 "cache": lambda: cache.query(conn, request.window),

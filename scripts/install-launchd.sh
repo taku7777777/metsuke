@@ -131,7 +131,7 @@ if [ -z "$OTELCOL_BIN" ] && [ -x /opt/homebrew/bin/otelcol-contrib ]; then
   OTELCOL_BIN=/opt/homebrew/bin/otelcol-contrib
 fi
 if [ -z "$OTELCOL_BIN" ]; then
-  echo "skip: com.metsuke.otelcol — brew install otelcol-contrib を実行してから再実行"
+  echo "skip: com.metsuke.otelcol — otelcol-contrib 未検出。GitHub Releases から取得しPATHへ配置（またはMETSUKE_OTELCOL_BINで指定）して再実行: https://github.com/open-telemetry/opentelemetry-collector-releases/releases"
 else
   label=com.metsuke.otelcol
   config_path="$OTEL_DIR/otelcol.yaml"

@@ -1,4 +1,5 @@
 import ast
+import datetime as dt
 import hashlib
 import json
 import re
@@ -23,7 +24,7 @@ MODEL_GOLDEN_SHA256 = {
     "period": "49a36abdec1f223e175a04c578c9c275ab19cea49633b9485d1ad2d0c61ef42e",
     "trend": "212455a6e90d8f7aea9ebed59353708a9bcd55c28e8cf10d93a2ff0f5136b91e",
     "cache": "298fe9acd27ef6b7467c9c9b1298fb8ac9f9c203de671abe10b8f39f820a5709",
-    "dist": "bf03ffa3eb2c9a1aa7a683d6aae4bb10468714dfe167202e9d4703ba10b156b8",
+    "dist": "6e7734680e7967090d8ea53ec4f47ca3896d55604f2e08745c0f801a7cc08436",
 }
 
 
@@ -175,8 +176,92 @@ def test_overview_model_has_kpis_parts_rankings_and_previous_comparison(model_en
     ]
     assert [item.prompt_id for item in model.top_prompts] == ["p2", "p<!--canary"]
     assert [item.session_id for item in model.top_sessions] == ["s2", "s1"]
+    # daily_costs is now a fixed 31-day context window with the selected range
+    # flagged; the selected days are exactly the queried window and, being the same
+    # rows under the same filter, conserve the total-cost KPI exactly.
+    assert len(model.daily_costs) == 31
+    selected = [item for item in model.daily_costs if item.selected]
+    assert selected[0].day == FIXTURE_WINDOW.start
+    assert selected[-1].day == FIXTURE_DAY
+    assert sum(item.amount.raw for item in selected) == pytest.approx(
+        model.kpis[0].value
+    )
     assert model.unknown_cost_request_count == 0
     json.dumps(to_jsonable(model), ensure_ascii=False)
+
+
+def test_overview_daily_context_is_31_days_centered_on_a_single_day_selection(model_env):
+    """Test 1: a single-day selection far from any data/today edge yields a 31-day
+    context window with the selected day in the exact centre and marked once."""
+    _, conn, _ = model_env
+    day = dt.date(2026, 5, 15)
+    window = Window(day, day, None, str(day))
+    # today is far to the right so the ideal +/-15 span is never capped: symmetric.
+    today = day + dt.timedelta(days=40)
+    model = overview.query(conn, window, today=today)
+    assert len(model.daily_costs) == 31
+    assert model.daily_costs[0].day == day - dt.timedelta(days=15)
+    assert model.daily_costs[-1].day == day + dt.timedelta(days=15)
+    middle = model.daily_costs[15]
+    assert middle.day == day and middle.selected
+    selected = [item for item in model.daily_costs if item.selected]
+    assert [item.day for item in selected] == [day]
+
+
+def test_overview_selected_days_conserve_the_total_cost_kpi(model_env):
+    """Test 4: the selected days are exactly the window range, and their cost sums
+    to the selected-window total-cost KPI (same rows, same project filter)."""
+    _, conn, _ = model_env
+    model = overview.query(conn, FIXTURE_WINDOW)
+    selected_days = [item.day for item in model.daily_costs if item.selected]
+    assert selected_days[0] == FIXTURE_WINDOW.start
+    assert selected_days[-1] == FIXTURE_WINDOW.end
+    selected_total = sum(
+        item.amount.raw for item in model.daily_costs if item.selected
+    )
+    assert selected_total == pytest.approx(model.kpis[0].value)
+
+
+def test_overview_daily_context_shifts_left_to_end_at_today(model_env):
+    """Test 2: when center+15 falls in the future the whole window shifts left to
+    end at today, staying 31 days with no day after today."""
+    _, conn, _ = model_env
+    # FIXTURE_WINDOW centre is 2026-07-13, so ideal_end 2026-07-28 > today.
+    today = FIXTURE_DAY
+    model = overview.query(conn, FIXTURE_WINDOW, today=today)
+    assert len(model.daily_costs) == 31
+    assert model.daily_costs[-1].day == today
+    assert model.daily_costs[0].day == today - dt.timedelta(days=30)
+    assert all(item.day <= today for item in model.daily_costs)
+
+
+def test_overview_daily_context_zero_fills_empty_days(model_env):
+    """Test 3: a day inside the context window with no ledger rows is present with
+    an amount of exactly $0 (not dropped, not unknown)."""
+    _, conn, _ = model_env
+    model = overview.query(conn, FIXTURE_WINDOW, today=FIXTURE_DAY)
+    by_day = {item.day: item for item in model.daily_costs}
+    empty = dt.date(2026, 7, 1)  # inside the 31-day window, no fixture activity
+    assert empty in by_day
+    assert by_day[empty].amount.raw == 0.0
+    # All fixture activity is on FIXTURE_DAY, so it is the only populated day.
+    populated = [item.day for item in model.daily_costs if item.amount.raw]
+    assert populated == [FIXTURE_DAY]
+
+
+def test_overview_daily_context_respects_project_filter(model_env):
+    """Test 5: the context series honours the window's project filter, excluding
+    other projects' costs from the per-day sums."""
+    _, conn, _ = model_env
+    window = Window(FIXTURE_DAY, FIXTURE_DAY, PROJECT_B, str(FIXTURE_DAY))
+    model = overview.query(conn, window, today=FIXTURE_DAY)
+    by_day = {item.day: item for item in model.daily_costs}
+    # Only project-beta's request (0.61617) counts; the other project is excluded
+    # (the unfiltered day total would be 0.946755).
+    assert by_day[FIXTURE_DAY].amount.raw == pytest.approx(0.61617)
+    assert sum(i.amount.raw for i in model.daily_costs if i.selected) == pytest.approx(
+        model.kpis[0].value
+    )
 
 
 def test_prompt_and_session_models_match_numeric_detail_contract(model_env):
@@ -283,7 +368,10 @@ def test_dashboard_page_uses_bound_limit_offset_without_changing_legacy_defaults
     overview_calls = RecordingConnection(conn)
     overview.query(overview_calls, FIXTURE_WINDOW, page)
     assert len(overview_calls.calls) == 1
-    assert overview_calls.calls[0][0].lower().count("from v_request_cost") == 1
+    # Two v_request_cost scans now: the selected+previous `scoped` evaluation, plus
+    # the independent 31-day context-window scan (different date bounds) that feeds
+    # the daily chart. Both live in the same single execute().
+    assert overview_calls.calls[0][0].lower().count("from v_request_cost") == 2
     ranking_calls = [
         (sql, parameters)
         for sql, parameters in overview_calls.calls

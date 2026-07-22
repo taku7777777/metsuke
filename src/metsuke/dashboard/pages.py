@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass
 from urllib.parse import quote, urlencode
 
+from ..viewgen import render as view_render
 from ..viewmodel import overview, prompt, session
 from ..viewmodel.common import Cell, LegacyViewModel, Money, Node, Page, Row, thaw
 
@@ -105,25 +106,51 @@ def _table(headers: tuple[str, ...], rows: list[tuple[object, ...]]) -> str:
 
 
 def _overview(model: overview.OverviewModel) -> str:
-    kpis = "".join(
-        f'<article class="kpi-card"><h3>{_esc(item.name)}</h3>'
-        f'<p class="kpi-value">{_esc(item.display)}</p>'
-        f'<p class="kpi-delta">前期比 {_esc(item.comparison.display)}</p></article>'
-        for item in model.kpis
+    kpis = []
+    for item in model.kpis:
+        change = item.comparison.percent_change
+        if change is None:
+            symbol, delta_class = "—", "delta-na"
+        elif change > 0:
+            symbol, delta_class = "▲", "delta-up"
+        elif change < 0:
+            symbol, delta_class = "▼", "delta-down"
+        else:
+            symbol, delta_class = "→", "delta-flat"
+        kpis.append(
+            f'<article class="kpi-card"><h3>{_esc(item.name)}</h3>'
+            f'<p class="kpi-value">{_esc(item.display)}</p>'
+            f'<p class="kpi-delta {delta_class}"><span aria-hidden="true">{symbol}</span> '
+            f'前期比 {_esc(item.comparison.display)}</p></article>'
+        )
+    daily_labels = [item.day for item in model.daily_costs]
+    daily_values = [item.amount.raw for item in model.daily_costs]
+    daily_selected = [item.selected for item in model.daily_costs]
+    daily_chart = str(
+        view_render.daily_context(daily_labels, daily_values, daily_selected)
+    )
+    daily_table = _table(
+        ("日", "金額"),
+        [(item.day, item.amount.display) for item in model.daily_costs],
     )
     parts = _table(
         ("費目", "金額"),
         [(item.name, item.amount.display) for item in model.cost_parts],
     )
+    parts_chart = _cost_parts_chart(model.cost_parts)
+    prompt_max = max((item.amount.raw or 0 for item in model.top_prompts), default=0)
     prompts = []
     for item in model.top_prompts:
         link = f'<a href="/prompts/{quote(item.prompt_id, safe="")}">{_esc(item.text or "—")}</a>'
-        prompts.append((item.amount.display, _esc(item.project or "—"), link, item.request_count))
+        amount = _money_bar(item.amount, prompt_max)
+        prompts.append((amount, _esc(item.project or "—"), link, item.request_count))
     prompt_table = _trusted_table(("金額", "project", "prompt", "request"), prompts)
+    session_max = max((item.amount.raw or 0 for item in model.top_sessions), default=0)
     sessions = []
     for item in model.top_sessions:
         link = f'<a href="/sessions/{quote(item.session_id, safe="")}">{_esc(item.session_id[:8])}</a>'
-        sessions.append((item.amount.display, _esc(item.project or "—"), link, item.prompt_count, item.request_count))
+        amount = _money_bar(item.amount, session_max)
+        sessions.append((amount, _esc(item.project or "—"), link, item.prompt_count, item.request_count))
     session_table = _trusted_table(("金額", "project", "session", "prompt", "request"), sessions)
     cache = _table(
         ("原因", "request", "金額"),
@@ -135,12 +162,76 @@ def _overview(model: overview.OverviewModel) -> str:
         else ""
     )
     return (
-        f'<section><h2>KPI</h2><div class="kpi-grid">{kpis}</div>{unknown}</section>'
-        f'<section><h2>費目構成</h2>{parts}</section>'
+        f'<section><h2>KPI</h2><div class="kpi-grid">{"".join(kpis)}</div>{unknown}</section>'
+        f'<section><h2>日次コスト推移</h2><div class="chart-card">{daily_chart}</div>'
+        f'<details class="chart-data"><summary>数値を表示</summary>{daily_table}</details></section>'
+        f'<section><h2>費目構成</h2>{parts_chart}{parts}</section>'
         f'<section><h2>高額prompt</h2>{prompt_table}</section>'
         f'<section><h2>高額session</h2>{session_table}</section>'
         f'<section><h2>cache再作成</h2>{cache}</section>'
         '<section><h2>次の確認</h2><p>高額項目から詳細を確認してください。</p></section>'
+    )
+
+
+def _svg_swatch(color: str) -> str:
+    return view_render.swatch(color)
+
+
+def _money_bar(amount: Money, maximum: float) -> str:
+    """Magnitude bar for a table cell.
+
+    Track and fill are themed CSS classes rather than hardcoded colours, so the
+    bar stays visible on both the light and dark dashboard surfaces.
+    """
+
+    if amount.raw is None:
+        return f'<span class="metric-bar metric-unknown"><span></span><span>{_esc(amount.display)}</span></span>'
+    raw = amount.raw
+    ratio = min(1.0, max(0.0, raw / maximum)) if maximum > 0 else 0
+    width = ratio * 100
+    return (
+        '<span class="metric-bar">'
+        f'<svg viewBox="0 0 100 8" preserveAspectRatio="none" role="img" '
+        f'aria-label="最大値の {ratio * 100:.1f}%">'
+        '<rect class="bar-track" width="100" height="8"/>'
+        f'<rect class="bar-fill" width="{width:.2f}" height="8"/></svg>'
+        f'<span>{_esc(amount.display)}</span></span>'
+    )
+
+
+def _cost_parts_chart(parts: tuple[overview.CostPart, ...]) -> str:
+    colors = {
+        "input": "#94a3b8",
+        "output": "#f472b6",
+        "cache_read": "#2dd4bf",
+        "cache_w5m": "#facc15",
+        "cache_w1h": "#fb923c",
+        "server_tool": "#7aa2f7",
+    }
+    total = sum(item.amount.raw or 0 for item in parts)
+    x = 0.0
+    segments = []
+    labels = []
+    for item in parts:
+        color = view_render.validate_color(colors[item.name])
+        value = item.amount.raw or 0
+        width = value / total * 1150 if total > 0 else 0
+        segments.append(
+            f'<rect class="ch-series" x="{x:.2f}" y="8" width="{width:.2f}" height="34" fill="{color}">'
+            f'<title>{_esc(item.name)} {_esc(item.amount.display)}</title></rect>'
+        )
+        labels.append(
+            f'<span>{_svg_swatch(color)}<span>{_esc(item.name)}</span>'
+            f'<strong>{_esc(item.amount.display)}</strong></span>'
+        )
+        x += width
+    return (
+        '<div class="chart-card cost-parts-chart">'
+        '<svg class="chart" viewBox="0 0 1150 50" role="img"><title>費目別コスト構成</title>'
+        + "".join(segments)
+        + '</svg><div class="chart-legend">'
+        + "".join(labels)
+        + "</div></div>"
     )
 
 
@@ -180,6 +271,13 @@ def _series_table(
         for index, label in enumerate(labels)
     ]
     return _table(("期間", *names), rows)
+
+
+def _chart_with_data(chart: object, table: str) -> str:
+    return (
+        f'<div class="chart-stack">{chart}'
+        f'<details class="chart-data"><summary>数値を表示</summary>{table}</details></div>'
+    )
 
 
 INTERACTIVE_SUFFIX = "（対話のみ）"
@@ -363,7 +461,11 @@ def _node(node: Node, page: Page | None = None) -> str:
         body = _node(value, page) if isinstance(value, Node) else _esc(value)
         return f'<div class="card">{body}</div>'
     if node.kind == "legend":
-        return "<p>" + " · ".join(_esc(label) for label, _color in args[0]) + "</p>"
+        items = "".join(
+            f'<span>{_svg_swatch(str(color))}{_esc(label)}</span>'
+            for label, color in args[0]
+        )
+        return f'<div class="legend">{items}</div>'
     if node.kind == "tabs":
         return '<nav aria-label="集計軸">' + " ".join(
             f'<a href="#{_esc(panel_id)}">{_esc(label)}</a>' for panel_id, label, _active in args[1]
@@ -396,23 +498,62 @@ def _node(node: Node, page: Page | None = None) -> str:
         )
     if node.kind == "stacked_bars":
         options = thaw(node.kwargs)
-        return _series_table(args[0], args[1], money=bool(options.get("money_values")))
+        labels, series, colors = args[:3]
+        values = thaw(series)
+        chart = view_render.stacked_bars(
+            labels,
+            values,
+            thaw(colors),
+            height=options.get("height", 280),
+            width=options.get("width", 1150),
+            money_values=bool(options.get("money_values", True)),
+        )
+        table = _series_table(labels, values, money=bool(options.get("money_values", True)))
+        return _chart_with_data(chart, table)
     if node.kind == "line_chart":
         options = thaw(node.kwargs)
-        return _series_table(
-            args[0],
-            args[1],
-            money=bool(options.get("money_axis")),
-            suffix=str(args[3] or ""),
+        labels, series, colors, unit = args[:4]
+        values = thaw(series)
+        chart = view_render.line_chart(
+            labels,
+            values,
+            thaw(colors),
+            unit,
+            money_axis=bool(options.get("money_axis", False)),
+            grain=str(options.get("grain", "weekly")),
+            fixed_top=options.get("fixed_top"),
+            precision=int(options.get("precision", 0)),
         )
+        table = _series_table(
+            labels,
+            values,
+            money=bool(options.get("money_axis")),
+            suffix=str(unit or ""),
+        )
+        return _chart_with_data(chart, table)
     if node.kind == "volume_chart":
-        series = thaw(args[1])
-        if args[3] is not None:
-            series["7日移動平均"] = list(args[3])
-        return _series_table(args[0], series, money=True)
+        labels, data, colors, moving, grain, lo_ts, hi_ts, markers, regimes = args[:9]
+        series = thaw(data)
+        moving_values = None if moving is None else list(moving)
+        chart = view_render.volume_chart(
+            labels,
+            series,
+            thaw(colors),
+            moving_values,
+            grain,
+            lo_ts,
+            hi_ts,
+            thaw(markers),
+            thaw(regimes),
+        )
+        table_series = dict(series)
+        if moving_values is not None:
+            table_series["7日移動平均"] = moving_values
+        return _chart_with_data(chart, _series_table(labels, table_series, money=True))
     if node.kind == "cache_balance":
         series = {"cache read": args[1], "write 5m": args[2], "write 1h": args[3]}
-        return _series_table(args[0], series, money=True)
+        chart = view_render.cache_balance(args[0], args[1], args[2], args[3])
+        return _chart_with_data(chart, _series_table(args[0], series, money=True))
     raise ValueError(f"unsupported dashboard node: {node.kind}")
 
 
@@ -421,6 +562,18 @@ def _cell(cell: Cell, page: Page | None = None) -> str:
         value = _node(cell.content, page)
     else:
         value = cell.text.display if isinstance(cell.text, Money) else _esc(cell.text)
+    if cell.dot is not None:
+        value = _svg_swatch(cell.dot) + value
+    if cell.bar is not None:
+        if not 0 <= cell.bar <= 1:
+            raise ValueError("bar must be between 0 and 1")
+        value = (
+            '<span class="metric-bar">'
+            '<svg viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">'
+            '<rect class="bar-track" width="100" height="8"/>'
+            f'<rect class="bar-fill" width="{cell.bar * 100:.2f}" height="8"/></svg>'
+            f'<span>{value}</span></span>'
+        )
     if cell.warn:
         value = '<span class="threshold">⚠ 注意</span> ' + value
     elif isinstance(cell.text, str) and "⚠" in cell.text:
@@ -495,56 +648,100 @@ def _shell(title: str, content: str, freshness: Freshness | None = None, header:
 def stylesheet() -> str:
     """Return local-only CSS; dashboard markup remains centralized in this module."""
 
-    return """
+    return (
+        """
 :root {
   color-scheme: light dark;
   font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-  line-height: 1.55;
+  line-height: 1.4;
   --bg: #ffffff;
+  --bg2: #f5f6f9;
+  --bg3: #eceef3;
+  --line: #dcdfe6;
   --fg: #16181d;
-  --muted: #5c6472;
-  --rule: #dcdfe6;
-  --rule-strong: #b9bfcb;
-  --surface: #f5f6f9;
-  --surface-alt: #eceef3;
+  --dim: #5c6472;
   --accent: #1b4fd8;
+  --read: #0f766e;
+  --w5: #a16207;
+  --w1: #c2410c;
+  --in: #475569;
+  --out: #be185d;
+  --muted: var(--dim);
+  --rule: var(--line);
+  --rule-strong: #b9bfcb;
+  --surface: var(--bg2);
+  --surface-alt: var(--bg3);
   --accent-fg: #ffffff;
   --warn: #8a4b00;
+  --ch-grid: #dcdfe6;
+  --ch-divider: #c7ccd6;
+  --ch-axis: #5c6472;
+  --ch-weekday: #3f4756;
+  --ch-value: #16181d;
+  --ch-avg: #16181d;
+  --ch-regime: #b91c1c;
+  --ch-marker: #1b4fd8;
+  --ch-series-edge: rgba(15, 23, 42, .45);
+  --ch-bar-track: #e4e7ee;
+  --ch-bar-fill: #1b4fd8;
+  --ch-highlight: #fdeaea;
+  --ch-day: #9aa3b2;
+  --ch-day-sel: #1b4fd8;
+  --ch-sel-band: #1b4fd8;
+  --ch-sel-edge: #1b4fd8;
 }
+/* Dark theme: the chart custom properties carry the palette the SVG used to
+   hardcode, so identical markup reads correctly in both themes. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #15171c;
-    --fg: #e6e9ef;
-    --muted: #9aa2b1;
-    --rule: #2b303a;
-    --rule-strong: #414957;
-    --surface: #1b1e25;
-    --surface-alt: #23262f;
-    --accent: #8fb4ff;
-    --accent-fg: #15171c;
-    --warn: #f0b866;
-  }
+  :root { --bg: #0d1117; --bg2: #161b22; --bg3: #1c2330; --line: #2d3648; --fg: #d6dde8;
+    --dim: #7d8899; --accent: #7aa2f7; --read: #2dd4bf; --w5: #facc15; --w1: #fb923c;
+    --in: #94a3b8; --out: #f472b6; --rule-strong: #46516a; --accent-fg: #0d1117; --warn: #facc15;
+    --ch-grid: #2d3648; --ch-divider: #394254; --ch-axis: #7d8899; --ch-weekday: #aab4c3;
+    --ch-value: #d6dde8; --ch-avg: #ffffff; --ch-regime: #f87171; --ch-marker: #7aa2f7;
+    --ch-series-edge: transparent; --ch-bar-track: #1c2330; --ch-bar-fill: #7aa2f7;
+    --ch-highlight: #3a2025; --ch-day: #3d4657; --ch-day-sel: #7aa2f7;
+    --ch-sel-band: #7aa2f7; --ch-sel-edge: #7aa2f7; }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1117; --bg2: #161b22; --bg3: #1c2330; --line: #2d3648; --fg: #d6dde8;
+  --dim: #7d8899; --accent: #7aa2f7; --read: #2dd4bf; --w5: #facc15; --w1: #fb923c;
+  --in: #94a3b8; --out: #f472b6; --rule-strong: #46516a; --accent-fg: #0d1117; --warn: #facc15;
+  --ch-grid: #2d3648; --ch-divider: #394254; --ch-axis: #7d8899; --ch-weekday: #aab4c3;
+  --ch-value: #d6dde8; --ch-avg: #ffffff; --ch-regime: #f87171; --ch-marker: #7aa2f7;
+  --ch-series-edge: transparent; --ch-bar-track: #1c2330; --ch-bar-fill: #7aa2f7;
+  --ch-highlight: #3a2025;
+  --ch-day: #3d4657; --ch-day-sel: #7aa2f7; --ch-sel-band: #7aa2f7; --ch-sel-edge: #7aa2f7;
+}
+:root[data-theme="light"] {
+  --bg: #ffffff; --bg2: #f5f6f9; --bg3: #eceef3; --line: #dcdfe6; --fg: #16181d;
+  --dim: #5c6472; --accent: #1b4fd8; --read: #0f766e; --w5: #a16207; --w1: #c2410c;
+  --in: #475569; --out: #be185d; --rule-strong: #b9bfcb; --accent-fg: #ffffff; --warn: #8a4b00;
+  --ch-grid: #dcdfe6; --ch-divider: #c7ccd6; --ch-axis: #5c6472; --ch-weekday: #3f4756;
+  --ch-value: #16181d; --ch-avg: #16181d; --ch-regime: #b91c1c; --ch-marker: #1b4fd8;
+  --ch-series-edge: rgba(15, 23, 42, .45); --ch-bar-track: #e4e7ee; --ch-bar-fill: #1b4fd8;
+  --ch-highlight: #fdeaea;
+  --ch-day: #9aa3b2; --ch-day-sel: #1b4fd8; --ch-sel-band: #1b4fd8; --ch-sel-edge: #1b4fd8;
 }
 * { box-sizing: border-box; }
-body { margin: 0 auto; max-width: 96rem; padding: 1.5rem 1.25rem 4rem; background: var(--bg); color: var(--fg); }
-h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 .75rem; }
-h2 { font-size: 1.15rem; font-weight: 650; margin: 0 0 .5rem; padding-bottom: .35rem; border-bottom: 2px solid var(--rule-strong); }
+body { margin: 0; width: 100%; padding: .75rem .85rem 2rem; background: var(--bg); color: var(--fg); font-size: 14px; }
+h1 { font-size: .95rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 .4rem; }
+h2 { font-size: 1.02rem; font-weight: 650; margin: 0 0 .4rem; padding-bottom: .25rem; border-bottom: 1px solid var(--rule-strong); }
 h3 { font-size: .8rem; font-weight: 600; letter-spacing: .03em; color: var(--muted); margin: 0 0 .25rem; }
-section { margin-block: 2rem; }
-p { margin-block: .5rem; }
+section { margin-block: 1.15rem; }
+p { margin-block: .35rem; }
 a { color: var(--accent); }
 .dim, .lead + .dim { color: var(--muted); font-size: .875rem; }
 .backlink { font-size: .875rem; }
 
 /* --- header / controls ------------------------------------------------ */
-header { border-bottom: 1px solid var(--rule); padding-bottom: .5rem; margin-bottom: 1.25rem; }
+header { border-bottom: 1px solid var(--rule); padding-bottom: .4rem; margin-bottom: .75rem; }
 .window { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem; margin: 0 0 .75rem; }
 .window-preset { font-weight: 650; }
 .window-range { color: var(--muted); font-variant-numeric: tabular-nums; }
-.controls { display: flex; flex-direction: column; gap: .85rem; }
+.controls { display: flex; flex-direction: column; gap: .5rem; }
 nav, form { display: flex; flex-wrap: wrap; gap: .4rem; margin-block: 0; }
 .tabs { gap: 0; border-bottom: 1px solid var(--rule); }
-.tabs a { padding: .5rem .95rem; text-decoration: none; color: var(--muted); border: 1px solid transparent; border-bottom: none; border-radius: .35rem .35rem 0 0; margin-bottom: -1px; }
+.tabs a { padding: .35rem .75rem; text-decoration: none; color: var(--muted); border: 1px solid transparent; border-bottom: none; border-radius: .35rem .35rem 0 0; margin-bottom: -1px; }
 .tabs a:hover { color: var(--fg); background: var(--surface); }
 .tabs a[aria-current] { color: var(--fg); font-weight: 700; background: var(--bg); border-color: var(--rule); border-bottom: 1px solid var(--bg); }
 .filters { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
@@ -564,10 +761,13 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: .2rem soli
 .kpi-item { font-size: 1.05rem; color: var(--muted); }
 .kpi-item:first-child { font-size: 1.6rem; font-weight: 700; line-height: 1.2; color: var(--fg); }
 .kpi-sep { color: var(--rule-strong); }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .75rem; }
-.kpi-card { padding: .75rem .9rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .5rem; }
-.kpi-value { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .45rem; }
+.kpi-card { padding: .55rem .7rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .4rem; }
+.kpi-value { margin: 0; font-size: 1.35rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
 .kpi-delta { margin: .2rem 0 0; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.delta-up { color: var(--out); }
+.delta-down { color: var(--read); }
+.delta-flat, .delta-na { color: var(--dim); }
 
 /* --- insight facts ----------------------------------------------------- */
 .insight { padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-left: .25rem solid var(--rule-strong); border-radius: .35rem; }
@@ -585,7 +785,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: .2rem soli
 /* --- tables ------------------------------------------------------------ */
 .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--rule); border-radius: .4rem; }
 table { border-collapse: collapse; width: 100%; font-size: .875rem; }
-th, td { padding: .45rem .7rem; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+th, td { padding: .28rem .5rem; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 th { position: sticky; top: 0; z-index: 1; font-size: .75rem; font-weight: 600; letter-spacing: .02em; color: var(--muted); background: var(--surface-alt); border-bottom: 1px solid var(--rule-strong); }
 td { border-top: 1px solid var(--rule); }
 tbody tr:first-child td { border-top: none; }
@@ -593,6 +793,19 @@ tbody tr:nth-child(even) { background: var(--surface); }
 tbody tr:hover { background: var(--surface-alt); }
 th:first-child, td:first-child { text-align: left; }
 .card { max-width: 100%; overflow-x: auto; }
+.chart-card, .chart-stack { max-width: 100%; overflow-x: auto; background: var(--bg2); border: 1px solid var(--line); border-radius: .4rem; padding: .35rem; }
+/* Scoped to svg.chart so the inline swatch/bar SVGs are not stretched. */
+.chart-card svg.chart, .chart-stack > svg.chart, .card > svg.chart { display: block; width: 100%; height: auto; min-width: 34rem; }
+.chart-data { margin-top: .35rem; color: var(--dim); }
+.chart-data summary { cursor: pointer; font-size: .78rem; padding: .25rem .4rem; }
+.chart-data .table-wrap { margin-top: .3rem; }
+.legend, .chart-legend { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .9rem; margin: .35rem 0; color: var(--dim); font-size: .78rem; }
+.legend > span, .chart-legend > span { display: inline-flex; align-items: center; gap: .3rem; }
+.chart-legend strong { margin-left: .2rem; color: var(--fg); font-variant-numeric: tabular-nums; }
+.legend .dot, .chart-legend .dot { width: .7rem; height: .7rem; flex: 0 0 auto; margin-right: 0; }
+.metric-bar { display: grid; grid-template-columns: minmax(5rem, 8rem) auto; align-items: center; gap: .45rem; min-width: 10rem; }
+.metric-bar svg { display: block; width: 100%; height: .5rem; }
+.cost-parts-chart { margin-bottom: .45rem; }
 .threshold { font-weight: 700; color: var(--warn); }
 .empty { color: var(--muted); font-size: .875rem; }
 .empty, aside { padding: .75rem .9rem; background: var(--surface); border: 1px solid var(--rule); border-radius: .35rem; }
@@ -608,7 +821,9 @@ th:first-child, td:first-child { text-align: left; }
   .facts { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
-""".strip()
+"""
+        + view_render.CHART_CSS
+    ).strip()
 
 
 def dashboard_page(

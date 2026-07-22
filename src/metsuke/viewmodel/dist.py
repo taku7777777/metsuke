@@ -42,6 +42,10 @@ def _bar_cell(value: float, maximum: float) -> Cell:
     return Cell(ui.money(value), sort=value, bar=0 if not maximum else value / maximum)
 
 
+def _share_cell(value: float) -> Cell:
+    return Cell(f"{value:.1f}%", sort=value, bar=min(1, max(0, value / 100)))
+
+
 def _columns(items: list[tuple[str, bool]]) -> list[Column]:
     return [Column(label, cls="left" if left else "") for label, left in items]
 
@@ -134,6 +138,10 @@ def query(conn, window: Window) -> DistModel:
     groups.append(("その他", [p for key in ordered[7:] for p in by_project[key]], False))
     groups.extend((("全体", prompts, False), ("全体（対話のみ）", interactive, False)))
     maximum = max((sum(prompt["cost"] for prompt in items) for _, items, _ in groups), default=0)
+    quantile_max = max(
+        (_percentile([prompt["cost"] for prompt in items], 0.95) for _, items, _ in groups),
+        default=0,
+    )
     project_rows = []
     for name, items, is_project in groups:
         values = [prompt["cost"] for prompt in items]
@@ -143,9 +151,9 @@ def query(conn, window: Window) -> DistModel:
                 Cell(name, "left"),
                 Cell(str(len(items)), sort=len(items)),
                 _bar_cell(sum(values), maximum),
-                Cell(ui.money(_percentile(values, 0.5)), sort=_percentile(values, 0.5)),
-                Cell("—" if unstable else ui.money(_percentile(values, 0.9))),
-                Cell("—" if unstable else ui.money(_percentile(values, 0.95))),
+                _bar_cell(_percentile(values, 0.5), quantile_max),
+                Cell("—") if unstable else _bar_cell(_percentile(values, 0.9), quantile_max),
+                Cell("—") if unstable else _bar_cell(_percentile(values, 0.95), quantile_max),
             ]
         )
     section1 = ui.join(
@@ -187,14 +195,16 @@ def query(conn, window: Window) -> DistModel:
             main = " · ".join(f"{key} {value}" for key, value in models.most_common(2)) or "—"
             value = sum(prompt["cost"] for prompt in items)
             cost_total = sum(prompt["cost"] for prompt in cost_population)
+            count_share_value = len(items) / len(population) * 100 if population else 0
+            cost_share_value = value / cost_total * 100 if cost_total else 0
             examples = _examples(items)
             band_rows.append(
                 [
                     Cell(name + label, "left"),
                     Cell(str(len(items))),
-                    Cell(f"{len(items) / len(population) * 100 if population else 0:.1f}%"),
+                    _share_cell(count_share_value),
                     _bar_cell(value, maximum),
-                    Cell(f"{value / cost_total * 100 if cost_total else 0:.1f}%"),
+                    _share_cell(cost_share_value),
                     Cell(ui.money(_percentile([p["cost"] for p in items], 0.5))),
                     Cell(main, "left"),
                     Cell("—" if examples is None else "", "left", content=examples),

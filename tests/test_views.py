@@ -427,7 +427,8 @@ def test_trend_has_all_panels_charts_tables_and_drilldown(view_env):
     path = viewgen.generate("trend", Window(start, end, None, f"{start} — {end}"), conn=conn)
     assert path is not None
     html = path.read_text()
-    assert html.count("<svg ") == 30
+    # Charts carry class="chart"; the inline swatch/bar cell SVGs do not.
+    assert html.count('<svg class="chart" ') == 30
     assert html.count("<table>") == 3
     assert "① 総量" in html and "② 分布形の推移（対話のみ）" in html
     assert "③ 行動イベントの推移" in html and "④ 挙動サマリ（グラフ＋表）" in html
@@ -446,12 +447,14 @@ def test_trend_contribution_clip_width_and_title_are_on_span(view_env):
     weekly_start = html.index('data-grain-panel="weekly"', daily_start)
     monthly_start = html.index('data-grain-panel="monthly"', weekly_start)
     summary_end = html.index("</main>", monthly_start)
-    expected = 'style="max-width:170px"'
+    # The width is a quantised CSS class now (cw9 == 180px) rather than an inline
+    # style, which the dashboard CSP blocks. 170px rounds up one 20px rung.
+    expected = 'class="clip cw9"'
     assert html[daily_start:weekly_start].count(expected) == 14
     assert html[weekly_start:monthly_start].count(expected) == 1
     assert html[monthly_start:summary_end].count(expected) == 1
     spans = re.findall(
-        r'<span class="clip" style="max-width:170px" title="[^"]*">[^<]*</span>',
+        r'<span class="clip cw9" title="[^"]*">[^<]*</span>',
         html[summary_start:summary_end],
     )
     assert len(spans) == 16
@@ -779,3 +782,24 @@ def test_sanitized_ledger_summary_contains_only_allowlisted_aggregates():
     }
     assert set(snapshot["windows"]) == {"latest_day", "latest_7_days", "all_observed"}
     assert all(set(window) == allowed_window_fields for window in snapshot["windows"].values())
+
+
+def test_static_html_still_renders_charts_and_needs_no_inline_style(view_env):
+    """Test 4: regression guard for moving the chart primitives.
+
+    The static generator and the dashboard now share one chart implementation,
+    so the static path must keep drawing real SVG charts, and must keep working
+    without the inline styles the dashboard's CSP blocks.
+    """
+
+    _, conn, _ = view_env
+    for name in ("trend", "cache"):
+        path = viewgen.generate(name, FIXTURE_WINDOW, conn=conn)
+        assert path is not None
+        html = path.read_text()
+        body = html[html.index("<main>") : html.index("</main>")]
+        assert '<svg class="chart"' in body, f"{name} lost its static charts"
+        assert "style=" not in body, f"{name} still emits an inline style"
+        # The shared chart stylesheet must be present so the classes resolve.
+        assert ".ch-grid{stroke:var(--ch-grid" in html
+        assert ".bar-fill{fill:var(--ch-bar-fill" in html
