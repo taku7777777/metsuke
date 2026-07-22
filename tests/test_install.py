@@ -1,5 +1,7 @@
 import json
 import os
+import plistlib
+import shutil
 import socket
 import subprocess
 from pathlib import Path
@@ -109,10 +111,20 @@ def test_app_bundle_generation_is_idempotent_and_uses_absolute_paths(tmp_path):
         "<string>APPL</string>",
     ):
         assert fragment in plist_text
-    plutil = subprocess.run(
-        ["plutil", "-lint", str(plist)], capture_output=True, text=True
-    )
-    assert plutil.returncode == 0, plutil.stdout + plutil.stderr
+
+    # plistlib validates the structure on every platform, while plutil is a
+    # macOS-only tool that is unavailable on Linux CI runners.
+    plist_data = plistlib.loads(plist.read_bytes())
+    assert plist_data["CFBundleExecutable"] == "Metsuke"
+    assert plist_data["CFBundleIdentifier"] == "com.metsuke.app"
+    assert plist_data["CFBundlePackageType"] == "APPL"
+
+    plutil_path = shutil.which("plutil")
+    if plutil_path:
+        plutil = subprocess.run(
+            [plutil_path, "-lint", str(plist)], capture_output=True, text=True
+        )
+        assert plutil.returncode == 0, plutil.stdout + plutil.stderr
 
 
 def test_installer_can_skip_the_app(tmp_path):

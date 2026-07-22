@@ -12,13 +12,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      UV_PYTHON_PREFERENCE: only-managed
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install uv
-        run: python -m pip install uv
+      # SQLite's %G/%V formats require SQLite >=3.46, so use the same uv-managed
+      # Python as the shipped runtime instead of the runner's system Python.
+      - uses: astral-sh/setup-uv@v6
+      - name: Install Python
+        run: uv python install 3.12
       - name: Install locked dependencies
         run: uv sync --frozen --dev
       - name: Lint Python
