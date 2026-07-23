@@ -186,8 +186,10 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 content_type=dashboard2_web.ASSET_CONTENT_TYPES[name],
             )
             return
-        if request_path == "/v2/dashboard":
-            # Authenticated (unauth -> identical 401 as /dashboard), but the shell is
+        if request_path in ("/dashboard", "/v2/dashboard"):
+            # `/dashboard` is the default surface (v2); `/v2/dashboard` is the retained
+            # alias so existing bookmarks keep working. Both serve the identical shell.
+            # Authenticated (unauth -> identical 401 as /v1/dashboard), but the shell is
             # data-free and query-independent: the client reads location.search and fetches
             # /v2/api/overview itself. Canonicalization of a bare/preset query happens in the
             # client (replaceState to the API's canonical form), not via a server redirect.
@@ -233,7 +235,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
         if request_path == "/bootstrap":
             self._bootstrap()
             return
-        if request_path == "/dashboard":
+        if request_path == "/v1/dashboard":
             claims = self._authenticated_claims()
             if claims is None:
                 self._unauthorized()
@@ -246,6 +248,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self._dashboard_server.today(),
                 now=self._dashboard_server.clock(),
                 diagnostic_path=self._dashboard_server.diagnostic_path,
+                base_path="/v1/dashboard",
             )
             elapsed_ms = (time.perf_counter() - started) * 1000
             if response.status == 200 and response.view is not None:

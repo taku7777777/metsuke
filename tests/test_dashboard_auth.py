@@ -167,7 +167,7 @@ def _authenticated_dashboard(
 ) -> tuple[str, str, str]:
     nonce, cookie, _ = _bootstrap(dashboard)
     status, _, response_headers = _request(
-        dashboard.port, "/dashboard", headers={"Cookie": cookie}
+        dashboard.port, "/v1/dashboard", headers={"Cookie": cookie}
     )
     assert status == 303
     status, _, response_headers = _request(
@@ -203,7 +203,7 @@ def test_cookie_missing_is_401_and_valid_cookie_is_200(auth_server):
     assert "Metsuke.appから開き直してください".encode() in body
 
     _, cookie, _ = _authenticated_dashboard(dashboard)
-    status, _, headers = _request(dashboard.port, "/dashboard", headers={"Cookie": cookie})
+    status, _, headers = _request(dashboard.port, "/v1/dashboard", headers={"Cookie": cookie})
     assert status == 303
     status, body, _ = _request(
         dashboard.port, _headers(headers)["Location"], headers={"Cookie": cookie}
@@ -239,9 +239,9 @@ def test_detail_routes_require_cookie_while_traversal_is_safe_404(auth_server):
 def test_expired_cookie_is_rejected_while_unexpired_cookie_passes(auth_server):
     dashboard, clock, _, _ = auth_server
     _, cookie, _ = _authenticated_dashboard(dashboard)
-    assert _request(dashboard.port, "/dashboard", headers={"Cookie": cookie})[0] == 303
+    assert _request(dashboard.port, "/v1/dashboard", headers={"Cookie": cookie})[0] == 303
     clock.value += auth.COOKIE_TTL_SECONDS + 1
-    status, body, _ = _request(dashboard.port, "/dashboard", headers={"Cookie": cookie})
+    status, body, _ = _request(dashboard.port, "/v1/dashboard", headers={"Cookie": cookie})
     assert status == 401
     assert _cookie_token(cookie).encode() not in body
 
@@ -251,8 +251,8 @@ def test_tampered_cookie_is_rejected_while_original_passes(auth_server):
     _, cookie, _ = _authenticated_dashboard(dashboard)
     name, token = cookie.split("=", 1)
     tampered = f"{name}={_tamper_signature(token)}"
-    assert _request(dashboard.port, "/dashboard", headers={"Cookie": tampered})[0] == 401
-    assert _request(dashboard.port, "/dashboard", headers={"Cookie": cookie})[0] == 303
+    assert _request(dashboard.port, "/v1/dashboard", headers={"Cookie": tampered})[0] == 401
+    assert _request(dashboard.port, "/v1/dashboard", headers={"Cookie": cookie})[0] == 303
 
 
 def test_cookie_from_another_install_is_rejected(auth_server):
@@ -266,7 +266,7 @@ def test_cookie_from_another_install_is_rejected(auth_server):
     assert (
         _request(
             dashboard.port,
-            "/dashboard",
+            "/v1/dashboard",
             headers={"Cookie": f"{auth.COOKIE_NAME}={foreign}"},
         )[0]
         == 401
@@ -275,7 +275,7 @@ def test_cookie_from_another_install_is_rejected(auth_server):
     assert (
         _request(
             dashboard.port,
-            "/dashboard",
+            "/v1/dashboard",
             headers={"Cookie": f"{auth.COOKIE_NAME}={valid}"},
         )[0]
         == 303
@@ -362,7 +362,7 @@ def test_nonce_binds_instance_but_cookie_survives_server_restart(tmp_path, monke
         assert second.instance_state.server_instance_id != old_instance
         assert secret_path.read_bytes() == secret_before
         assert _request(second.port, f"/bootstrap?nonce={old_nonce}")[0] == 401
-        assert _request(second.port, "/dashboard", headers={"Cookie": cookie})[0] == 303
+        assert _request(second.port, "/v1/dashboard", headers={"Cookie": cookie})[0] == 303
     finally:
         second.shutdown()
         second_thread.join(timeout=3)
@@ -1081,11 +1081,11 @@ def test_dashboard_usage_spool_is_success_only_and_structurally_pii_free(auth_se
     _, cookie, _ = _bootstrap(dashboard)
     spool = dashboard.usage_spool_path
 
-    redirect = _request(dashboard.port, "/dashboard", headers={"Cookie": cookie})
+    redirect = _request(dashboard.port, "/v1/dashboard", headers={"Cookie": cookie})
     assert redirect[0] == 303
     rejected = _request(
         dashboard.port,
-        "/dashboard?view=not-a-view&from=2027-01-14&to=2027-01-14",
+        "/v1/dashboard?view=not-a-view&from=2027-01-14&to=2027-01-14",
         headers={"Cookie": cookie},
     )
     assert rejected[0] == 400
@@ -1094,7 +1094,7 @@ def test_dashboard_usage_spool_is_success_only_and_structurally_pii_free(auth_se
     project_canary = "auth-fixture"
     filter_canary = "from=2027-01-14"
     path = (
-        "/dashboard?view=overview&from=2027-01-14&to=2027-01-14"
+        "/v1/dashboard?view=overview&from=2027-01-14&to=2027-01-14"
         f"&project={project_canary}"
     )
     status, body, _ = _request(dashboard.port, path, headers={"Cookie": cookie})

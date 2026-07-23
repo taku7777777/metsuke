@@ -134,6 +134,50 @@ def test_v2_dashboard_shell_links_bundle_and_is_csp_safe(v2_server):
     _assert_shell_csp_safe(body)
 
 
+# --- routing: /dashboard is now v2; v1 moved to /v1/dashboard ----------------------
+
+
+def test_default_dashboard_path_serves_the_v2_shell(v2_server):
+    """`/dashboard` is now the default surface and serves the identical v2 shell."""
+
+    _, cookie, _ = _bootstrap(v2_server)
+    status, body, headers = _request(
+        v2_server.port, "/dashboard", headers={"Cookie": cookie}
+    )
+    assert status == 200
+    assert _headers(headers)["Content-Type"] == "text/html; charset=utf-8"
+    text = body.decode()
+    assert '<script src="/v2/app.js" defer></script>' in text
+    # Byte-identical to the retained `/v2/dashboard` alias — same shell, no v1 SSR.
+    assert body == web.shell_html().encode()
+    assert '<div id="app"></div>' in text
+    # None of v1's SSR main-view markup is served at the default path.
+    assert '<form method="get"' not in text
+
+
+def test_v1_dashboard_serves_ssr_with_rebased_internal_links(v2_server):
+    """`/v1/dashboard` is the fully-functional v1 SSR surface with rebased links."""
+
+    _, cookie, _ = _bootstrap(v2_server)
+    # A bare query canonicalizes to `/v1/dashboard?...`, never `/dashboard` (now v2).
+    status, _, headers = _request(
+        v2_server.port, "/v1/dashboard", headers={"Cookie": cookie}
+    )
+    assert status == 303
+    location = _headers(headers)["Location"]
+    assert location.startswith("/v1/dashboard?")
+    status, body, _ = _request(v2_server.port, location, headers={"Cookie": cookie})
+    assert status == 200
+    text = body.decode()
+    assert "metsuke dashboard" in text
+    # Every main-view link is rebased onto /v1/dashboard so v1 stays self-contained.
+    assert '<form method="get" action="/v1/dashboard">' in text
+    assert '<a class="tab" href="/v1/dashboard?' in text
+    assert '<a class="preset" href="/v1/dashboard?' in text
+    # The v2 client bundle never leaks into the v1 SSR surface.
+    assert "/v2/app.js" not in text
+
+
 # --- API: authenticated JSON that matches overview.query --------------------------
 
 

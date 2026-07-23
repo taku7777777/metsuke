@@ -45,7 +45,7 @@ def _base_values(request, *, view: str | None = None) -> list[tuple[str, str]]:
     return values
 
 
-def _controls(request, today: dt.date) -> str:
+def _controls(request, today: dt.date, base_path: str = "/v1/dashboard") -> str:
     presets = (("昨日", "yesterday"), ("今日", "today"), ("直近7日", "7d"), ("今月", "month"), ("先月", "last-month"))
     preset_values = [("view", request.view)]
     if request.window.project is not None:
@@ -55,12 +55,12 @@ def _controls(request, today: dt.date) -> str:
     if request.page.order != "desc":
         preset_values.append(("order", request.page.order))
     preset_links = " ".join(
-        f'<a class="preset" href="{_url("/dashboard", [*preset_values, ("range", value)])}"'
+        f'<a class="preset" href="{_url(base_path, [*preset_values, ("range", value)])}"'
         f'{" aria-current=\"true\"" if request.preset == value else ""}>{_esc(label)}</a>'
         for label, value in presets
     )
     tabs = " ".join(
-        f'<a class="tab" href="{_url("/dashboard", _base_values(request, view=value))}"'
+        f'<a class="tab" href="{_url(base_path, _base_values(request, view=value))}"'
         f'{" aria-current=\"page\"" if request.view == value else ""}>{_esc(label)}</a>'
         for value, label in (
             ("overview", "概要"),
@@ -81,7 +81,7 @@ def _controls(request, today: dt.date) -> str:
         f'<nav class="tabs" aria-label="表示">{tabs}</nav>'
         '<div class="filters">'
         f'<nav class="presets" aria-label="期間プリセット">{preset_links}</nav>'
-        '<form method="get" action="/dashboard">'
+        f'<form method="get" action="{_esc(base_path)}">'
         f'<input type="hidden" name="view" value="{_esc(request.view)}">'
         f'{order}'
         f'<label class="field">開始 <input type="date" name="from" required max="{request.window.end}" value="{request.window.start}"></label>'
@@ -666,13 +666,13 @@ def _period(model: LegacyViewModel) -> str:
     return f'<section><h2>集中先</h2>{_kpi_line(model.total)}{_node(model.body)}</section>'
 
 
-def _pagination(request) -> str:
+def _pagination(request, base_path: str = "/v1/dashboard") -> str:
     links = []
     if request.page.page > 1:
         previous = _base_values(request) + [("page", str(request.page.page - 1))]
-        links.append(f'<a rel="prev" href="{_url("/dashboard", previous)}">前へ</a>')
+        links.append(f'<a rel="prev" href="{_url(base_path, previous)}">前へ</a>')
     following = _base_values(request) + [("page", str(request.page.page + 1))]
-    links.append(f'<a rel="next" href="{_url("/dashboard", following)}">次へ</a>')
+    links.append(f'<a rel="next" href="{_url(base_path, following)}">次へ</a>')
     return '<nav class="pagination" aria-label="ページング">' + " ".join(links) + "</nav>"
 
 
@@ -1064,6 +1064,7 @@ def dashboard_page(
     model,
     today: dt.date,
     freshness: Freshness | None = None,
+    base_path: str = "/v1/dashboard",
 ) -> str:
     if request.view == "overview":
         content = _overview(model)
@@ -1085,9 +1086,11 @@ def dashboard_page(
     header = (
         f'<p class="window"><span class="window-preset">{_esc(preset_labels[request.preset])}</span>'
         f'<span class="window-range">{_esc(request.window.start)} — {_esc(request.window.end)}</span></p>'
-        f'{_controls(request, today)}'
+        f'{_controls(request, today, base_path)}'
     )
-    return _shell("metsuke dashboard", f"{content}{_pagination(request)}", freshness, header)
+    return _shell(
+        "metsuke dashboard", f"{content}{_pagination(request, base_path)}", freshness, header
+    )
 
 
 def _timestamp(value: float) -> str:

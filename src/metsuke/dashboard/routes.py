@@ -252,13 +252,14 @@ def dashboard_response(
     *,
     now: float | None = None,
     diagnostic_path: Path | None = None,
+    base_path: str = "/v1/dashboard",
 ) -> DashboardResponse:
     try:
         request, redirect_query = resolve_query(raw_query, today)
     except (InvalidDashboardRequest, ValueError):
         return DashboardResponse(400, b"bad request", {})
     if redirect_query is not None:
-        return DashboardResponse(303, b"", {"Location": f"/dashboard?{redirect_query}"})
+        return DashboardResponse(303, b"", {"Location": f"{base_path}?{redirect_query}"})
     try:
         with closing(connect_dashboard(database_path)) as conn:
             has_data, freshness = _ledger_state(conn, time.time() if now is None else now)
@@ -281,7 +282,7 @@ def dashboard_response(
             retry_path="/dashboard",
         )
     return _bounded_html(
-        pages.dashboard_page(request, model, today, freshness),
+        pages.dashboard_page(request, model, today, freshness, base_path),
         view=request.view,
     )
 

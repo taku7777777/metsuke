@@ -34,7 +34,7 @@ def test_default_is_yesterday_and_range_redirects_to_canonical(page_env):
     response = _response(database_path, "", today)
     assert response.status == 303
     assert response.headers["Location"] == (
-        "/dashboard?view=overview&from=2026-07-20&to=2026-07-20"
+        "/v1/dashboard?view=overview&from=2026-07-20&to=2026-07-20"
     )
 
     response = _response(database_path, "view=period&range=7d", today)
@@ -191,10 +191,10 @@ def test_progressive_enhancement_get_form_real_links_and_csp_safe_script(page_en
         database_path, f"view=overview&from={FIXTURE_DAY}&to={FIXTURE_DAY}"
     ).body.decode()
     # SSR still stands on its own without any script running.
-    assert '<form method="get" action="/dashboard">' in text
+    assert '<form method="get" action="/v1/dashboard">' in text
     assert 'type="date"' in text
     assert 'required max="2026-07-20"' in text
-    assert '<a class="tab" href="/dashboard?' in text
+    assert '<a class="tab" href="/v1/dashboard?' in text
     assert '<a href="/prompts/' in text
     # The one script is external + deferred; no inline body, no inline handlers.
     assert '<script src="/dashboard.js" defer></script>' in text
